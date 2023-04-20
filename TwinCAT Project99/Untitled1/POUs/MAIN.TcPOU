@@ -74,25 +74,29 @@ VAR
 	MoveToC: LREAL;
 	ShortestCMove: PositionXYC;
 	maxVelocity: LREAL;
-	Close_EnoughX: BOOL;
-	Close_EnoughY: BOOL;
+
 	SanitizedX: LREAL;
 	SanitizedY: LREAL;
 	SetPointX: REAL;
 	Kp_X: INT;
 	Kv_X: INT;
-	Kd_X: INT;
+	Kd_X: LREAL;
 	Ki_X: LREAL;
-	ControllerP_Err: LREAL;
-	ControllerV_Err: LREAL;
-	ControllerI_Err: LREAL;
 	SetPointY: REAL;
 	Kp_Y: INT;
 	Ki_Y: LREAL;
-	Kd_Y: INT;
-	ControllerYP_Err: LREAL;
-	ControllerYV_Err: LREAL;
-	ControllerYI_Err: LREAL;
+	Kd_Y: LREAL;
+
+	ControllerP_Err_X: LREAL;
+	ControllerI_Err_X: LREAL;
+	ControllerD_Err_X: LREAL;
+	ControllerP_Err_Y: LREAL;
+	ControllerI_Err_Y: LREAL;
+	ControllerD_Err_Y: LREAL;
+	PrevSetPointX	 : LREAL;
+	PrevSetPointY	 : LREAL;
+						
+	START: BOOL;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -226,7 +230,7 @@ CASE nCase OF
 7:
 	
 	//Wait to Start 
-	IF XboxController1.P_Buttons.bStart OR XboxController2.P_Buttons.bStart THEN
+	IF XboxController1.P_Buttons.bStart OR XboxController2.P_Buttons.bStart OR START THEN
 	    nCase := 8;
 	END_IF
 	
@@ -308,37 +312,50 @@ CASE nCase OF
 		//World Direction 
 
 //-------------------------------------		
-		//PID 
-		
-		//X
-		SetPointX := XboxController1.P_Left_Joystick.fX;
-		Kp_X := 100; //P Term
-		Ki_X := 0.5; //I Term
-		Kd_X := 5;   //D Term 		
-		//Should be (Set - act)
-		ControllerP_Err := SetPointX - XpPosition[1].X;
-		//V Err doesnt make sense
-		ControllerV_Err := 0 - MaxVelocity; 
-		//Intagrel should be fine
-		ControllerI_Err := ControllerI_Err + ControllerP_Err; 
-		//Final value to feed into setpoint
-		SanitizedX := (Kp_X * ControllerP_Err) + (Kd_X * ControllerV_Err) + (Ki_X * ControllerI_Err);  
+		//PID
 
+		// X direction
+		SetPointX := XboxController1.P_Left_Joystick.fX;
+		Kp_X := 5; //P Term
+		Ki_X := 0.5; //I Term
+		Kd_X := 1; //D Term
 		
-		//Y
+		// Initialize integral error term
+		ControllerI_Err_X := 0;
+		
+		// Calculate error terms
+		ControllerP_Err_X := SetPointX - XpPosition[1].X;
+		ControllerD_Err_X := (SetPointX - XpPosition[1].X) - (PrevSetPointX - XpPosition[1].X);
+		ControllerI_Err_X := ControllerI_Err_X + ControllerP_Err_X;
+		
+		// Calculate output value
+		SanitizedX := (Kp_X * ControllerP_Err_X) + (Ki_X * ControllerI_Err_X) + (Kd_X * ControllerD_Err_X);
+		
+		// Save current setpoint for next cycle
+		PrevSetPointX := SetPointX;
+		
+		
+		// Y direction
 		SetPointY := XboxController1.P_Left_Joystick.fY;
-		Kp_Y:= 100; //P Term
-		Ki_Y:= 0.5; //I Term
-		Kd_Y := 5;   //D Term 
-		//Should be (Set - act)
-		ControllerYP_Err := SetPointX - XpPosition[1].Y;
-		//V Err doesnt make sense
-		ControllerYV_Err := 0 - MaxVelocity; 
-		//Intagrel should be fine
-		ControllerYI_Err := ControllerYI_Err + ControllerYP_Err; 
-		//Final value to feed into setpoint
-		SanitizedY := (Kp_Y * ControllerYP_Err) + (Kd_Y * ControllerYV_Err) + (Ki_Y * ControllerYI_Err); 
-//--------------------------------------		
+		Kp_Y := 5; //P Term
+		Ki_Y := 0.5; //I Term
+		Kd_Y := 1; //D Term
+		
+		// Initialize integral error term
+		ControllerI_Err_Y := 0;
+		
+		// Calculate error terms
+		ControllerP_Err_Y := SetPointY - XpPosition[1].Y;
+		ControllerD_Err_Y := (SetPointY - XpPosition[1].Y) - (PrevSetPointY - XpPosition[1].Y);
+		ControllerI_Err_Y := ControllerI_Err_Y + ControllerP_Err_Y;
+		
+		// Calculate output value
+		SanitizedY := (Kp_Y * ControllerP_Err_Y) + (Ki_Y * ControllerI_Err_Y) + (Kd_Y * ControllerD_Err_Y);
+		
+		// Save current setpoint for next cycle
+		PrevSetPointY := SetPointY;
+//--------------------------------------	
+	
 		
 		
 		IF SanitizedX > 25 THEN
@@ -598,26 +615,10 @@ END_CASE]]></ST>
       <LineId Id="748" Count="0" />
       <LineId Id="734" Count="0" />
       <LineId Id="749" Count="0" />
-      <LineId Id="799" Count="1" />
-      <LineId Id="752" Count="0" />
-      <LineId Id="755" Count="0" />
-      <LineId Id="758" Count="1" />
-      <LineId Id="771" Count="0" />
-      <LineId Id="774" Count="0" />
-      <LineId Id="772" Count="0" />
-      <LineId Id="765" Count="0" />
-      <LineId Id="773" Count="0" />
-      <LineId Id="767" Count="0" />
-      <LineId Id="777" Count="0" />
-      <LineId Id="776" Count="0" />
-      <LineId Id="801" Count="0" />
-      <LineId Id="769" Count="0" />
-      <LineId Id="791" Count="0" />
-      <LineId Id="778" Count="3" />
-      <LineId Id="783" Count="5" />
-      <LineId Id="790" Count="0" />
+      <LineId Id="912" Count="39" />
       <LineId Id="756" Count="0" />
       <LineId Id="753" Count="0" />
+      <LineId Id="955" Count="0" />
       <LineId Id="750" Count="1" />
       <LineId Id="735" Count="12" />
       <LineId Id="505" Count="0" />
