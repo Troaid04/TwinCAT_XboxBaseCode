@@ -1,0 +1,374 @@
+<?xml version="1.0"?>
+<TcEventSources Version="2">
+	<Source>
+		<GUID>{28111931-0002-0000-293C-C477581B1100}</GUID>
+		<Name LcId="1031">APS4322-7000 Drive</Name>
+		<Name LcId="1033">APS4322-7000 Drive</Name>
+		<Event>
+			<Id>16641</Id>
+			<Message LcId="1031">Modul-Übertemperatur</Message>
+			<Message LcId="1033">module overtemperature</Message>
+		</Event>
+		<Event>
+			<Id>16643</Id>
+			<Message LcId="1031">Unterspannung Us/Us nicht angeschlossen</Message>
+			<Message LcId="1033">Undervoltage Us/Us not connected</Message>
+		</Event>
+		<Event>
+			<Id>16650</Id>
+			<Message LcId="1031">Lüfter defekt/Kein Lüfter angeschlossen</Message>
+			<Message LcId="1033">fan not spinning/fan not connected</Message>
+		</Event>
+		<Event>
+			<Id>17425</Id>
+			<Message LcId="1031">Unterspannung DC-Zwischenkreis</Message>
+			<Message LcId="1033">Undervoltage DC-Link</Message>
+		</Event>
+		<Event>
+			<Id>17426</Id>
+			<Message LcId="1031">Überspannung DC-Zwischenkreis</Message>
+			<Message LcId="1033">Overvoltage DC-Link</Message>
+		</Event>
+		<Event>
+			<Id>17439</Id>
+			<Message LcId="1031">Übertemperatur IT-Modell Netzteil</Message>
+			<Message LcId="1033">Overtemperature IT-modell powersupply</Message>
+		</Event>
+		<Event>
+			<Id>33028</Id>
+			<Message LcId="1031">Modul-Übertemperatur</Message>
+			<Message LcId="1033">module overtemperature</Message>
+		</Event>
+		<Event>
+			<Id>33029</Id>
+			<Message LcId="1031">PD-Watchdog</Message>
+			<Message LcId="1033">PD-Watchdog</Message>
+		</Event>
+		<Event>
+			<Id>33151</Id>
+			<Message LcId="1031">Interner Fehler</Message>
+			<Message LcId="1033">Internal error</Message>
+		</Event>
+		<Event>
+			<Id>33795</Id>
+			<Message LcId="1031">Adc-Fehler</Message>
+			<Message LcId="1033">Adc error</Message>
+		</Event>
+		<Event>
+			<Id>33796</Id>
+			<Message LcId="1031">Überstromfehler</Message>
+			<Message LcId="1033">Overcurrent error</Message>
+		</Event>
+		<Event>
+			<Id>33798</Id>
+			<Message LcId="1031">Unterspannung DC-Zwischenkreis</Message>
+			<Message LcId="1033">Undervoltage DC-Link</Message>
+		</Event>
+		<Event>
+			<Id>33799</Id>
+			<Message LcId="1031">Überspannung DC-Zwischenkreis</Message>
+			<Message LcId="1033">Overvoltage DC-Link</Message>
+		</Event>
+		<Event>
+			<Id>33860</Id>
+			<Message LcId="1031">Übertemperatur IT-modell Netzteil</Message>
+			<Message LcId="1033">Overtemperature IT-modell powersupply</Message>
+		</Event>
+		<Property>
+			<Name>DisplayTxtId</Name>
+			<Value>true</Value>
+		</Property>
+	</Source>
+	<Source>
+		<GUID>{C10BD6CA-8851-45E9-BA85-9FA6B7EB2841}</GUID>
+		<Name LcId="1033">XPlanarEvents</Name>
+		<Event>
+			<Id>#x13170000</Id>
+			<Message LcId="1033">Writing dump file: {0}</Message>
+		</Event>
+		<Event>
+			<Id>#x13170001</Id>
+			<Message LcId="1033">Mover redetection started</Message>
+		</Event>
+		<Event>
+			<Id>#x13170003</Id>
+			<Message LcId="1033"><![CDATA['{0}' (0x{1,X}): [Info 0x{2,X}] Mover communication started.]]></Message>
+		</Event>
+		<Event>
+			<Id>#x13170004</Id>
+			<Message LcId="1033"><![CDATA['{0}' (0x{1,X}): [Info 0x{2,X}] Mover communication finished successfully.]]></Message>
+		</Event>
+		<Event>
+			<Id>#x13175000</Id>
+			<Message LcId="1033">Determined NC cycle time: {0} s</Message>
+		</Event>
+		<Event>
+			<Id>#x23175000</Id>
+			<Message LcId="1033"><![CDATA[[Event ID: 0x{0,X}] Defined parametrization set could not be found. Hence, parameters haven't been changed.]]></Message>
+		</Event>
+		<Event>
+			<Id>#x23175001</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Implausible mover position. Mover was removed from current movement area.</Message>
+		</Event>
+		<Event>
+			<Id>#x23175002</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Invalid basic inertia. Basic inertia is set to standard inertia (plain mover).</Message>
+		</Event>
+		<Event>
+			<Id>#x23175003</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Invalid payload inertia. Payload inertia is set to zero.</Message>
+		</Event>
+		<Event>
+			<Id>#x23175009</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Invalid mover feedback. Mover was removed from current movement area.</Message>
+		</Event>
+		<Event>
+			<Id>#x2317500C</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Invalid controller parameters of axis {1}. Controller parameters are set to default.</Message>
+		</Event>
+		<Event>
+			<Id>#x2317500D</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Invalid feedforward parameters of axis {1}. Feedforward parameters are set to default.</Message>
+		</Event>
+		<Event>
+			<Id>#x2317500E</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Invalid observer parameters of axis {1}. Observer parameters are set to default.</Message>
+		</Event>
+		<Event>
+			<Id>#x3317001C</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Timeout of multicomputing command (ID: {1}). Command slot will be deleted.</Message>
+		</Event>
+		<Event>
+			<Id>#x3317001D</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Invalid multicomputing command (ID: {1}). Reading of further commands in this cycle is aborted.</Message>
+		</Event>
+		<Event>
+			<Id>#x33170020</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Could not send multicomputing command (ID: {1}). Invalid address or command exceeds peer capacity.</Message>
+		</Event>
+		<Event>
+			<Id>#x33170021</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Invalid multicomputing message (ID: {1}). Reading of further messages in this cycle is aborted.</Message>
+		</Event>
+		<Event>
+			<Id>#x33170022</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] No free capacity to send message (ID: {1}) to desired target system (ID: {2}).</Message>
+		</Event>
+		<Event>
+			<Id>#x33170023</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Preparation of adoption system failed.</Message>
+		</Event>
+		<Event>
+			<Id>#x33170024</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Could not create multicomputing command (HRESULT: 0x{1,X}).</Message>
+		</Event>
+		<Event>
+			<Id>#x33170025</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Submission setup failed (HRESULT: 0x{1,X}).</Message>
+		</Event>
+		<Event>
+			<Id>#x33170026</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Could not reserve mover for system transfer.</Message>
+		</Event>
+		<Event>
+			<Id>#x33170027</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Could not finish mover adoption.</Message>
+		</Event>
+		<Event>
+			<Id>#x33170028</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Partner system reported an error. Communication has been terminated.</Message>
+		</Event>
+		<Event>
+			<Id>#x33170029</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Could not process all responses ({1} of {2})</Message>
+		</Event>
+		<Event>
+			<Id>#x3317002B</Id>
+			<Message LcId="1033"><![CDATA['{0}' (0x{1,X}): [Error 0x{2,X}] Mover 0x{3,X} is not able to identify.]]></Message>
+		</Event>
+		<Event>
+			<Id>#x3317002C</Id>
+			<Message LcId="1033"><![CDATA['{0}' (0x{1,X}): [Error 0x{2,X}] Mover 0x{3,X} has an error.]]></Message>
+		</Event>
+		<Event>
+			<Id>#x3317002D</Id>
+			<Message LcId="1033"><![CDATA['{0}' (0x{1,X}): [Error 0x{2,X}] BTN '{3}' was identified but could not be found in any mover object.]]></Message>
+		</Event>
+		<Event>
+			<Id>#x3317002E</Id>
+			<Message LcId="1033"><![CDATA['{0}' (0x{1,X}): [Error 0x{2,X}] Mover identification failed.]]></Message>
+		</Event>
+		<Event>
+			<Id>#x33170030</Id>
+			<Message LcId="1033"><![CDATA['{0}' (0x{1,X}): [Error 0x{2,X}] Could not allocate command slot]]></Message>
+		</Event>
+		<Event>
+			<Id>#x33170035</Id>
+			<Message LcId="1033"><![CDATA['{0}' (0x{1,X}): [Error 0x{2,X}] Wrong mover type. Some mover type on the system cannot be identified.]]></Message>
+		</Event>
+		<Event>
+			<Id>#x33172000</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Peers with the same target musst be assigned to the same task</Message>
+		</Event>
+		<Event>
+			<Id>#x33175001</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Could not reach defined start height</Message>
+		</Event>
+		<Event>
+			<Id>#x33175007</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Initialization failed</Message>
+		</Event>
+		<Event>
+			<Id>#x33175008</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Actual position is outside of movement area. Initiating mover stop</Message>
+		</Event>
+		<Event>
+			<Id>#x33175009</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] NC mapping error</Message>
+		</Event>
+		<Event>
+			<Id>#x3317500A</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Feedback error</Message>
+		</Event>
+		<Event>
+			<Id>#x3317500B</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Could not determine NC cycle time. Initiating mover stop</Message>
+		</Event>
+		<Event>
+			<Id>#x3317500C</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Position setpoints are unreachable (axis = {1}; position setpoint = {2,f}; actual position = {3,f}). Initiating mover stop</Message>
+		</Event>
+		<Event>
+			<Id>#x3317500F</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Could not enter movement area</Message>
+		</Event>
+		<Event>
+			<Id>#x33175010</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Observer error. Invalid observer parameters seem to be configured.</Message>
+		</Event>
+		<Event>
+			<Id>#x33175011</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Mover is rotated. Enabling is not possible.</Message>
+		</Event>
+		<Event>
+			<Id>#x33175012</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Maximum force limit parameters exceed the maximum limit. Parameters stay the same.</Message>
+		</Event>
+		<Event>
+			<Id>#x33175013</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Minimum force limit parameters exceed the maximum limit. Parameters stay the same.</Message>
+		</Event>
+		<Event>
+			<Id>#x33175014</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Minimum force limit parameters are greater than the maximum force parameters. Parameters stay the same.</Message>
+		</Event>
+		<Event>
+			<Id>#x33175015</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Maximum force limit parameters are below zero. Parameters stay the same.</Message>
+		</Event>
+		<Event>
+			<Id>#x33175016</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Minimum force limit parameters are below zero. Parameters stay the same.</Message>
+		</Event>
+		<Event>
+			<Id>#x33175017</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Maximum force limit parameters are equal to zero in at least 1 DOF. Parameters stay the same.</Message>
+		</Event>
+		<Event>
+			<Id>#x33175018</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Minimum force limit parameters are equal to zero in at least 1 DOF. Parameters stay the same.</Message>
+		</Event>
+		<Event>
+			<Id>#x3317501A</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] C setpoint is unreachable at this position. Initiating mover stop.</Message>
+		</Event>
+		<Event>
+			<Id>#x3317501B</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] No rotation feedback available. Initiating mover stop.</Message>
+		</Event>
+		<Event>
+			<Id>#x3317501D</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Mover is not assigned to any movement area. Enabling is not possible.</Message>
+		</Event>
+		<Event>
+			<Id>#x3317501F</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Mover is not allowed to leave movement area when it is activated. Disable mover first!</Message>
+		</Event>
+		<Event>
+			<Id>#x33175022</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Commanded Part OID from NC (0x{1,X}) not found.</Message>
+		</Event>
+		<Event>
+			<Id>#x33175023</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Mover is on part with error. Switching into error state.</Message>
+		</Event>
+		<Event>
+			<Id>#x33175024</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Mover uses deactivated part. Switching into error state.</Message>
+		</Event>
+		<Event>
+			<Id>#x33175026</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Mover cannot enable because the part and the tiles could not be enabled. Switching into error state.</Message>
+		</Event>
+		<Event>
+			<Id>#x33175027</Id>
+			<Message LcId="1033"><![CDATA['{0}' (0x{1,X}): [Error 0x{2,X}] Mover communication: Mover has an error. Communication attempt is aborted. Please reset the mover.]]></Message>
+		</Event>
+		<Event>
+			<Id>#x33175028</Id>
+			<Message LcId="1033"><![CDATA['{0}' (0x{1,X}): [Error 0x{2,X}] Mover communication: Invalid tile firmware. Please make sure the tile firmware is version 4 or higher.]]></Message>
+		</Event>
+		<Event>
+			<Id>#x33175029</Id>
+			<Message LcId="1033"><![CDATA['{0}' (0x{1,X}): [Error 0x{2,X}] Mover communication: Tile DC link voltage too low. Please make sure the power supply voltage is supplied.]]></Message>
+		</Event>
+		<Event>
+			<Id>#x3317502A</Id>
+			<Message LcId="1033"><![CDATA['{0}' (0x{1,X}): [Error 0x{2,X}] Mover communication: System could not be switched on.]]></Message>
+		</Event>
+		<Event>
+			<Id>#x3317502B</Id>
+			<Message LcId="1033"><![CDATA['{0}' (0x{1,X}): [Error 0x{2,X}] Mover communication failed.]]></Message>
+		</Event>
+		<Event>
+			<Id>#x3317502C</Id>
+			<Message LcId="1033"><![CDATA['{0}' (0x{1,X}): [Error 0x{2,X}] Mover file transfer failed.]]></Message>
+		</Event>
+		<Event>
+			<Id>#x3317502E</Id>
+			<Message LcId="1033"><![CDATA['{0}' (0x{1,X}): [Error 0x{2,X}] Mover cannot be reset because part does not reset.]]></Message>
+		</Event>
+		<Event>
+			<Id>#x33176002</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] EtherCAT communication is lost. System is shut down.</Message>
+		</Event>
+		<Event>
+			<Id>#x33176004</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Power supply temperature exceeds the limit of 65 °C. System is shut down.</Message>
+		</Event>
+		<Event>
+			<Id>#x33176005</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Tile temperature exceeds the limit of 65 °C. System is shut down.</Message>
+		</Event>
+		<Event>
+			<Id>#x33176007</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Hardware error</Message>
+		</Event>
+		<Event>
+			<Id>#x33178006</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] One tile of this part has an error. The part, its tiles and its movers are shutting down.</Message>
+		</Event>
+		<Event>
+			<Id>#x33179008</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Submovers are in different movement areas.</Message>
+		</Event>
+		<Event>
+			<Id>#x3317900E</Id>
+			<Message LcId="1033">[Event ID: 0x{0,X}] Mismatch of Submovers positions.</Message>
+		</Event>
+		<Detail>
+			<Name>Comment</Name>
+			<Text LcId="1033"><![CDATA[Manages all XPlanar event logger messeges>]]></Text>
+		</Detail>
+	</Source>
+</TcEventSources>
