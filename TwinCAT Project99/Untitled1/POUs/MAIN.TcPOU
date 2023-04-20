@@ -316,16 +316,16 @@ CASE nCase OF
 
 		// X direction
 		SetPointX := XboxController1.P_Left_Joystick.fX;
-		Kp_X := 5; //P Term
-		Ki_X := 0.5; //I Term
-		Kd_X := 1; //D Term
+		Kp_X := 1; //P Term
+		Ki_X := 0.1; //I Term
+		Kd_X := 0.5; //D Term
 		
 		// Initialize integral error term
 		ControllerI_Err_X := 0;
 		
 		// Calculate error terms
-		ControllerP_Err_X := SetPointX - XpPosition[1].X;
-		ControllerD_Err_X := (SetPointX - XpPosition[1].X) - (PrevSetPointX - XpPosition[1].X);
+		ControllerP_Err_X := SetPointX - SanitizedX;
+		ControllerD_Err_X := (SetPointX - SanitizedX) - (PrevSetPointX - SanitizedX);
 		ControllerI_Err_X := ControllerI_Err_X + ControllerP_Err_X;
 		
 		// Calculate output value
@@ -337,16 +337,16 @@ CASE nCase OF
 		
 		// Y direction
 		SetPointY := XboxController1.P_Left_Joystick.fY;
-		Kp_Y := 5; //P Term
-		Ki_Y := 0.5; //I Term
-		Kd_Y := 1; //D Term
+		Kp_Y := 1; //P Term
+		Ki_Y := 0.2; //I Term
+		Kd_Y := 0.5; //D Term
 		
 		// Initialize integral error term
 		ControllerI_Err_Y := 0;
 		
 		// Calculate error terms
-		ControllerP_Err_Y := SetPointY - XpPosition[1].Y;
-		ControllerD_Err_Y := (SetPointY - XpPosition[1].Y) - (PrevSetPointY - XpPosition[1].Y);
+		ControllerP_Err_Y := SetPointY - SanitizedY ;
+		ControllerD_Err_Y := (SetPointY - SanitizedY ) - (PrevSetPointY - SanitizedY );
 		ControllerI_Err_Y := ControllerI_Err_Y + ControllerP_Err_Y;
 		
 		// Calculate output value
