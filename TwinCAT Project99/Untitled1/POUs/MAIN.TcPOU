@@ -78,14 +78,11 @@ VAR
 	SanitizedX: LREAL;
 	SanitizedY: LREAL;
 	SetPointX: REAL;
-	Kp_X: INT;
-	Kv_X: INT;
-	Kd_X: LREAL;
-	Ki_X: LREAL;
+	Kp: INT;
+	Kd: LREAL;
+	Ki: LREAL;
 	SetPointY: REAL;
-	Kp_Y: INT;
-	Ki_Y: LREAL;
-	Kd_Y: LREAL;
+
 
 	ControllerP_Err_X: LREAL;
 	ControllerI_Err_X: LREAL;
@@ -102,6 +99,18 @@ VAR
 	MaxIntegralError: LREAL;
 	PrevSanitizedX: LREAL;
 	PrevSanitizedY: LREAL;
+	OutputMagnitude: LREAL;
+	OutputDirection: LREAL;
+	MotorSpeedX: LREAL;
+	MotorSpeedY: LREAL;
+	Kp_X: LREAL;
+	Ki_X: LREAL;
+	Kd_X: LREAL;
+	Kp_Y: LREAL;
+	Ki_Y: LREAL;
+	Kd_Y: LREAL;
+	MovementX: LREAL;
+	MovementY: LREAL;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -236,6 +245,7 @@ CASE nCase OF
 	
 	//Wait to Start 
 	IF XboxController1.P_Buttons.bStart OR XboxController2.P_Buttons.bStart OR START THEN
+		Start := FALSE;
 	    nCase := 8;
 	END_IF
 	
@@ -316,98 +326,108 @@ CASE nCase OF
 		
 		//World Direction 
 
-//-------------------------------------		
-		//X Direction
-		SetPointX := XboxController1.P_Left_Joystick.fX;
-		Kp_X := 3; //P Term
-		Ki_X := 0.5; //I Term
-		Kd_X := 2; //D Term
-		MaxRateOfChange := 0.1; // Maximum rate of change per loop iteration
-		MaxIntegralError := 0.5; // Maximum allowable integral error
-		
-		// Initialize integral error term
-		ControllerI_Err_X := 0;
-		
-		// Calculate error terms
-		ControllerP_Err_X := SetPointX - SanitizedX;
-		ControllerD_Err_X := (SetPointX - SanitizedX) - (PrevSetPointX - SanitizedX);
-		ControllerI_Err_X := ControllerI_Err_X + ControllerP_Err_X;
-		
-		// Limit the integral error term
-		IF ABS(ControllerI_Err_X) > MaxIntegralError THEN
-		  ControllerI_Err_X := (ControllerI_Err_X / ABS(ControllerI_Err_X)) * MaxIntegralError;
-		END_IF
-		
-		
-		// Calculate output value
-		SanitizedX := (Kp_X * ControllerP_Err_X) + (Ki_X * ControllerI_Err_X) + (Kd_X * ControllerD_Err_X);
-		
-		// Limit the rate of change of the output value
-		IF ABS(SanitizedX - PrevSanitizedX) > MaxRateOfChange THEN
-		  IF SanitizedX - PrevSanitizedX > 0 THEN
-			SanitizedX := PrevSanitizedX + MaxRateOfChange;
-		  ELSE
-			SanitizedX := PrevSanitizedX - MaxRateOfChange;
-		  END_IF
-		END_IF
-		
-		
-		 //Y Direction
-		SetPointY := XboxController1.P_Left_Joystick.fY;
-		Kp_Y := 3; //P Term
-		Ki_Y := 0.5; //I Term
-		Kd_Y := 2; //D Term
-		
-		// Initialize integral error term
-		ControllerI_Err_Y := 0;
-		
-		// Calculate error terms
-		ControllerP_Err_Y := SetPointY - SanitizedY;
-		ControllerD_Err_Y := (SetPointY - SanitizedY) - (PrevSetPointY - SanitizedY);
-		ControllerI_Err_Y := ControllerI_Err_Y + ControllerP_Err_Y;
-		
-		// Limit the integral error term
-		IF ABS(ControllerI_Err_Y) > MaxIntegralError THEN
-		  ControllerI_Err_Y := (ControllerI_Err_Y / ABS(ControllerI_Err_Y)) * MaxIntegralError;
-		END_IF
-		
-		
-		// Calculate output value
-		SanitizedY := (Kp_Y * ControllerP_Err_Y) + (Ki_Y * ControllerI_Err_Y) + (Kd_Y * ControllerD_Err_Y);
-		
-		// Limit the rate of change of the output value
-		IF ABS(SanitizedY - PrevSanitizedY) > MaxRateOfChange THEN
-			 IF SanitizedY - PrevSanitizedY > 0 THEN
-				SanitizedY := PrevSanitizedY + MaxRateOfChange;
-			 ELSE 
-				SanitizedY := PrevSanitizedY - MaxRateOfChange;
-			END_IF
-		END_IF
-				
-		  
-		
-		// Save current setpoint and output value for next cycle
-		PrevSetPointY := SetPointY;
-		PrevSanitizedY := SanitizedY;
-		
-		// Save current setpoint and output value for next cycle
-		PrevSetPointX := SetPointX;
-		PrevSanitizedX := SanitizedX;
-				
+//-------------------------------------
+
+// X and Y movement
+SetPointX := XboxController1.P_Left_Joystick.fX * 2; // Scale input from -100 to 100 to -200 to 200
+SetPointY := XboxController1.P_Left_Joystick.fY * 2; // Scale input from -100 to 100 to -200 to 200
+
+Kp_X := 3; // P Term
+Ki_X := 0.5; // I Term
+Kd_X := 2; // D Term
+Kp_Y := 3; // P Term
+Ki_Y := 0.5; // I Term
+Kd_Y := 2; // D Term
+
+MaxRateOfChange := 0.1; // Maximum rate of change per loop iteration
+MaxIntegralError := 0.5; // Maximum allowable integral error
+
+// Initialize integral error terms
+ControllerI_Err_X := 0;
+ControllerI_Err_Y := 0;
+
+// Calculate error terms
+ControllerP_Err_X := SetPointX - SanitizedX;
+ControllerD_Err_X := SetPointX - 2 * SanitizedX + PrevSetPointX;
+ControllerI_Err_X := ControllerI_Err_X + ControllerP_Err_X;
+ControllerP_Err_Y := SetPointY - SanitizedY;
+ControllerD_Err_Y := SetPointY - 2 * SanitizedY + PrevSetPointY;
+ControllerI_Err_Y := ControllerI_Err_Y + ControllerP_Err_Y;
+
+// Limit the integral error terms
+IF ABS(ControllerI_Err_X) > MaxIntegralError THEN
+  ControllerI_Err_X := (ControllerI_Err_X / ABS(ControllerI_Err_X)) * MaxIntegralError;
+END_IF
+
+IF ABS(ControllerI_Err_Y) > MaxIntegralError THEN
+  ControllerI_Err_Y := (ControllerI_Err_Y / ABS(ControllerI_Err_Y)) * MaxIntegralError;
+END_IF
+
+// Calculate output values
+SanitizedX := (Kp_X * ControllerP_Err_X) + (Ki_X * ControllerI_Err_X) + (Kd_X * ControllerD_Err_X);
+SanitizedY := (Kp_Y * ControllerP_Err_Y) + (Ki_Y * ControllerI_Err_Y) + (Kd_Y * ControllerD_Err_Y);
+
+// Calculate the magnitude and direction of the output vector
+OutputMagnitude := SQRT(SanitizedX * SanitizedX + SanitizedY * SanitizedY);
+(*IF SanitizedX = 0 AND SanitizedY = 0 THEN
+	OutputDirection := 0; 
+ELSE 
+	OutputDirection := SEL(SanitizedX=0,ATAN(SanitizedY/SanitizedX),0) + (1-2*BOOL_TO_LREAL(SanitizedY<0)) * (3.141*BOOL_TO_LREAL(SanitizedX<0) + (3.141/2)*BOOL_TO_LREAL(SanitizedX=0));
+END_IF*)
+
+IF SanitizedX = 0 AND SanitizedY = 0 THEN
+  OutputDirection := 0; 
+ELSE 
+  OutputDirection := ATAN(SanitizedY / SanitizedX) + SEL(SanitizedX >= 0, 0, SEL(SanitizedY >= 0, 3.14159265359, -3.14159265359));
+END_IF
+
+// Limit the magnitude of the output vector to maximum velocity
+IF OutputMagnitude > 100 THEN
+  SanitizedX := SanitizedX / OutputMagnitude * 100;
+  SanitizedY := SanitizedY / OutputMagnitude * 100;
+END_IF
+
+// Convert the sanitized values to motor speeds
+MotorSpeedX := SanitizedX / 2; // Scale output from -200 to 200 to -100 to 100
+MotorSpeedY := SanitizedY / 2; // Scale output from -200 to 200 to -100 to 100
+
+// Limit the rate of change of the output values
+IF ABS(SanitizedX - PrevSanitizedX) > MaxRateOfChange * 100 THEN
+  IF SanitizedX - PrevSanitizedX > 0 THEN
+    SanitizedX := PrevSanitizedX + MaxRateOfChange * 100;
+  ELSE
+    SanitizedX := PrevSanitizedX - MaxRateOfChange * 100;
+  END_IF
+END_IF
+
+IF ABS(SanitizedY - PrevSanitizedY) > MaxRateOfChange * 100 THEN
+	IF SanitizedY - PrevSanitizedY > 0 THEN
+		SanitizedY := PrevSanitizedY + MaxRateOfChange * 100;
+	ELSE
+		SanitizedY := PrevSanitizedY - MaxRateOfChange * 100;
+	END_IF
+END_IF
+
+// Save current setpoint and output values for next cycle
+PrevSetPointX := SetPointX;
+PrevSanitizedX := SanitizedX;
+PrevSetPointY := SetPointY;
+PrevSanitizedY := SanitizedY;
+
 //--------------------------------------	
 	
 		
 		
-		IF SanitizedX > 25 THEN
+		IF SanitizedX > 10 THEN
 			XPPosition[1].x		:= XPPosition[1].x + (( EXPT(( SanitizedX - 25), 2) / 5625 ) * deltaT ) * maxVelocity * invertX;
-		ELSIF SanitizedX < -25 THEN
+		ELSIF SanitizedX < -10 THEN
 			XPPosition[1].x		:= XPPosition[1].x + (( EXPT(( SanitizedX + 25), 2) / 5625 ) * deltaT ) * maxVelocity * invertX;
 		END_IF
 		
 		
-		IF SanitizedY > 25 THEN
-			XPPosition[1].y		:= XPPosition[1].y + (( EXPT((SanitizedY - 25), 2) / 5625 ) * deltaT ) * maxVelocity * invertX;	
-		ELSIF SanitizedY < -25 THEN
+		IF SanitizedY > 10 THEN
+			XPPosition[1].y		:= XPPosition[1].y + (( EXPT((SanitizedY - 25), 2) / 5625 ) * deltaT ) * maxVelocity * invertY;	
+		ELSIF SanitizedY < -10 THEN
 			XPPosition[1].y		:= XPPosition[1].y + (( EXPT((SanitizedY + 25), 2) / 5625 ) * deltaT ) * maxVelocity * invertY;
 		ELSE
 			// do nothing
@@ -637,7 +657,9 @@ END_CASE]]></ST>
       <LineId Id="74" Count="2" />
       <LineId Id="78" Count="40" />
       <LineId Id="430" Count="0" />
-      <LineId Id="119" Count="68" />
+      <LineId Id="119" Count="21" />
+      <LineId Id="1597" Count="0" />
+      <LineId Id="141" Count="46" />
       <LineId Id="518" Count="0" />
       <LineId Id="521" Count="0" />
       <LineId Id="519" Count="1" />
@@ -654,23 +676,10 @@ END_CASE]]></ST>
       <LineId Id="195" Count="1" />
       <LineId Id="748" Count="0" />
       <LineId Id="734" Count="0" />
-      <LineId Id="1058" Count="0" />
-      <LineId Id="1196" Count="30" />
-      <LineId Id="1153" Count="0" />
-      <LineId Id="1191" Count="0" />
-      <LineId Id="1190" Count="0" />
-      <LineId Id="1149" Count="0" />
-      <LineId Id="1156" Count="3" />
-      <LineId Id="1162" Count="11" />
-      <LineId Id="1192" Count="0" />
-      <LineId Id="1174" Count="10" />
-      <LineId Id="1194" Count="1" />
-      <LineId Id="1193" Count="0" />
-      <LineId Id="1185" Count="0" />
-      <LineId Id="1187" Count="2" />
-      <LineId Id="1143" Count="0" />
-      <LineId Id="1137" Count="2" />
-      <LineId Id="1075" Count="1" />
+      <LineId Id="1761" Count="0" />
+      <LineId Id="2085" Count="83" />
+      <LineId Id="1436" Count="0" />
+      <LineId Id="1762" Count="0" />
       <LineId Id="753" Count="0" />
       <LineId Id="955" Count="0" />
       <LineId Id="750" Count="1" />
