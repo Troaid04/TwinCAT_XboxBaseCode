@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="Planar_Mover" Id="{aae6372a-0f1a-4d4a-a894-f979094bfc48}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM Planar_Mover
+VAR
+	
+fbMover 					:		 ARRAY [1..2]  OF MC_PlanarMover ; // Change based on how many movers there are
+cmdFB 						:		 ARRAY [1..2]  OF MC_PlanarFeedBack ; 
+stMoverPositions 			:		 ARRAY [1..12] OF PositionXYC ;
+fbDynMove					:		 ARRAY [1..5]  OF DynamicConstraint_PathXY ;
+stExtOptions				:		 ARRAY [1..2]  OF ST_ExternalSetpointGenerationOptions; 
+
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[//Mover 1 updates
+fbMover[1].Update(); 
+cmdFB[1].Update();
+
+//Start initizalization 
+Planar_Mover.init();
+
+
+
+
+]]></ST>
+    </Implementation>
+    <Method Name="init" Id="{a476209f-a9e9-4db8-8329-893240eac645}">
+      <Declaration><![CDATA[METHOD init : BOOL
+VAR_INPUT
+END_VAR
+
+VAR
+	nCase: INT := 1;
+	Done: BOOL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE nCase OF
+1: 
+
+	fbMover[1].Reset(cmdFB[1]);
+	//fbMover[2].Reset(cmdFB[2]);
+	nCase := 2;
+
+2: 
+
+	fbMover[1].Enable(cmdFB[1]);
+	//fbMover[2].Enable(cmdFB[2]);
+	nCase := 3;
+	
+3: 
+
+	IF cmdFB[1].Done THEN
+		nCase := 4; 
+	END_IF
+	
+4:
+
+	fbMover[1].Enable(cmdFB[1]);
+	//fbMover[2].Enable(cmdFB[2]);
+	nCase := 3;
+	
+5:
+
+	IF cmdFB[1].Done THEN
+		nCase := 6; 
+	END_IF
+	
+6:
+
+//Set up Case
+	// Setting Movingg Positions 
+	stMoverPositions[5].SetValuesXYC(120,360,0); // Mover 1 Start 
+
+	// Normal Movememnt
+	fbDynMove[1].SetValuesVADJ(500,5000,5000,20000); // Normal
+	fbDynMove[2].SetValuesVADJ(1000,5000,5000,20000);// Fast
+	fbDynMove[3].SetValuesVADJ(200,2000,5000,10000); // Slow
+
+	stExtOptions[1].mode := MC_EXTERNAL_SET_POSITION_MODE.Absolute; // Setting up external Setpoint generator 
+7:
+
+Done := TRUE; 
+	
+END_CASE
+	]]></ST>
+      </Implementation>
+    </Method>
+    <Transition Name="Position" Id="{2d1855bd-8e02-481d-b4eb-2ae177ead4ec}">
+      <Implementation>
+        <ST><![CDATA[XboxController.MoverPos[1] := fbMover[1].MCTOPLC.ACT.ActPos;]]></ST>
+      </Implementation>
+    </Transition>
+    <LineIds Name="Planar_Mover">
+      <LineId Id="14" Count="1" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="17" Count="5" />
+      <LineId Id="16" Count="0" />
+    </LineIds>
+    <LineIds Name="Planar_Mover.init">
+      <LineId Id="6" Count="2" />
+      <LineId Id="81" Count="1" />
+      <LineId Id="9" Count="2" />
+      <LineId Id="15" Count="26" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="48" Count="4" />
+      <LineId Id="63" Count="1" />
+      <LineId Id="69" Count="0" />
+      <LineId Id="72" Count="0" />
+      <LineId Id="71" Count="0" />
+      <LineId Id="73" Count="0" />
+      <LineId Id="70" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="Planar_Mover.Position">
+      <LineId Id="1" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
