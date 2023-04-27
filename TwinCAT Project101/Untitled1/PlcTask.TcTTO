@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <Task Name="PlcTask" Id="{e5d6bc42-1d70-44df-af6e-9b1712afec42}">
+    <!--CycleTime in micro seconds.-->
+    <CycleTime>250</CycleTime>
+    <Priority>20</Priority>
+    <PouCall>
+      <Name>XboxController</Name>
+    </PouCall>
+    <PouCall>
+      <Name>Planar_Mover</Name>
+    </PouCall>
+    <TaskFBGuid>{350048f1-6a50-4fa5-a8a3-08ab90cef7d6}</TaskFBGuid>
+    <Fb_init>{0dea5c02-47ca-4581-8020-55131b3b6be0}</Fb_init>
+    <Fb_exit>{05f24731-b4b2-45d0-9a18-db17966ba211}</Fb_exit>
+    <CycleUpdate>{10a389c2-520c-4e30-8572-63b0aee16c7f}</CycleUpdate>
+    <PostCycleUpdate>{c6128612-d37a-4fdf-bd7d-e088e7591985}</PostCycleUpdate>
+  </Task>
+</TcPlcObject>

@@ -1,0 +1,433 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="XboxController" Id="{6365a5dc-96c0-42bf-a26d-9812d6df8683}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM XboxController
+VAR
+
+	XboxController1 			: 		FB_Xbox_Controller(NetID := '', iControllerNumber := 1);	
+	bIsConnected   				:  		ARRAY [1..2] OF BOOL;
+	XpPosition					:		ARRAY [1..2] OF MoverVector; 
+	MoverPos					: 		ARRAY [1..2] OF MoverVector;
+	invertX						: 		LREAL;
+	invertY						: 		LREAL;
+	DestinationX				: 		DINT;
+	DestinationY				: 		DINT;
+	NearestRotationPoint		: 		PositionXYC;
+	RotationScailing			: 		LREAL := 0.003;
+	StartTimer					: 		BOOL;
+	Timer						: 		TON;
+	SnapVAR						: 		BOOL;
+	C_VALUE						: 		LREAL;
+	MODDED_C					: 		LREAL;
+	MoveToC						: 		LREAL;
+	ShortestCMove				: 		PositionXYC;
+	START						: 		BOOL;
+	Ready						: BOOL; 
+	
+	
+	
+	SanitizedX					: 		LREAL;
+	SanitizedY					: 		LREAL;
+	SetPointX					: 		REAL;
+	SetPointY					: 		REAL;
+	ControllerP_Err_X			: 		LREAL;
+	ControllerI_Err_X			: 		LREAL;
+	ControllerD_Err_X			: 		LREAL;
+	ControllerP_Err_Y			: 		LREAL;
+	ControllerI_Err_Y			: 		LREAL;
+	ControllerD_Err_Y			: 		LREAL;
+	PrevSetPointX	 			: 		LREAL;
+	PrevSetPointY	 			: 		LREAL;
+	PrevSanitizedX				: 		LREAL;
+	PrevSanitizedY				: 		LREAL;
+	MaxRateOfChange				: 		LREAL;
+	IntegralLimit				: 		LREAL;
+	MaxIntegralError			: 		LREAL;
+	OutputMagnitude				: 		LREAL;
+	OutputDirection				: 		LREAL;
+	PrevOutputMagnitude			: 		LREAL;
+	OutputDistance				: 		LREAL;
+	ZeroVector 					: 		MoverVector ;
+	nCase						: 		INT := 1;
+END_VAR
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[//Xbox Controller 1 
+XboxController1.Cycle();
+bIsConnected[1] := XboxController1.P_Status.bConnected;
+
+
+MoverPos[1] := Planar_Mover.fbMover[1].MCTOPLC.ACT.ActPos;
+
+IF Planar_Mover.Done AND NOT ready THEN
+	XboxController.init();
+END_IF
+
+SetPoint();
+		Planar_Mover.fbMover[1].SetExternalSetpoint( XPPosition[1], ZeroVector, ZeroVector);
+		
+Tilt();
+Rotation(); 
+ButtonXY();
+ButtonA(); 
+		]]></ST>
+    </Implementation>
+    <Folder Name="Inputs" Id="{98128aef-eff9-4f20-84bf-a2b24da7a685}" />
+    <Method Name="buttonA" Id="{d4047019-2fe0-424f-99f1-436b9776e207}" FolderPath="Inputs\">
+      <Declaration><![CDATA[METHOD buttonA : LREAL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF XboxController.Ready AND NOT PLanar_Mover.fbMover[1].Error THEN
+		
+		//Move to Nearest Rotation point
+		IF XBoxController1.P_Buttons.bA_Button AND MoverPos[1].X < DestinationX THEN
+			XpPosition[1].X := XpPosition[1].X + ( 40 * Constraints.deltaT );
+		ELSIF XBoxController1.P_Buttons.bA_Button AND MoverPos[1].X > DestinationX THEN
+			XpPosition[1].X := XpPosition[1].X -( 40 * Constraints.deltaT );
+		END_IF;
+		
+		IF XBoxController1.P_Buttons.bA_Button AND MoverPos[1].Y < DestinationY THEN
+			XpPosition[1].Y := XpPosition[1].Y + ( 40 * Constraints.deltaT );
+		ELSIF XBoxController1.P_Buttons.bA_Button AND MoverPos[1].Y > DestinationY THEN
+			XpPosition[1].Y := XpPosition[1].Y -( 40 * Constraints.deltaT );
+		END_IF;
+		
+
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="buttonXY" Id="{967b01a0-bed2-4668-8f29-c30fcbedb8da}" FolderPath="Inputs\">
+      <Declaration><![CDATA[METHOD buttonXY : LREAL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF XboxController.Ready AND NOT PLanar_Mover.fbMover[1].Error THEN
+			//Lock into X movement
+		IF XboxController1.P_Buttons.bX_Button THEN
+			XboxController1.P_Left_Joystick.fY := 0;
+		ELSE
+			//
+		END_IF
+		
+		//Lock into Y movement
+		IF XboxController1.P_Buttons.bY_Button THEN
+			XboxController1.P_Left_Joystick.fx := 0;
+		ELSE
+			//
+		END_IF
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="init" Id="{7ca5d38a-440c-4883-9264-fd731c2e759e}">
+      <Declaration><![CDATA[METHOD init 
+VAR_INPUT
+END_VAR
+
+VAR
+
+
+END_VAR	
+
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE nCase OF 
+1:
+
+	//Wait to Start 
+	IF XboxController1.P_Buttons.bStart OR START THEN
+		Start := FALSE;
+	    nCase := 2;
+	END_IF
+
+2:
+
+
+	//Mover to Play positions
+	Planar_Mover.fbMover[1].MoveToPosition(Planar_Mover.cmdFb[1] , Planar_Mover.stMoverPositions[5], Planar_Mover.fbDynMove[1], 0);    
+	nCase := 3;
+3:
+
+	IF 	Planar_Mover.cmdFB[1].Done THEN
+		nCase := 4; 
+	END_IF
+
+4:
+	//Update Positions
+	IF Planar_Mover.cmdFB[1].Done  AND NOT Planar_Mover.cmdFB[1].Busy AND NOT Planar_Mover.cmdFB[2].Busy  THEN
+		XpPosition[1].y := MoverPos[1].y; 
+		XpPosition[1].x := MoverPos[1].x; 
+	END_IF
+	nCase := 5;
+
+5:
+
+	//Start External Setpoint Generatior
+	Planar_Mover.fbmover[1].StartExternalSetpointGeneration(Planar_Mover.cmdFB[1], Planar_Mover.stExtOptions[1]); 
+	Ready := TRUE;
+	
+	
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="rotation" Id="{82bf040d-5134-4d43-91db-f977c511f1a1}" FolderPath="Inputs\">
+      <Declaration><![CDATA[METHOD rotation : LREAL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF XboxController.Ready AND NOT PLanar_Mover.fbMover[1].Error THEN
+
+		//Modded C Value
+			//Make sure to not divide by 0 
+		IF  C_VALUE <> 0 THEN
+			MODDED_C:=MODABS(C_Value,90);
+		END_IF
+		
+		//Rotation Handeling
+		// Find Nearest X
+		IF LREAL_TO_INT(MoverPos[1].X) MOD 120 < 60 THEN
+			DestinationX	:= 120 * MODTURNS( MoverPos[1].X , 120 );
+		ELSE
+			DestinationX	:= 120 * (MODTURNS( MoverPos[1].X, 120 ) + 1);
+		END_IF
+		
+		// Find Nearest Y
+		IF LREAL_TO_INT(MoverPos[1].Y) MOD 120 < 60 THEN
+			DestinationY	:= 120 * MODTURNS( MoverPos[1].Y , 120 );
+		ELSE
+			DestinationY	:= 120 * (MODTURNS( MoverPos[1].Y, 120 ) + 1);
+		END_IF
+		
+		//Set Boundries for X
+		IF DestinationX = 0 THEN
+			DestinationX := DestinationX + 120;
+		ELSIF DestinationX = 960 THEN
+			DestinationX := DestinationX - 120;
+		END_IF 	
+		
+		//Set Boundries for Y
+		IF DestinationY = 0 THEN 
+			DestinationY := DestinationY + 120;
+		ELSIF DestinationY = 720 THEN
+			DestinationY := DestinationY - 120;
+		END_IF 	
+		
+		
+		//Endless Rotation 
+		IF LREAL_TO_INT(MoverPos[1].x) MOD 120 > -1 OR LREAL_TO_INT(MoverPos[1].x) MOD 120 < 1 AND LREAL_TO_INT(MoverPos[1].x) MOD 120 > -1 OR LREAL_TO_INT(MoverPos[1].x) MOD 120 < 1 THEN
+			IF XboxController1.P_Left_Trigger >= 5 AND XboxController1.P_Right_Trigger <= 5 THEN
+				//Negative Rotation
+				XpPosition[1].c := XpPosition[1].c - (RotationScailing * XboxController1.P_Left_Trigger);
+			ELSIF XboxController1.P_Right_Trigger >= 5 AND XboxController1.P_left_Trigger <= 5 THEN
+				//Positive Rotation 
+				XpPosition[1].c := XpPosition[1].c + (RotationScailing * XboxController1.P_Right_Trigger);
+			END_IF
+		ELSE 
+			//Not in a rotation point, can only rotate +/- 10 Degrees.
+			XpPosition[1].c := LIMIT( -10, RotationScailing * (XboxController1.P_Left_Trigger - XboxController1.P_Right_Trigger),10); 
+		END_IF
+		
+		//Cant move out of rotation point unless within 10 degress 
+		IF MoverPos[1].c >= 10 OR MoverPos[1].c <= 10 THEN 
+			XboxController1.p_Left_Joystick.fx := 0;
+			XboxController1.p_Left_Joystick.fy := 0;
+		ELSE 
+			//Just set values equal to themselfs
+			XboxController1.p_Left_Joystick.fx := XboxController1.p_Left_Joystick.fx ;
+			XboxController1.p_Left_Joystick.fy := XboxController1.p_Left_Joystick.fy ;
+		END_IF
+		
+		//Set C back to 0
+		IF XboxController1.P_Left_Trigger >= 98 AND XboxController1.P_Right_Trigger >= 98 THEN
+			//Makes sure its intentinal 
+			StartTimer := TRUE;
+			IF Timer.Q THEN 
+				IF Modded_C <= 10 THEN 
+					XpPosition[1].C := C_Value - Modded_C; 
+				ELSIF Modded_C >= 80 THEN
+					XpPosition[1].C := C_Value + ( 90 - Modded_C);
+				END_IF 
+			END_IF
+		END_IF
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetPoint" Id="{784e570f-0db5-4c55-af43-82556bea4079}">
+      <Declaration><![CDATA[METHOD PUBLIC SetPoint 
+VAR_INPUT
+END_VAR
+VAR
+	Alpha: LREAL := 0.05;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF XboxController.Ready AND NOT PLanar_Mover.fbMover[1].Error THEN
+		
+
+		invertX		:= SEL( SanitizedX < 1, 1, -1 );
+		invertY		:= SEL( SanitizedY < 1, 1, -1 );			
+		
+
+//-------------------------------------
+		
+		// X and Y movement
+		SetPointX := XboxController1.P_Left_Joystick.fX * 2; // Scale input from -100 to 100 to -200 to 200
+		SetPointY := XboxController1.P_Left_Joystick.fY * 2; // Scale input from -100 to 100 to -200 to 200
+
+		IF SetPointX <> PrevSanitizedX THEN
+			SanitizedX := Alpha * SetPointX + (1 - Alpha) * PrevSanitizedX;
+   	 		PrevSanitizedX := SanitizedX;
+		END_IF
+		
+		IF SetPointY <> PrevSanitizedY THEN
+			SanitizedY := Alpha * SetPointY + (1 - Alpha) * PrevSanitizedY;
+   	 		PrevSanitizedY := SanitizedY;
+		END_IF
+		
+		// Save current setpoint and output values for next cycle
+		PrevSanitizedX := SanitizedX;
+		PrevSanitizedY := SanitizedY;
+		
+//--------------------------------------	
+			
+		
+		// incremental movement based on sanitized inputs
+		// Parabolic scailing
+		IF SanitizedX > 10 THEN
+			XPPosition[1].x		:= XPPosition[1].x + (( EXPT(( SanitizedX - 25), 2) / 5625 ) * Constraints.deltaT ) * Constraints.maxVelocity * invertX;
+		ELSIF SanitizedX < -10 THEN
+			XPPosition[1].x		:= XPPosition[1].x + (( EXPT(( SanitizedX + 25), 2) / 5625 ) * Constraints.deltaT ) * Constraints.maxVelocity * invertX;
+		END_IF
+		
+		
+		IF SanitizedY > 10 THEN
+			XPPosition[1].y		:= XPPosition[1].y + (( EXPT((SanitizedY - 25), 2) / 5625 ) * Constraints.deltaT ) * Constraints.maxVelocity * invertY;	
+		ELSIF SanitizedY < -10 THEN
+			XPPosition[1].y		:= XPPosition[1].y + (( EXPT((SanitizedY + 25), 2) / 5625 ) * Constraints.deltaT ) * Constraints.maxVelocity * invertY;
+		ELSE
+			// do nothing
+		END_IF
+		
+		//Z 
+		XPPosition[1].z := 2; 
+		
+
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Tilt" Id="{b7f656c9-65b4-413c-9e86-c0350a2ed074}" FolderPath="Inputs\">
+      <Declaration><![CDATA[METHOD Tilt : LREAL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF XboxController.Ready AND NOT PLanar_Mover.fbMover[1].Error THEN
+			//A tilt 
+		XPPosition[1].a		:= 0.008 * XboxController1.p_Right_Joystick.fX;
+		
+		//B tilt 	
+		XPPosition[1].b   	:= 0.008 * XboxController1.p_Right_Joystick.fY; 
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="XboxController">
+      <LineId Id="9" Count="1" />
+      <LineId Id="2" Count="0" />
+      <LineId Id="81" Count="0" />
+      <LineId Id="80" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="79" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="22" Count="2" />
+      <LineId Id="91" Count="0" />
+      <LineId Id="93" Count="2" />
+      <LineId Id="92" Count="0" />
+      <LineId Id="19" Count="0" />
+    </LineIds>
+    <LineIds Name="XboxController.buttonA">
+      <LineId Id="5" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="13" Count="11" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="10" Count="0" />
+    </LineIds>
+    <LineIds Name="XboxController.buttonXY">
+      <LineId Id="5" Count="0" />
+      <LineId Id="11" Count="11" />
+      <LineId Id="9" Count="1" />
+    </LineIds>
+    <LineIds Name="XboxController.init">
+      <LineId Id="5" Count="1" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="17" Count="3" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="26" Count="1" />
+      <LineId Id="15" Count="1" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="30" Count="1" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="70" Count="3" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="76" Count="0" />
+      <LineId Id="48" Count="2" />
+      <LineId Id="74" Count="1" />
+      <LineId Id="58" Count="1" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="7" Count="0" />
+    </LineIds>
+    <LineIds Name="XboxController.rotation">
+      <LineId Id="13" Count="1" />
+      <LineId Id="6" Count="3" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="19" Count="26" />
+      <LineId Id="97" Count="0" />
+      <LineId Id="96" Count="0" />
+      <LineId Id="95" Count="0" />
+      <LineId Id="61" Count="33" />
+      <LineId Id="60" Count="0" />
+      <LineId Id="58" Count="0" />
+    </LineIds>
+    <LineIds Name="XboxController.SetPoint">
+      <LineId Id="5" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="38" Count="3" />
+      <LineId Id="43" Count="5" />
+      <LineId Id="349" Count="0" />
+      <LineId Id="405" Count="0" />
+      <LineId Id="408" Count="0" />
+      <LineId Id="407" Count="0" />
+      <LineId Id="350" Count="0" />
+      <LineId Id="418" Count="0" />
+      <LineId Id="415" Count="2" />
+      <LineId Id="414" Count="0" />
+      <LineId Id="399" Count="1" />
+      <LineId Id="402" Count="0" />
+      <LineId Id="404" Count="0" />
+      <LineId Id="135" Count="4" />
+      <LineId Id="323" Count="0" />
+      <LineId Id="140" Count="14" />
+      <LineId Id="161" Count="2" />
+      <LineId Id="219" Count="0" />
+      <LineId Id="10" Count="0" />
+    </LineIds>
+    <LineIds Name="XboxController.Tilt">
+      <LineId Id="5" Count="0" />
+      <LineId Id="11" Count="3" />
+      <LineId Id="9" Count="1" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
