@@ -12,19 +12,25 @@ stExtOptions				:		ARRAY [1..2]  OF ST_ExternalSetpointGenerationOptions;
 Done						: 	 	BOOL;
 nCase						: 		INT := 1;
 timer						: 		TON;
+moverState					:		MC_Planar_State; 
+RESET						: 		BOOL;
+
+
 END_VAR
+
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[//Mover 1 updates
 fbMover[1].Update(); 
 cmdFB[1].Update();
+moverState := fbMover[1].MCTOPLC.STD.State;
 
 Timer(IN := TRUE, PT := T#1S); 
 
 IF Timer.Q THEN
 	//Start initizalization
-	IF NOT done THEN 
-	Planar_Mover.init();
+	IF NOT done OR MoverState = 5 OR MoverState = 1 THEN 
+		Planar_Mover.init();
 	END_IF 
 END_IF
 
@@ -41,25 +47,32 @@ END_VAR
 
 VAR
 
+
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[CASE nCase OF
 1: 
-
+	//fbmover[1].StopExternalSetpointGeneration(cmdFb[1]);
+	Done := FALSE;
 	fbMover[1].Reset(cmdFB[1]);
 	//fbMover[2].Reset(cmdFB[2]);
-	nCase := 3;
+	nCase := 2;
+
+2:
+
+	IF cmdFB[1].Done THEN
+		nCase := 3; 
+	END_IF
 	
 3:
 
 	fbMover[1].Enable(cmdFB[1]);
-	//fbMover[2].Enable(cmdFB[2]);
 	nCase := 4;
 	
 4:
 
 	IF cmdFB[1].Done THEN
-		nCase := 5; 
+		nCase := 5;
 	END_IF
 	
 5:
@@ -78,6 +91,17 @@ END_VAR]]></Declaration>
 6:
 
 Done := TRUE; 
+nCase := 7;
+
+7:
+
+IF MoverState = 5 OR MoverState = 1 THEN
+	IF XboxController.XboxController1.P_Buttons.bBack OR RESET THEN
+		Constraints.Restarting := TRUE;  
+		nCase := 1;	
+	END_IF
+END_IF 
+
 	
 END_CASE
 	]]></ST>
@@ -86,7 +110,9 @@ END_CASE
     <LineIds Name="Planar_Mover">
       <LineId Id="14" Count="1" />
       <LineId Id="5" Count="0" />
-      <LineId Id="63" Count="1" />
+      <LineId Id="63" Count="0" />
+      <LineId Id="79" Count="0" />
+      <LineId Id="64" Count="0" />
       <LineId Id="62" Count="0" />
       <LineId Id="42" Count="0" />
       <LineId Id="17" Count="0" />
@@ -99,11 +125,16 @@ END_CASE
       <LineId Id="16" Count="0" />
     </LineIds>
     <LineIds Name="Planar_Mover.init">
-      <LineId Id="6" Count="2" />
+      <LineId Id="6" Count="1" />
+      <LineId Id="122" Count="0" />
+      <LineId Id="8" Count="0" />
       <LineId Id="81" Count="1" />
       <LineId Id="9" Count="0" />
+      <LineId Id="98" Count="4" />
+      <LineId Id="97" Count="0" />
       <LineId Id="90" Count="0" />
-      <LineId Id="26" Count="15" />
+      <LineId Id="26" Count="2" />
+      <LineId Id="30" Count="11" />
       <LineId Id="46" Count="0" />
       <LineId Id="48" Count="4" />
       <LineId Id="63" Count="1" />
@@ -111,6 +142,16 @@ END_CASE
       <LineId Id="69" Count="0" />
       <LineId Id="72" Count="0" />
       <LineId Id="71" Count="0" />
+      <LineId Id="113" Count="0" />
+      <LineId Id="112" Count="0" />
+      <LineId Id="111" Count="0" />
+      <LineId Id="115" Count="0" />
+      <LineId Id="117" Count="0" />
+      <LineId Id="119" Count="1" />
+      <LineId Id="118" Count="0" />
+      <LineId Id="123" Count="0" />
+      <LineId Id="116" Count="0" />
+      <LineId Id="114" Count="0" />
       <LineId Id="73" Count="0" />
       <LineId Id="70" Count="0" />
       <LineId Id="5" Count="0" />

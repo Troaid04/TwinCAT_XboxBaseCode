@@ -66,6 +66,7 @@
     </PlaceholderReference>
     <PlaceholderReference Include="XboxControllerUtilities">
       <DefaultResolution>XboxControllerUtilities, * (Beckhoff Community)</DefaultResolution>
+      <Namespace>XboxControllerUtilities</Namespace>
     </PlaceholderReference>
   </ItemGroup>
   <ItemGroup>
