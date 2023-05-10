@@ -73,6 +73,17 @@ VAR
 	YPos						: 		INT;
 	MaxPosRot					: 		LREAL;
 	MaxNegRot					: 		LREAL;
+	filtered_output				:	 	LREAL;
+	ramp_factor: LREAL;
+	ramped_input: LREAL;
+	GraphVar: LREAL;
+		Prevoutput: LREAL;
+		PrevNegRot: LREAL;
+	PrevPosRot: LREAL;
+		CheckNegRot: LREAL;
+	CheckPosRot: LREAL;
+		IsUpdated: BOOL;
+			Closest90: LREAL;
 	
 	
 
@@ -188,7 +199,6 @@ END_VAR
 		END_IF 
 
 		//Move to Nearest Rotation point
-		//IF  XBoxController1.P_Buttons.bA_Button THEN
 			IF XBoxController1.P_Buttons.bA_Button AND MoverPos[1].X < DestinationX THEN
 				XpPosition[1].X := XpPosition[1].X + ( 40 * Constraints.deltaT );
 			ELSIF XBoxController1.P_Buttons.bA_Button AND MoverPos[1].X > DestinationX THEN
@@ -202,14 +212,14 @@ END_VAR
 			END_IF;
 	
 			
-			//Checking to make sure Tile is within 2 mm +- of a point that is modulo by 120 and = 0 and then truning a bool true or false
-			IF (((LREAL_TO_INT(MoverPos[1].x) MOD 120) >= 119) OR (LREAL_TO_INT(MoverPos[1].x) MOD 120) <= 1 ) THEN
+			//Checking to make sure Tile is within 1 mm +- of a point that is modulo by 120 and = 0 and then truning a bool true or false
+			IF ((LREAL_TO_INT(MoverPos[1].x) MOD 120) >= 119) OR ((LREAL_TO_INT(MoverPos[1].x) MOD 120) <= 1)  THEN
 				XPOint := TRUE; 
 			ELSE 
 				XPoint := FALSE; 
 			END_IF
 			
-			IF (((LREAL_TO_INT(MoverPos[1].y) MOD 120) >= 119) OR ((LREAL_TO_INT(MoverPos[1].y) MOD 120) <= 1) ) THEN
+			IF ((LREAL_TO_INT(MoverPos[1].y) MOD 120) >= 119) OR ((LREAL_TO_INT(MoverPos[1].y) MOD 120) <= 1) THEN
 				YPOint := TRUE; 
 			ELSE
 				YPoint := FALSE;
@@ -266,7 +276,7 @@ IF Planar_mover.MoverState = 3 THEN
 			Constraints.Restarting := FALSE;
 			nCase := 4;
 		//Wait to Start 
-		ELSIF NOT  XboxController1.P_Buttons.bStart OR START THEN
+		ELSIF XboxController1.P_Buttons.bStart OR START THEN
 			Start := FALSE;
 			nCase := 2;
 		END_IF
@@ -317,28 +327,32 @@ VAR_INPUT
 END_VAR
 
 VAR
-	filtered_output: LREAL;
-	ramp_factor: LREAL;
-	ramped_input: LREAL;
+
+
+
+
+
+
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF XboxController.Ready AND NOT PLanar_Mover.fbMover[1].Error THEN
+	
+//Holding previous varibles to compare later
+PrevNegRot := LREAL_TO_INT(MaxNegRot); 
+PrevPosRot := LREAL_TO_INT(MaxPosRot);
 
-// Min Rotation
-MaxNegRot := MoverPos[1].c - 10; 
-MaxPosRot := MoverPos[1].C + 10;
-		
-// Set the initial value of the filtered output
-filtered_output := XpPosition[1].c;
+//Checking Against previous values 
+CheckNegRot := XpPosition[1].c - 10; 
+CheckPosRot := XpPosition[1].c + 10; 
 
 // Set the smoothing factor (alpha) and ramping factor (ramp_factor) to values between 0 and 1
-alpha := 0.03;
-ramp_factor := 0.002;
+alpha := 0.0003;
 
-// Calculate the ramped value of the input signal
-ramped_input := ramp_factor * (XboxController1.P_Left_Trigger - XboxController1.P_Right_Trigger);
+// Calculate the Filtered value of the input signal
+Filtered_Output := alpha * (XboxController1.P_Left_Trigger - XboxController1.P_Right_Trigger) + (1-alpha) * Filtered_Output;
 
-C_VALUE := MOverPos[1].c; 
+//Actual C
+C_VALUE := MoverPos[1].c; 
 
 //Modded C Value
 //Make sure to not divide by 0 
@@ -347,23 +361,45 @@ IF  C_VALUE <> 0 THEN
 END_IF	
 				
 		//Endless Rotation 
-		// rotation stopped working 
 		IF XPoint AND YPoint THEN
 			IF XboxController1.P_Right_Trigger >= 5 AND XboxController1.P_Left_Trigger <= 5 THEN
 				//Negative Rotation
 				XpPosition[1].c := XpPosition[1].c - (RotationScailing * XboxController1.P_Right_Trigger);
+				IsUpdated := FALSE;
 			ELSIF XboxController1.P_Left_Trigger >= 5 AND XboxController1.P_Right_Trigger <= 5 THEN
 				//Positive Rotation 
 				XpPosition[1].c := XpPosition[1].c + (RotationScailing * XboxController1.P_Left_Trigger);
+				IsUpdated := FALSE;
 			ELSE 
 				//Nothing
+				IF NOT (PrevNegRot = 0) OR NOT (PrevPosRot = 0) THEN
+					IF NOT (isUpdated=TRUE) AND ((PrevNegRot <> CheckNegRot) OR (PrevPosRot <> CheckPosRot)) THEN
+						IF Modded_C <= 10 THEN 
+							Closest90 := C_Value - Modded_C; 
+						ELSIF Modded_C >= 80 THEN
+							Closest90 := C_Value + ( 90 - Modded_C);
+						END_IF
+						MaxNegRot := Closest90 - 10; 
+						MaxPosRot := Closest90 + 10;
+						IsUpdated := TRUE;
+					END_IF
+				ELSE
+					IF NOT isUpdated THEN
+						IF Modded_C <= 10 THEN 
+							Closest90 := C_Value - Modded_C; 
+						ELSIF Modded_C >= 80 THEN
+							Closest90 := C_Value + ( 90 - Modded_C);
+						END_IF
+						MaxNegRot := Closest90 - 10; 
+						MaxPosRot := Closest90 + 10;
+						IsUpdated := TRUE; 
+					END_IF
+				END_IF
 			END_IF
-		ELSE 
-			// Apply exponential smoothing to the ramped input signal and limit the output to the range [-10, 10]
-			XpPosition[1].c := LIMIT(MaxNegRot, filtered_output + ramped_input - alpha * (filtered_output - ramped_input), MaxPosRot);
+		ELSE
+			// Apply exponential smoothing to the ramped input signal and limit the output to the range [ActC-10, ActC+10]
+			XpPosition[1].c := LIMIT(MaxNegRot, Filtered_Output , MaxPosRot);
 		END_IF
-		
-
 		
 		
 		//Cant move out of rotation point unless within 10 degress 
@@ -373,11 +409,7 @@ END_IF
 			PastPos10 := FALSE; 
 		END_IF
 		
-		
-		
-		
-		
-		
+
 		
 		//Set C back to 0
 		(*IF XboxController1.P_Left_Trigger >= 98 AND XboxController1.P_Right_Trigger >= 98 THEN
@@ -387,9 +419,9 @@ END_IF
 		//This simply does not work 
 		(*IF Timer.Q THEN 
 			IF Modded_C <= 10 THEN 
-					XpPosition[1].C := C_Value - Modded_C; 
+					Closest90 := C_Value - Modded_C; 
 			ELSIF Modded_C >= 80 THEN
-					XpPosition[1].C := C_Value + ( 90 - Modded_C);
+					Closest90 := C_Value + ( 90 - Modded_C);
 			END_IF
 		END_IF *)
 		
@@ -413,8 +445,7 @@ END_VAR]]></Declaration>
 			XPPosition[1].Y 	:= XPPosition[1].Y	;
 		ELSE
 			invertX				:= SEL(XboxController1.P_Left_Joystick.fX < 1,1,-1);
-			invertY				:= SEL(XboxController1.P_Left_Joystick.fY < 1,1,-1);	
-			// Something is wrong again.  
+			invertY				:= SEL(XboxController1.P_Left_Joystick.fY < 1,1,-1);	 
 			XPPosition[1].y		:= XPPosition[1].y + (( EXPT(XboxController1.P_Left_Joystick.fY, 2) / 100 )* 4 * deltaT ) * invertY;
 			XPPosition[1].x		:= XPPosition[1].x + (( EXPT(XboxController1.P_Left_Joystick.fX, 2) / 100 )* 4 * deltaT ) * invertX;
 		END_IF
@@ -486,9 +517,7 @@ END_IF]]></ST>
       <LineId Id="87" Count="11" />
       <LineId Id="69" Count="0" />
       <LineId Id="66" Count="0" />
-      <LineId Id="13" Count="0" />
-      <LineId Id="60" Count="0" />
-      <LineId Id="14" Count="10" />
+      <LineId Id="13" Count="11" />
       <LineId Id="28" Count="0" />
       <LineId Id="11" Count="0" />
       <LineId Id="33" Count="1" />
@@ -546,11 +575,17 @@ END_IF]]></ST>
     </LineIds>
     <LineIds Name="XboxController.rotation">
       <LineId Id="13" Count="0" />
-      <LineId Id="254" Count="1" />
-      <LineId Id="284" Count="0" />
-      <LineId Id="286" Count="0" />
-      <LineId Id="258" Count="8" />
-      <LineId Id="256" Count="0" />
+      <LineId Id="258" Count="0" />
+      <LineId Id="318" Count="2" />
+      <LineId Id="336" Count="0" />
+      <LineId Id="332" Count="0" />
+      <LineId Id="331" Count="0" />
+      <LineId Id="333" Count="0" />
+      <LineId Id="261" Count="2" />
+      <LineId Id="298" Count="0" />
+      <LineId Id="266" Count="0" />
+      <LineId Id="290" Count="0" />
+      <LineId Id="311" Count="0" />
       <LineId Id="118" Count="0" />
       <LineId Id="14" Count="0" />
       <LineId Id="129" Count="0" />
@@ -558,22 +593,32 @@ END_IF]]></ST>
       <LineId Id="5" Count="0" />
       <LineId Id="97" Count="0" />
       <LineId Id="95" Count="0" />
-      <LineId Id="166" Count="0" />
-      <LineId Id="61" Count="6" />
+      <LineId Id="61" Count="3" />
+      <LineId Id="341" Count="0" />
+      <LineId Id="65" Count="2" />
+      <LineId Id="340" Count="0" />
       <LineId Id="275" Count="1" />
+      <LineId Id="343" Count="1" />
+      <LineId Id="361" Count="3" />
+      <LineId Id="360" Count="0" />
+      <LineId Id="345" Count="5" />
+      <LineId Id="366" Count="3" />
+      <LineId Id="355" Count="0" />
+      <LineId Id="351" Count="3" />
+      <LineId Id="342" Count="0" />
       <LineId Id="136" Count="0" />
       <LineId Id="69" Count="0" />
-      <LineId Id="140" Count="0" />
-      <LineId Id="267" Count="0" />
+      <LineId Id="309" Count="1" />
       <LineId Id="72" Count="1" />
-      <LineId Id="215" Count="0" />
       <LineId Id="219" Count="0" />
-      <LineId Id="277" Count="6" />
-      <LineId Id="221" Count="5" />
+      <LineId Id="278" Count="5" />
+      <LineId Id="221" Count="0" />
+      <LineId Id="226" Count="0" />
       <LineId Id="83" Count="4" />
       <LineId Id="60" Count="0" />
       <LineId Id="165" Count="0" />
-      <LineId Id="122" Count="4" />
+      <LineId Id="122" Count="0" />
+      <LineId Id="356" Count="3" />
       <LineId Id="120" Count="0" />
       <LineId Id="127" Count="0" />
       <LineId Id="227" Count="1" />
@@ -587,7 +632,7 @@ END_IF]]></ST>
       <LineId Id="479" Count="0" />
       <LineId Id="528" Count="0" />
       <LineId Id="544" Count="0" />
-      <LineId Id="568" Count="2" />
+      <LineId Id="568" Count="1" />
       <LineId Id="162" Count="0" />
       <LineId Id="571" Count="1" />
       <LineId Id="163" Count="0" />
