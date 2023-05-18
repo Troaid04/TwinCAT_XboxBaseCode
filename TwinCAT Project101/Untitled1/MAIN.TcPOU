@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="MAIN" Id="{fe375bac-6b9b-4870-b48c-47a23cbcf2e8}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR
+	
+MyController : Controller;  
+
+			
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[MyController.Motion_Parameters.maxVelocity := 250;
+
+MyController.NumberOfXTiles := 4;
+MyController.NumberOfYTiles := 3;
+MyController.MoverType := 4330;
+MyController.HapticfeedBack := TRUE; 
+
+MyController();  
+
+]]></ST>
+    </Implementation>
+    <LineIds Name="MAIN">
+      <LineId Id="5" Count="0" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="52" Count="0" />
+      <LineId Id="60" Count="1" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="43" Count="1" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

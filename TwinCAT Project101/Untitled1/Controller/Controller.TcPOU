@@ -1,0 +1,771 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="Controller" Id="{ad06cb8e-7dfe-4deb-b604-2ee96e3bdbcb}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK Controller
+VAR_INPUT
+			
+			//Change motion parameters
+			Motion_Parameters 			: 		Motion_Parameters_type; 
+			
+			//Reset Controller
+			RESET						: 		BOOL;
+			
+			//Number Of Tiles
+			NumberOfXTiles				:		INT;
+			NumberOfYTiles				:		INT;
+			
+			HapticfeedBack				: 		BOOL;
+
+			MoverType					:		INT;  
+
+END_VAR
+VAR_OUTPUT
+	
+			//Controller Outputs
+			XboxController				: 		FB_Xbox_Controller(NetID := '', iControllerNumber := 1);
+			bIsConnected   				:  		ARRAY [1..2] OF BOOL;
+			
+			//Xplanar outputs
+			Xplanar_Mover 				: 		MC_PlanarMover; 
+			moverState					:		MC_Planar_State;
+			
+			
+
+END_VAR
+VAR
+
+		
+			//init Case
+			nCase						: INT := 1;
+			
+						//Watch Varibles
+			//init Done
+			Done						: BOOL;		
+			//Start mover
+			START						: 		BOOL;
+			//Mover ready 
+			Ready						: 		BOOL;	
+
+			//Wait to start init
+			timer						: 		TON;
+			
+			//Meausre cycle time
+			Profiler1 					: 		Profiler;
+			ResetProfiler 				: 		BOOL; 
+			DATA 						: 		PROFILERSTRUCT;
+			
+
+			//SetPoint generator 
+			XpPosition					:		ARRAY [1..2] OF MoverVector; 
+			MoverPos					: 		ARRAY [1..2] OF MoverVector;
+			//Setpoint generator for X and Y
+			deltaT 						: 		LREAL := 0.000250; 
+			invertX						: 		LREAL;
+			invertY						: 		LREAL;
+			//Setpoint output
+			ZeroVector 					: 		MoverVector ; 
+			
+			//Xplanar 
+			fbDynMove					:		ARRAY [1..5]  OF DynamicConstraint_PathXY ;
+			stExtOptions				:		ARRAY [1..2]  OF ST_ExternalSetpointGenerationOptions; 
+			cmdFB 						:		ARRAY [1..2]  OF MC_PlanarFeedBack ;
+					
+			
+			//Height Adjustment 
+			Height 						: 		LREAL := 2;
+			R_TRIG1						: 		R_TRIG;
+			R_TRIG2						: 		R_TRIG;
+			SmoothingTon1				:		TON;
+			SmoothingTon2				:		TON;
+			Ton1						:		TON;
+			Ton2						:		TON; 
+			
+			
+						// Rotation VARS
+			
+			//Finding nearest rotation point
+			DestinationX				: 		DINT;
+			DestinationY				: 		DINT;
+			AtXPoint					: 		BOOL;
+			AtYPoint					: 		BOOL;
+			
+			//Endless rotation and +-10 
+			Alpha						: 		LREAL := 0.00005;
+			MaxPosRot					: 		LREAL;
+			MaxNegRot					: 		LREAL;
+			isintent					: 		BOOL;
+			IsUpdated					: 		BOOL;
+			HasMoved					: 		BOOL;
+			PrevNegRot					: 		LREAL;
+			PrevPosRot					: 		LREAL;
+			CheckNegRot					: 		LREAL;
+			CheckPosRot					: 		LREAL;
+			Closest90					:		LREAL;
+			filtered_output				:	 	LREAL;
+			Timer_Cyclic				: 		TON;
+			
+			
+			//Homing to angle that can leave endless rotation point
+			C_VALUE						: 		LREAL;
+			MODDED_C					: 		LREAL;
+			StartTimer					: 		BOOL;
+			output						: 		LREAL;
+			Time_Step					: 		LREAL := 0.000250;
+			kp							: 		LREAL;
+			kI							: 		LREAL;
+			kD							: 		LREAL;
+			Prev_Error					: 		LREAL;
+			Error						: 		LREAL;
+			derivative					: 		LREAL;
+			time_elapsed				: 		LREAL; 
+			total_time					: 		LREAL := 2.5;
+			RotSetPoint 				: 		LREAL;
+			SetTo90						: 		BOOL;
+			isPressed 					: 		BOOL ;
+			OutOfEndlessRotation		:		TON;
+
+			//Haptic Feed Back
+			HapticTimerMedium			:		TON;
+			HapticTriggerMedium			:		BOOL;
+			
+			HapticTimerShort			:		TON;
+			HapticTriggerShort			:		BOOL;
+			
+			//Varible to hold position
+			PastRot10					: 		BOOL;
+			
+			MaxTableYTravel				: 		LREAL;
+			MaxTableXTravel				:		LREAL; 
+			MinTableYTravel				: 		LREAL;
+			MinTableXTravel				:		LREAL; 
+			MoverTypeWidth 				: 		LREAL;
+            MoverTypeLength             :		LREAL;
+			RotationDisplacement		: 		LREAL;
+			Buffer						:		LREAL := 5; 
+			
+			CompareX					:		LREAL;
+            CompareY					:		LREAL;	
+			BufferC						:		LREAL; 
+
+END_VAR
+VAR_IN_OUT
+END_VAR
+
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[//Mover 1 updates
+Xplanar_Mover.Update(); 
+cmdFB[1].Update();
+moverState := Xplanar_Mover.MCTOPLC.STD.State;
+MoverPos[1] := Xplanar_Mover.MCTOPLC.ACT.ActPos;
+
+XboxController.Cycle();
+
+bIsConnected[1] := XboxController.P_Status.bConnected; 
+
+
+Timer(IN := TRUE, PT := T#1S); 
+
+IF Timer.Q THEN
+	//Start initizalization
+	IF NOT Done OR MoverState = 5 OR MoverState = 1 THEN 
+		init();
+	END_IF 
+END_IF
+
+IF Done AND MoverState = 3 THEN
+	Cyclic(); 
+END_IF
+
+
+						Xplanar_Mover.SetExternalSetpoint( XPPosition[1], ZeroVector, ZeroVector);
+]]></ST>
+    </Implementation>
+    <Method Name="Cyclic" Id="{2fac9a76-aad4-4d42-88f9-1c48190d79c5}">
+      <Declaration><![CDATA[METHOD Cyclic 
+VAR_INPUT
+END_VAR
+
+VAR
+
+
+	
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF Ready AND NOT XPlanar_Mover.Error THEN
+CompareX := MoverPos[1].X;
+CompareY := MoverPos[1].y;
+BufferC  := MoverPos[1].c - Closest90; 
+
+
+//Measure cycle time 
+Profiler1(START:=TRUE, RESET:= ResetProfiler , BUSY=> , DATA=> DATA  );
+	
+		IF MoverType = 4330 THEN
+			MoverTypeWidth  := 155 / 2 ; 
+		    MoverTypeLength := 155 / 2;
+			RotationDisplacement :=  (MoverTypeWidth) * SIN(0.1745); 
+		END_IF
+
+		//Calculating Boundries
+		MaxTableYTravel := (NumberOfYTiles * 240) - MoverTypeWidth  - RotationDisplacement - Buffer;
+		MaxTableXTravel := (NumberOfXTiles * 240) - MoverTypeLength - RotationDisplacement - Buffer;
+		
+		MinTableYTravel :=  MoverTypeWidth  + RotationDisplacement + Buffer;
+		MinTableXTravel :=  MoverTypeLength + RotationDisplacement + Buffer;
+		
+		//Hold down for automatic raise and lowering
+		TON1(IN := XboxController.P_Buttons.bLeft_Shoulder, PT := T#0.5S); 
+		TON2(IN := XboxController.P_Buttons.bRight_Shoulder, PT := T#0.5S);
+		SmoothingTon1(PT := T#0.25S);
+		SmoothingTon2(PT := T#0.25S);
+		
+		//Mode switching 
+		OutOfEndlessRotation(IN :=IsPressed, PT := T#0.05S);
+		
+		//Haptic Feedback Duration
+		HapticTimerMedium(IN :=HapticTriggerMedium, PT := T#0.5S);
+		HapticTimerShort(IN :=HapticTriggerShort, PT := T#0.2S);
+		
+		IF TON1.Q THEN
+			SmoothingTon1.IN := TRUE AND NOT SmoothingTon1.Q;
+		ELSE
+			SmoothingTon1.IN := FALSE;		
+		END_IF
+		
+		IF TON2.Q THEN
+			SmoothingTon2.IN := TRUE AND NOT SmoothingTon2.Q;
+		ELSE
+			SmoothingTon2.IN := FALSE;
+		END_IF
+		
+		//OSR to make sure only one is seen per click 
+		R_TRIG1(CLK:= XboxController.P_Buttons.bLeft_Shoulder , Q=> );
+		R_TRIG2(CLK:= XboxController.P_Buttons.bRight_Shoulder, Q=> );
+		
+		IF (R_TRIG1.Q OR SmoothingTon1.Q) AND Height >= -0.35 THEN 
+			Height :=  Height - 0.15;
+		ELSIF (R_TRIG2.Q OR SmoothingTon2.Q) AND Height < 5.0 THEN
+			Height := Height + 0.15;
+		ELSE
+			Height := Height; 
+		END_IF
+
+		
+		//A tilt 
+		XPPosition[1].a		:= 0.008 * XboxController.p_Right_Joystick.fY;
+		
+		//B tilt 	
+		XPPosition[1].b   	:= 0.008 * XboxController.p_Right_Joystick.fX; 
+
+
+
+		//Rotation Handeling
+		// Find Nearest X
+		IF LREAL_TO_INT(MoverPos[1].X) MOD 120 < 60 THEN
+			DestinationX	:= 120 * MODTURNS( MoverPos[1].X , 120 );
+		ELSE
+			DestinationX	:= 120 * (MODTURNS( MoverPos[1].X, 120 ) + 1);
+		END_IF
+		
+		// Find Nearest Y
+		IF LREAL_TO_INT(MoverPos[1].Y) MOD 120 < 60 THEN
+			DestinationY	:= 120 * MODTURNS( MoverPos[1].Y , 120 );
+		ELSE
+			DestinationY	:= 120 * (MODTURNS( MoverPos[1].Y, 120 ) + 1);
+		END_IF
+		
+		//Set Boundries for X
+		IF DestinationX = 0 THEN
+			DestinationX := DestinationX + 120;
+		ELSIF DestinationX = 960 THEN
+			DestinationX := DestinationX - 120;
+		END_IF 	
+		
+		//Set Boundries for Y
+		IF DestinationY = 0 THEN 
+			DestinationY := DestinationY + 120;
+		ELSIF DestinationY = 720 THEN
+			DestinationY := DestinationY - 120;
+		END_IF 
+
+		//Move to Nearest Rotation point
+		IF XBoxController.P_Buttons.bA_Button AND MoverPos[1].X < DestinationX THEN
+			XpPosition[1].X := XpPosition[1].X + ( 40 * deltaT );
+		ELSIF XBoxController.P_Buttons.bA_Button AND MoverPos[1].X > DestinationX THEN
+			XpPosition[1].X := XpPosition[1].X -( 40 * deltaT );
+		END_IF;
+		
+		IF XBoxController.P_Buttons.bA_Button AND MoverPos[1].Y < DestinationY THEN
+			XpPosition[1].Y := XpPosition[1].Y + ( 40 * deltaT );
+		ELSIF XBoxController.P_Buttons.bA_Button AND MoverPos[1].Y > DestinationY THEN
+			XpPosition[1].Y := XpPosition[1].Y -( 40 * deltaT );
+		END_IF;
+
+				
+		//Checking to make sure Tile is within 1 mm +- of a point that is modulo by 120 and = 0 and then truning a bool true or false
+		IF ((LREAL_TO_INT(MoverPos[1].x) MOD 120) >= 119) OR ((LREAL_TO_INT(MoverPos[1].x) MOD 120) <= 1)  THEN
+			AtXPOint := TRUE; 
+		ELSE 
+			AtXPoint := FALSE; 
+		END_IF
+		
+		IF ((LREAL_TO_INT(MoverPos[1].y) MOD 120) >= 119) OR ((LREAL_TO_INT(MoverPos[1].y) MOD 120) <= 1) THEN
+			AtYPOint := TRUE; 
+		ELSE
+			AtYPoint := FALSE;
+		END_IF	
+		
+		Timer_Cyclic(In:=StartTimer, PT := T#2S);
+
+		//Holding previous varibles to compare later
+		PrevNegRot := LREAL_TO_INT(MaxNegRot); 
+		PrevPosRot := LREAL_TO_INT(MaxPosRot);
+		
+		//Checking Against previous values 
+		CheckNegRot := XpPosition[1].c - 10; 
+		CheckPosRot := XpPosition[1].c + 10; 
+		
+		// Set the smoothing factor (alpha) and ramping factor (ramp_factor) to values between 0 and 1
+		alpha := 0.001;
+		
+		// Calculate the Filtered value of the input signal
+		Filtered_Output := alpha * (XboxController.P_Left_Trigger - XboxController.P_Right_Trigger) + (1-alpha) * Filtered_Output;
+		
+		//Actual C
+		C_VALUE := MoverPos[1].c; 
+		
+		//Modded C Value
+		//Make sure to not divide by 0 
+		IF  C_VALUE <> 0 THEN
+			MODDED_C:=MODABS(C_Value,90);
+		END_IF	
+		
+		
+		IF (XboxController.P_Left_Joystick.fX < 15 AND XboxController.P_Left_Joystick.fX > -15 ) AND (XboxController.P_Left_Joystick.fY < 15 AND XboxController.P_Left_Joystick.fY > -15)THEN
+			isintent := TRUE;
+		ELSE 
+			isintent := FALSE;;
+		END_IF
+		
+		
+		IF NOT (PrevNegRot = 0) OR NOT (PrevPosRot = 0) THEN
+			IF NOT (isUpdated=TRUE) AND ((PrevNegRot <> CheckNegRot) OR (PrevPosRot <> CheckPosRot)) THEN
+				IF Modded_C <= 10 THEN 
+					Closest90 := C_Value - Modded_C; 
+				ELSIF Modded_C >= 80 THEN
+					Closest90 := C_Value + ( 90 - Modded_C);
+				END_IF
+				MaxNegRot := Closest90 - 10; 
+				MaxPosRot := Closest90 + 10;
+				IsUpdated := TRUE;
+			END_IF
+		ELSE
+			IF NOT isUpdated THEN
+				IF Modded_C <= 10 THEN 
+					Closest90 := C_Value - Modded_C; 
+				ELSIF Modded_C >= 80 THEN
+					Closest90 := C_Value + ( 90 - Modded_C);
+				END_IF
+				MaxNegRot := Closest90 - 10; 
+				MaxPosRot := Closest90 + 10;
+				IsUpdated := TRUE; 
+			END_IF
+		END_IF
+				
+		//Kind of Working, needs to be exactly a value that can be modulod by 90 = 0 to leave endless rotation point		
+		//Endless Rotation 
+		IF ((AtXPoint AND AtYPoint) AND isintent AND NOT IsPressed) THEN
+			IF (XboxController.P_Right_Trigger >= 5 AND XboxController.P_Left_Trigger <= 5) THEN
+				//Negative Rotation
+				XpPosition[1].c := XpPosition[1].c - ( Motion_Parameters.RotationScailing * XboxController.P_Right_Trigger);
+				IsUpdated := FALSE;
+				HasMoved := TRUE;
+				SetTo90 := FALSE;
+			
+			ELSIF XboxController.P_Left_Trigger >= 5 AND XboxController.P_Right_Trigger <= 5 THEN
+				//Positive Rotation 
+				XpPosition[1].c := XpPosition[1].c + (Motion_Parameters.RotationScailing * XboxController.P_Left_Trigger);
+				IsUpdated := FALSE;
+				HasMoved := TRUE;
+				SetTo90 := FALSE;
+		
+			ELSE 
+				//Nothing
+			END_IF
+		ELSE	
+			//Werid errors still 
+			// Apply exponential smoothing to the ramped input signal and limit the output to the range [ActC-10, ActC+10]
+			IF NOT IsPressed AND NOT PastRot10 THEN
+				XpPosition[1].c := LIMIT(MaxNegRot, (Filtered_Output + Closest90) , MaxPosRot);
+			END_IF
+		END_IF
+		
+		
+		//Cant move out of rotation point unless within 10 degress 
+		IF Modded_C > 10 AND Modded_C < 80 THEN
+			PastRot10 := TRUE;
+		ELSE 
+			PastRot10 := FALSE; 
+		END_IF
+		
+		
+		//Set C back to 0
+		IF XboxController.P_Left_Trigger >= 98 AND XboxController.P_Right_Trigger >= 98 THEN
+			//Makes sure its intentinal 
+			StartTimer := TRUE;
+		ELSE
+			StartTimer := FALSE;  
+		END_IF
+		
+		IF Timer_Cyclic.Q THEN 
+			IF Modded_C <= 45 THEN 
+				RotSetPoint := C_Value - Modded_C; 
+			ELSIF Modded_C >= 46 THEN
+				RotSetPoint := C_Value + ( 90 - Modded_C);
+			END_IF
+			
+			 // calculate error and derivative
+			Error := RotSetPoint - XpPosition[1].c; 
+			kI := kI + error * Time_Step;
+			kD := (Error - Prev_Error) / Time_Step;
+			
+
+			// calculate output as proportional and derivative terms
+ 			// with appropriate gains 
+			output := 1.5 * error + 0.01 * kD + 0.01 * ki;
+		
+			// update current value using output and time step
+			XpPosition[1].c  := XpPosition[1].c  + output * time_step;
+			
+			// update time elapsed and previous error
+			time_elapsed := time_elapsed + time_step;
+			prev_error := error;
+			
+		END_IF
+		
+			//Make Sure that it is ready to move before allowing Movement
+			IF ((RotSetPoint + 0.6) > XpPosition[1].c) AND ((RotSetPoint - 0.6) < XpPosition[1].c) THEN
+				SetTo90 := TRUE;
+				HasMoved := FALSE;
+			END_IF
+		
+		IF Timer_Cyclic.Q AND SetTo90 THEN
+			IF XboxController.P_Left_Trigger >= 0 AND XboxController.P_Right_Trigger >= 0 THEN
+				isPressed := TRUE; 
+			END_IF
+		ELSIF XboxController.P_Left_Trigger <= 0 AND XboxController.P_Right_Trigger <= 0 THEN
+				IsPressed := FALSE;
+		END_IF
+		
+		//Haptic FeedBack
+		IF HapticfeedBack = TRUE THEN
+			//When back to a C value that can be moduloed by 90 and = 0 
+			IF SetTo90 AND NOT HasMoved AND IsPressed AND Isintent THEN
+				HapticTriggerMedium := TRUE;
+				IF HapticTimerMedium.IN AND NOT HapticTimerMedium.Q THEN
+					XboxController.SetRumble(0,100);
+				ELSE
+					XboxController.SetRumble(0,0);
+				END_IF
+			ELSE 
+				HapticTriggerMedium := FALSE;
+			END_IF
+			
+			//When found a rotation point or at a boundry 
+			IF (XboxController.P_Buttons.bA_Button AND AtXPoint AND AtYPoint) OR  (XboxController.P_Buttons.bLeft_Shoulder OR XboxController.P_Buttons.bRight_Shoulder) OR ((MinTableXTravel + 1 > CompareX) OR (MinTableYTravel + 1 > CompareY) OR (MaxTableXTravel - 1 < CompareX) OR (MaxTableYTravel - 1 < CompareY))THEN
+				XboxController.SetRumble(0,100);
+			ELSE
+				XboxController.SetRumble(0,0);
+			END_IF
+		END_IF
+		
+
+				//need to figure out a way to limit travel in a direction if a boundry is approched/hit. Thinking about adding a negative in the equation that can update depending on IRL Pos
+		// X and Y Movement from Controller
+		IF NOT PastRot10 OR NOT HasMoved AND SetTo90 THEN
+			invertX				:= SEL(XboxController.P_Left_Joystick.fX < 1,1,-1);
+			invertY				:= SEL(XboxController.P_Left_Joystick.fY < 1,1,-1);	
+			IF NOT XboxController.P_Buttons.bX_Button AND ( MoverPos[1].y > 10 AND MoverPos[1].y < MaxTableYTravel) THEN 
+				XPPosition[1].y		:= LIMIT(MinTableYTravel,XPPosition[1].y + (( EXPT(XboxController.P_Left_Joystick.fY , 2) / 100 )* (Motion_Parameters.maxVelocity / 100) * deltaT ) * invertY, MaxTableYTravel);
+			END_IF
+			IF NOT XboxController.P_Buttons.bY_Button AND ( MoverPos[1].X > 10 AND MoverPos[1].y < MaxTableXTravel)THEN
+				XPPosition[1].x		:= LIMIT(MinTableXTravel,XPPosition[1].x + (( EXPT(XboxController.P_Left_Joystick.fX , 2) / 100 )* (Motion_Parameters.maxVelocity / 100) * deltaT ) * invertX, MaxTableXTravel);
+			END_IF
+		ELSE 
+			//nothing
+		END_IF
+
+		
+
+	
+Profiler1(START:=FALSE, RESET:= ResetProfiler , BUSY=> , DATA=> DATA  );	
+
+ELSIF XPlanar_Mover.Error THEN
+	Ready := FALSE; 
+	XPlanar_Mover.Reset(cmdFB[1]);  
+	init();  
+	
+END_IF
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Init" Id="{9aab4e56-4c46-4115-a2d2-a0027db3038b}">
+      <Declaration><![CDATA[METHOD Init 
+VAR_INPUT
+END_VAR
+
+VAR
+
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE nCase OF
+1: 
+
+	Done := FALSE;
+	Xplanar_Mover.Reset(cmdFB[1]);
+	nCase := 2;
+
+2:
+
+	IF cmdFB[1].Done THEN
+		nCase := 3; 
+	END_IF
+	
+3:
+
+	Xplanar_Mover.Enable(cmdFB[1]);
+	nCase := 4;
+	
+4:
+
+	IF cmdFB[1].Done THEN
+		nCase := 5;
+	END_IF
+	
+5:
+
+//Set up Case
+	// Normal Movememnt
+	fbDynMove[1].SetValuesVADJ(500,5000,5000,20000); // Normal
+	fbDynMove[2].SetValuesVADJ(1000,5000,5000,20000);// Fast
+	fbDynMove[3].SetValuesVADJ(200,2000,5000,10000); // Slow
+
+	stExtOptions[1].mode := MC_EXTERNAL_SET_POSITION_MODE.Absolute; // Setting up external Setpoint generator
+	nCase := 6; 
+6:
+
+
+nCase := 7;
+
+7:
+
+IF  MoverState = 5 OR  MoverState = 1 THEN 
+	nCase := 1;		
+ELSE 		
+	nCase := 8;
+END_IF 
+
+8:
+	IF MoverState = 3 THEN 
+		nCase := 9;
+	END_IF
+9:
+
+	IF XboxController.P_Buttons.bStart OR START THEN
+		Start := FALSE;
+		nCase := 10;
+	END_IF
+
+10:
+	//Update Positions
+	IF cmdFB[1].Done  AND NOT cmdFB[1].Busy AND NOT cmdFB[2].Busy  THEN
+		XpPosition[1].y := MoverPos[1].y; 
+		XpPosition[1].x := MoverPos[1].x; 
+		XpPosition[1].z := MoverPos[1].z;
+		XpPosition[1].c := MoverPos[1].c;
+		nCase := 11;
+	END_IF
+
+
+11:
+
+	//Start External Setpoint Generatior
+	Xplanar_Mover.StartExternalSetpointGeneration(cmdFB[1], stExtOptions[1]); 
+	nCase := 12; 
+12:
+	Ready := TRUE; 
+	nCase := 13;
+	
+13:
+
+// If errored be able to reset 
+IF MoverState = 5 OR  MoverState = 1 THEN
+	nCase := 1; 
+ELSE
+	Done := TRUE; 
+	Cyclic();
+END_IF
+ 	
+END_CASE
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="Controller">
+      <LineId Id="113" Count="2" />
+      <LineId Id="111" Count="0" />
+      <LineId Id="133" Count="0" />
+      <LineId Id="276" Count="0" />
+      <LineId Id="393" Count="0" />
+      <LineId Id="412" Count="0" />
+      <LineId Id="275" Count="0" />
+      <LineId Id="129" Count="0" />
+      <LineId Id="112" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="117" Count="6" />
+      <LineId Id="208" Count="0" />
+      <LineId Id="125" Count="1" />
+      <LineId Id="209" Count="0" />
+      <LineId Id="127" Count="1" />
+      <LineId Id="124" Count="0" />
+      <LineId Id="116" Count="0" />
+    </LineIds>
+    <LineIds Name="Controller.Cyclic">
+      <LineId Id="5" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="693" Count="0" />
+      <LineId Id="697" Count="0" />
+      <LineId Id="699" Count="0" />
+      <LineId Id="694" Count="0" />
+      <LineId Id="521" Count="0" />
+      <LineId Id="432" Count="0" />
+      <LineId Id="522" Count="0" />
+      <LineId Id="670" Count="0" />
+      <LineId Id="672" Count="0" />
+      <LineId Id="674" Count="1" />
+      <LineId Id="673" Count="0" />
+      <LineId Id="688" Count="0" />
+      <LineId Id="668" Count="0" />
+      <LineId Id="653" Count="0" />
+      <LineId Id="431" Count="0" />
+      <LineId Id="665" Count="0" />
+      <LineId Id="667" Count="0" />
+      <LineId Id="666" Count="0" />
+      <LineId Id="655" Count="0" />
+      <LineId Id="67" Count="0" />
+      <LineId Id="69" Count="1" />
+      <LineId Id="603" Count="0" />
+      <LineId Id="620" Count="0" />
+      <LineId Id="652" Count="0" />
+      <LineId Id="604" Count="0" />
+      <LineId Id="562" Count="0" />
+      <LineId Id="601" Count="1" />
+      <LineId Id="589" Count="0" />
+      <LineId Id="600" Count="0" />
+      <LineId Id="71" Count="22" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="96" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="51" Count="3" />
+      <LineId Id="34" Count="1" />
+      <LineId Id="152" Count="43" />
+      <LineId Id="404" Count="11" />
+      <LineId Id="196" Count="0" />
+      <LineId Id="208" Count="0" />
+      <LineId Id="277" Count="31" />
+      <LineId Id="563" Count="0" />
+      <LineId Id="565" Count="21" />
+      <LineId Id="564" Count="0" />
+      <LineId Id="309" Count="9" />
+      <LineId Id="554" Count="0" />
+      <LineId Id="319" Count="5" />
+      <LineId Id="555" Count="0" />
+      <LineId Id="325" Count="1" />
+      <LineId Id="350" Count="1" />
+      <LineId Id="525" Count="0" />
+      <LineId Id="524" Count="0" />
+      <LineId Id="551" Count="0" />
+      <LineId Id="509" Count="0" />
+      <LineId Id="552" Count="0" />
+      <LineId Id="354" Count="28" />
+      <LineId Id="418" Count="0" />
+      <LineId Id="416" Count="0" />
+      <LineId Id="384" Count="17" />
+      <LineId Id="209" Count="0" />
+      <LineId Id="500" Count="2" />
+      <LineId Id="504" Count="1" />
+      <LineId Id="511" Count="1" />
+      <LineId Id="503" Count="0" />
+      <LineId Id="210" Count="0" />
+      <LineId Id="402" Count="0" />
+      <LineId Id="676" Count="0" />
+      <LineId Id="595" Count="0" />
+      <LineId Id="556" Count="0" />
+      <LineId Id="588" Count="0" />
+      <LineId Id="590" Count="0" />
+      <LineId Id="557" Count="0" />
+      <LineId Id="591" Count="2" />
+      <LineId Id="559" Count="1" />
+      <LineId Id="558" Count="0" />
+      <LineId Id="636" Count="2" />
+      <LineId Id="641" Count="3" />
+      <LineId Id="677" Count="0" />
+      <LineId Id="596" Count="0" />
+      <LineId Id="656" Count="0" />
+      <LineId Id="621" Count="0" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="43" Count="0" />
+      <LineId Id="47" Count="1" />
+      <LineId Id="648" Count="0" />
+      <LineId Id="49" Count="1" />
+      <LineId Id="650" Count="0" />
+      <LineId Id="649" Count="0" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="651" Count="0" />
+      <LineId Id="646" Count="1" />
+      <LineId Id="645" Count="0" />
+      <LineId Id="430" Count="0" />
+      <LineId Id="428" Count="0" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="523" Count="0" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="424" Count="2" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="422" Count="1" />
+      <LineId Id="433" Count="0" />
+      <LineId Id="10" Count="0" />
+    </LineIds>
+    <LineIds Name="Controller.Init">
+      <LineId Id="9" Count="4" />
+      <LineId Id="15" Count="21" />
+      <LineId Id="40" Count="13" />
+      <LineId Id="143" Count="0" />
+      <LineId Id="142" Count="0" />
+      <LineId Id="66" Count="0" />
+      <LineId Id="68" Count="0" />
+      <LineId Id="59" Count="0" />
+      <LineId Id="121" Count="0" />
+      <LineId Id="69" Count="0" />
+      <LineId Id="72" Count="0" />
+      <LineId Id="122" Count="1" />
+      <LineId Id="74" Count="0" />
+      <LineId Id="78" Count="4" />
+      <LineId Id="95" Count="18" />
+      <LineId Id="124" Count="2" />
+      <LineId Id="128" Count="0" />
+      <LineId Id="127" Count="0" />
+      <LineId Id="129" Count="0" />
+      <LineId Id="141" Count="0" />
+      <LineId Id="132" Count="1" />
+      <LineId Id="144" Count="0" />
+      <LineId Id="131" Count="0" />
+      <LineId Id="114" Count="0" />
+      <LineId Id="116" Count="0" />
+      <LineId Id="61" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

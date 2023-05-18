@@ -1,0 +1,1227 @@
+<?xml version="1.0"?>
+<TcModuleInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2009/05/TcModuleInstance">
+	<DataTypes>
+		<DataType>
+			<Name GUID="{65F54988-12F6-43A1-B150-89B25B7BCAEC}">MlInstructionSet</Name>
+			<BitSize>16</BitSize>
+			<BaseType GUID="{18071995-0000-0000-0000-000000000006}">INT</BaseType>
+			<EnumInfo>
+				<Text><![CDATA[AllowAll]]></Text>
+				<Enum>0</Enum>
+			</EnumInfo>
+			<EnumInfo>
+				<Text><![CDATA[JitterFree]]></Text>
+				<Enum>1</Enum>
+			</EnumInfo>
+			<Default>
+				<EnumText>AllowAll</EnumText>
+			</Default>
+		</DataType>
+		<DataType>
+			<Name GUID="{8F95FC3F-0911-4CD6-B4BF-D1A71E51942B}">OperationMode</Name>
+			<BitSize>16</BitSize>
+			<BaseType GUID="{18071995-0000-0000-0000-000000000006}">INT</BaseType>
+			<EnumInfo>
+				<Text><![CDATA[Normal]]></Text>
+				<Enum>0</Enum>
+			</EnumInfo>
+			<EnumInfo>
+				<Text><![CDATA[BasicSimulation]]></Text>
+				<Enum>1</Enum>
+			</EnumInfo>
+			<EnumInfo>
+				<Text><![CDATA[AdvancedSimulation]]></Text>
+				<Enum>2</Enum>
+			</EnumInfo>
+			<Default>
+				<EnumText>Normal</EnumText>
+			</Default>
+			<Relations>
+				<Relation>
+					<Type GUID="{42ED3C4D-D0E8-4152-8ECC-7BDAD926B894}">OperationMode</Type>
+				</Relation>
+			</Relations>
+		</DataType>
+		<DataType>
+			<Name GUID="{1406DB49-02D1-440A-8B4F-9385A7182127}">MoverType</Name>
+			<BitSize>16</BitSize>
+			<BaseType GUID="{18071995-0000-0000-0000-000000000006}">INT</BaseType>
+			<EnumInfo>
+				<Text><![CDATA[APM4220]]></Text>
+				<Enum>1</Enum>
+			</EnumInfo>
+			<EnumInfo>
+				<Text><![CDATA[APM4221]]></Text>
+				<Enum>3</Enum>
+			</EnumInfo>
+			<EnumInfo>
+				<Text><![CDATA[APM4330]]></Text>
+				<Enum>0</Enum>
+			</EnumInfo>
+			<EnumInfo>
+				<Text><![CDATA[APM4550]]></Text>
+				<Enum>2</Enum>
+			</EnumInfo>
+			<Default>
+				<EnumText>APM4330</EnumText>
+			</Default>
+			<Relations>
+				<Relation>
+					<Type GUID="{5B1B0327-048C-4E38-B755-C35DAD6D96A6}">MoverType</Type>
+				</Relation>
+				<Relation>
+					<Type GUID="{8786775D-A1D5-40B3-81D2-4C805CF66C59}">MoverType</Type>
+				</Relation>
+				<Relation>
+					<Type GUID="{3CA9A1AA-833C-4D86-8361-5C8AD8C6988B}">MoverType</Type>
+				</Relation>
+			</Relations>
+		</DataType>
+		<DataType>
+			<Name GUID="{3BA170DB-7EBC-48C9-BE76-05BF34D6A554}">MoverDetectionSetup</Name>
+			<BitSize>32</BitSize>
+			<SubItem>
+				<Name>MoverType</Name>
+				<Type GUID="{1406DB49-02D1-440A-8B4F-9385A7182127}">MoverType</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>ExpectedCount</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000005}">UINT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>16</BitOffs>
+			</SubItem>
+			<Relations>
+				<Relation>
+					<Type GUID="{75041895-CE4D-4431-B4C6-2DB971B069DC}">MoverDetectionSetup</Type>
+				</Relation>
+			</Relations>
+		</DataType>
+		<DataType>
+			<Name GUID="{F7953E12-2B75-484E-8A62-3CC94BAA1066}">DriverVersion</Name>
+			<BitSize>64</BitSize>
+			<BaseType GUID="{18071995-0000-0000-0000-000000000005}">UINT</BaseType>
+			<ArrayInfo>
+				<LBound>0</LBound>
+				<Elements>4</Elements>
+			</ArrayInfo>
+			<Format>
+				<Printf>%d.%d.%d.%d</Printf>
+				<Parameter>[0]</Parameter>
+				<Parameter>[1]</Parameter>
+				<Parameter>[2]</Parameter>
+				<Parameter>[3]</Parameter>
+			</Format>
+		</DataType>
+		<DataType>
+			<Name GUID="{418E7C43-28D3-4613-9768-355931DB8EE0}">Position6D</Name>
+			<BitSize>384</BitSize>
+			<SubItem>
+				<Name>x</Name>
+				<Type GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</Type>
+				<BitSize>64</BitSize>
+				<BitOffs>0</BitOffs>
+				<Unit><![CDATA[mm]]></Unit>
+			</SubItem>
+			<SubItem>
+				<Name>y</Name>
+				<Type GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</Type>
+				<BitSize>64</BitSize>
+				<BitOffs>64</BitOffs>
+				<Unit><![CDATA[mm]]></Unit>
+			</SubItem>
+			<SubItem>
+				<Name>z</Name>
+				<Type GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</Type>
+				<BitSize>64</BitSize>
+				<BitOffs>128</BitOffs>
+				<Unit><![CDATA[mm]]></Unit>
+			</SubItem>
+			<SubItem>
+				<Name>a</Name>
+				<Type GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</Type>
+				<BitSize>64</BitSize>
+				<BitOffs>192</BitOffs>
+				<Unit><![CDATA[rad]]></Unit>
+			</SubItem>
+			<SubItem>
+				<Name>b</Name>
+				<Type GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</Type>
+				<BitSize>64</BitSize>
+				<BitOffs>256</BitOffs>
+				<Unit><![CDATA[rad]]></Unit>
+			</SubItem>
+			<SubItem>
+				<Name>c</Name>
+				<Type GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</Type>
+				<BitSize>64</BitSize>
+				<BitOffs>320</BitOffs>
+				<Unit><![CDATA[rad]]></Unit>
+			</SubItem>
+		</DataType>
+		<DataType>
+			<Name GUID="{FFD2EC73-FD67-47FC-94B1-452D4EA94D28}">MoverPositionInfo</Name>
+			<BitSize>448</BitSize>
+			<SubItem>
+				<Name>ActualPosition</Name>
+				<Type GUID="{418E7C43-28D3-4613-9768-355931DB8EE0}">Position6D</Type>
+				<BitSize>384</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>PartOID</Name>
+				<Type GUID="{18071995-0000-0000-0000-00000000000F}">OTCID</Type>
+				<BitSize>32</BitSize>
+				<BitOffs>384</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>MovementAreaOID</Name>
+				<Type GUID="{18071995-0000-0000-0000-00000000000F}">OTCID</Type>
+				<BitSize>32</BitSize>
+				<BitOffs>416</BitOffs>
+			</SubItem>
+		</DataType>
+		<DataType>
+			<Name GUID="{2D2BFA11-7EC0-4DE8-971A-14B1B3D2E121}">DetectionCountInfo</Name>
+			<BitSize>64</BitSize>
+			<SubItem>
+				<Name>Expected</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000008}">UDINT</Type>
+				<BitSize>32</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>Detected</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000008}">UDINT</Type>
+				<BitSize>32</BitSize>
+				<BitOffs>32</BitOffs>
+			</SubItem>
+		</DataType>
+		<DataType>
+			<Name GUID="{23B5E354-DC2E-4B41-AB0B-0F62FAF579F6}">XpuMoverDetectionInfos</Name>
+			<BitSize>320</BitSize>
+			<SubItem>
+				<Name>Total</Name>
+				<Type GUID="{2D2BFA11-7EC0-4DE8-971A-14B1B3D2E121}">DetectionCountInfo</Type>
+				<BitSize>64</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>APM4220</Name>
+				<Type GUID="{2D2BFA11-7EC0-4DE8-971A-14B1B3D2E121}">DetectionCountInfo</Type>
+				<BitSize>64</BitSize>
+				<BitOffs>64</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>APM4330</Name>
+				<Type GUID="{2D2BFA11-7EC0-4DE8-971A-14B1B3D2E121}">DetectionCountInfo</Type>
+				<BitSize>64</BitSize>
+				<BitOffs>128</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>APM4550</Name>
+				<Type GUID="{2D2BFA11-7EC0-4DE8-971A-14B1B3D2E121}">DetectionCountInfo</Type>
+				<BitSize>64</BitSize>
+				<BitOffs>192</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>APM4221</Name>
+				<Type GUID="{2D2BFA11-7EC0-4DE8-971A-14B1B3D2E121}">DetectionCountInfo</Type>
+				<BitSize>64</BitSize>
+				<BitOffs>256</BitOffs>
+			</SubItem>
+			<Relations>
+				<Relation>
+					<Type GUID="{EB5197F3-DC07-4F1B-B27D-2973EAD10445}">XpuMoverDetectionInfos</Type>
+				</Relation>
+			</Relations>
+		</DataType>
+		<DataType>
+			<Name GUID="{B1D1DB33-72B5-44D1-9D6F-7348ACC5B461}">MoverIdentificationStatus</Name>
+			<BitSize>16</BitSize>
+			<BaseType GUID="{18071995-0000-0000-0000-000000000006}">INT</BaseType>
+			<EnumInfo>
+				<Text><![CDATA[Ready]]></Text>
+				<Enum>0</Enum>
+			</EnumInfo>
+			<EnumInfo>
+				<Text><![CDATA[IdentificationInProcess]]></Text>
+				<Enum>1</Enum>
+			</EnumInfo>
+			<EnumInfo>
+				<Text><![CDATA[IdentificationSuccessful]]></Text>
+				<Enum>2</Enum>
+			</EnumInfo>
+			<EnumInfo>
+				<Text><![CDATA[IdentificationFailed]]></Text>
+				<Enum>3</Enum>
+			</EnumInfo>
+			<Default>
+				<EnumText>Ready</EnumText>
+			</Default>
+			<Relations>
+				<Relation>
+					<Type GUID="{B02E18D1-2DCB-4942-B1FE-D7FC8936F831}">MoverIdentificationStatus</Type>
+				</Relation>
+			</Relations>
+		</DataType>
+		<DataType>
+			<Name GUID="{C10BD6CA-8851-45E9-BA85-9FA6B7EB2841}">XPlanarEvents</Name>
+			<DisplayName TxtId=""><![CDATA[XPlanarEvents]]></DisplayName>
+			<Comment TxtId=""><![CDATA[Manages all XPlanar event logger messeges>]]></Comment>
+			<EventId>
+				<Name Id="#x13170000">I0000_WritingDumpFile</Name>
+				<DisplayName TxtId=""><![CDATA[Writing dump file: {0}]]></DisplayName>
+				<Severity>Info</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x13170001">I0001_MoverRedetectionStarted</Name>
+				<DisplayName TxtId=""><![CDATA[Mover redetection started]]></DisplayName>
+				<Severity>Info</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x13170003">I0003_Communication_Started</Name>
+				<DisplayName TxtId=""><![CDATA['{0}' (0x{1,X}): [Info 0x{2,X}] Mover communication started.]]></DisplayName>
+				<Severity>Info</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x13170004">I0004_Communication_FinishedSuccessfully</Name>
+				<DisplayName TxtId=""><![CDATA['{0}' (0x{1,X}): [Info 0x{2,X}] Mover communication finished successfully.]]></DisplayName>
+				<Severity>Info</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x13175000">I5000_DeterminedNcCycleTime</Name>
+				<DisplayName TxtId=""><![CDATA[Determined NC cycle time: {0} s]]></DisplayName>
+				<Severity>Info</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x23175000">W5000_ParametrizationSetNotFound</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Defined parametrization set could not be found. Hence, parameters haven't been changed.]]></DisplayName>
+				<Severity>Warning</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x23175001">W5001_ImplausibleMoverPosition</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Implausible mover position. Mover was removed from current movement area.]]></DisplayName>
+				<Severity>Warning</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x23175002">W5002_InvalidMoverBasicInertia</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Invalid basic inertia. Basic inertia is set to standard inertia (plain mover).]]></DisplayName>
+				<Severity>Warning</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x23175003">W5003_InvalidPayloadInertia</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Invalid payload inertia. Payload inertia is set to zero.]]></DisplayName>
+				<Severity>Warning</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x23175009">W5009_InvalidFeedback</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Invalid mover feedback. Mover was removed from current movement area.]]></DisplayName>
+				<Severity>Warning</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x2317500C">W500C_InvalidControllerParameters</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Invalid controller parameters of axis {1}. Controller parameters are set to default.]]></DisplayName>
+				<Severity>Warning</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x2317500D">W500D_InvalidFeedforwardParameters</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Invalid feedforward parameters of axis {1}. Feedforward parameters are set to default.]]></DisplayName>
+				<Severity>Warning</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x2317500E">W500E_InvalidObserverParameters</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Invalid observer parameters of axis {1}. Observer parameters are set to default.]]></DisplayName>
+				<Severity>Warning</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x3317001C">E001C_MulticomputingCommandTimeout</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Timeout of multicomputing command (ID: {1}). Command slot will be deleted.]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x3317001D">E001D_InvalidMulticomputingCommand</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Invalid multicomputing command (ID: {1}). Reading of further commands in this cycle is aborted.]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x33170020">E0020_CouldNotSendMulticomputingCommand</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Could not send multicomputing command (ID: {1}). Invalid address or command exceeds peer capacity.]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x33170021">E0021_InvalidMulticomputingMessage</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Invalid multicomputing message (ID: {1}). Reading of further messages in this cycle is aborted.]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x33170022">E0022_NoFreeCapacityForSendingData</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] No free capacity to send message (ID: {1}) to desired target system (ID: {2}).]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x33170023">E0023_PreparationOfAdoptionSystemFailed</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Preparation of adoption system failed.]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x33170024">E0024_CouldNotCreateMulticomputingCommand</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Could not create multicomputing command (HRESULT: 0x{1,X}).]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x33170025">E0025_SubmissionSetupFailed</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Submission setup failed (HRESULT: 0x{1,X}).]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x33170026">E0026_CouldNotReserveMover</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Could not reserve mover for system transfer.]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x33170027">E0027_FinishingMoverAdoptionFailed</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Could not finish mover adoption.]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x33170028">E0028_PartnerSystemReportedError</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Partner system reported an error. Communication has been terminated.]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x33170029">E0029_CouldNotProcessAllCommands</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Could not process all responses ({1} of {2})]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x3317002B">E002B_Identification_MoverNotAbleToIdentify</Name>
+				<DisplayName TxtId=""><![CDATA['{0}' (0x{1,X}): [Error 0x{2,X}] Mover 0x{3,X} is not able to identify.]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x3317002C">E002C_Identification_MoverError</Name>
+				<DisplayName TxtId=""><![CDATA['{0}' (0x{1,X}): [Error 0x{2,X}] Mover 0x{3,X} has an error.]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x3317002D">E002D_Identification_IdentifiedBtnNotFound</Name>
+				<DisplayName TxtId=""><![CDATA['{0}' (0x{1,X}): [Error 0x{2,X}] BTN '{3}' was identified but could not be found in any mover object.]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x3317002E">E002E_Identification_IdentificationFailed</Name>
+				<DisplayName TxtId=""><![CDATA['{0}' (0x{1,X}): [Error 0x{2,X}] Mover identification failed.]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x33170030">E0030_CouldNotAllocateCommandSlot</Name>
+				<DisplayName TxtId=""><![CDATA['{0}' (0x{1,X}): [Error 0x{2,X}] Could not allocate command slot]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x33170035">E0035_Identification_WrongMoverType</Name>
+				<DisplayName TxtId=""><![CDATA['{0}' (0x{1,X}): [Error 0x{2,X}] Wrong mover type. Some mover type on the system cannot be identified.]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x33172000">E2000_SameTargetButDifferentTasks</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Peers with the same target musst be assigned to the same task]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x33175001">E5001_CouldNotReachStartHeight</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Could not reach defined start height]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x33175007">E5007_InitOfMoverFailed</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Initialization failed]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x33175008">E5008_MoverPositionOutsideOfMovementArea</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Actual position is outside of movement area. Initiating mover stop]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x33175009">E5009_NcMappingError</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] NC mapping error]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x3317500A">E500A_FeedbackError</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Feedback error]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x3317500B">E500B_NcCycleTimeCouldNotBeDetermined</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Could not determine NC cycle time. Initiating mover stop]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x3317500C">E500C_UnreachablePositionSetpoints</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Position setpoints are unreachable (axis = {1}; position setpoint = {2,f}; actual position = {3,f}). Initiating mover stop]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x3317500F">E500F_CouldNotEnterMovementArea</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Could not enter movement area]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x33175010">E5010_ObserverError</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Observer error. Invalid observer parameters seem to be configured.]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x33175011">E5011_RotatedMoverError</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Mover is rotated. Enabling is not possible.]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x33175012">E5012_MaxForceLimitsExceedLimit</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Maximum force limit parameters exceed the maximum limit. Parameters stay the same.]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x33175013">E5013_MinForceLimitsExceedLimit</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Minimum force limit parameters exceed the maximum limit. Parameters stay the same.]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x33175014">E5014_MinGreaterMaxForceLimits</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Minimum force limit parameters are greater than the maximum force parameters. Parameters stay the same.]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x33175015">E5015_MaxForceLimitsBelowZero</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Maximum force limit parameters are below zero. Parameters stay the same.]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x33175016">E5016_MinForceLimitsBelowZero</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Minimum force limit parameters are below zero. Parameters stay the same.]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x33175017">E5017_MaxForceLimitsZeroIn1Dof</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Maximum force limit parameters are equal to zero in at least 1 DOF. Parameters stay the same.]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x33175018">E5018_MinForceLimitsZeroIn1Dof</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Minimum force limit parameters are equal to zero in at least 1 DOF. Parameters stay the same.]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x3317501A">E501A_NoRotationAtThisPosition</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] C setpoint is unreachable at this position. Initiating mover stop.]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x3317501B">E501B_NoRotationFeedbackAvailable</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] No rotation feedback available. Initiating mover stop.]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x3317501D">E501D_NoMovementAreaAssigned</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Mover is not assigned to any movement area. Enabling is not possible.]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x3317501F">E501F_NotAllowedToLeaveMovementAreaWhenFlying</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Mover is not allowed to leave movement area when it is activated. Disable mover first!]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x33175022">E5022_NcPartNotFound</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Commanded Part OID from NC (0x{1,X}) not found.]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x33175023">E5023_IsOnPartWithError</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Mover is on part with error. Switching into error state.]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x33175024">E5024_UsesDeactivatedPart</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Mover uses deactivated part. Switching into error state.]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x33175026">E5026_SystemCouldNotBeEnabled</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Mover cannot enable because the part and the tiles could not be enabled. Switching into error state.]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x33175027">E5027_Communication_MoverHasError</Name>
+				<DisplayName TxtId=""><![CDATA['{0}' (0x{1,X}): [Error 0x{2,X}] Mover communication: Mover has an error. Communication attempt is aborted. Please reset the mover.]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x33175028">E5028_Communication_InvalidTileFw</Name>
+				<DisplayName TxtId=""><![CDATA['{0}' (0x{1,X}): [Error 0x{2,X}] Mover communication: Invalid tile firmware. Please make sure the tile firmware is version 4 or higher.]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x33175029">E5029_Communication_TileDCLinkVoltageTooLow</Name>
+				<DisplayName TxtId=""><![CDATA['{0}' (0x{1,X}): [Error 0x{2,X}] Mover communication: Tile DC link voltage too low. Please make sure the power supply voltage is supplied.]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x3317502A">E502A_Communication_CouldNotSwitchSystemOn</Name>
+				<DisplayName TxtId=""><![CDATA['{0}' (0x{1,X}): [Error 0x{2,X}] Mover communication: System could not be switched on.]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x3317502B">E502B_Communication_CommunicationFailed</Name>
+				<DisplayName TxtId=""><![CDATA['{0}' (0x{1,X}): [Error 0x{2,X}] Mover communication failed.]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x3317502C">E502C_Communication_FileTransferFailed</Name>
+				<DisplayName TxtId=""><![CDATA['{0}' (0x{1,X}): [Error 0x{2,X}] Mover file transfer failed.]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x3317502E">E502E_MoverCannotBeReset</Name>
+				<DisplayName TxtId=""><![CDATA['{0}' (0x{1,X}): [Error 0x{2,X}] Mover cannot be reset because part does not reset.]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x33176002">E6002_EtherCatCommunicationLost</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] EtherCAT communication is lost. System is shut down.]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x33176004">E6004_PowerSupplyTemperatureTooHigh</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Power supply temperature exceeds the limit of 65 °C. System is shut down.]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x33176005">E6005_TileTemperatureTooHigh</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Tile temperature exceeds the limit of 65 °C. System is shut down.]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x33176007">E6007_HardwareError</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Hardware error]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x33178006">E8006_TileHardwareError</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] One tile of this part has an error. The part, its tiles and its movers are shutting down.]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x33179008">E9008_SubMoversInDifferentMovementArea</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Submovers are in different movement areas.]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+			<EventId>
+				<Name Id="#x3317900E">E900E_SubMoverPositionsMismatch</Name>
+				<DisplayName TxtId=""><![CDATA[[Event ID: 0x{0,X}] Mismatch of Submovers positions.]]></DisplayName>
+				<Severity>Error</Severity>
+			</EventId>
+		</DataType>
+	</DataTypes>
+	<Module GUID="{FCCD755F-8FB3-4417-A3BA-ECA6580E285B}">
+		<Name>XPlanarProcessingUnit</Name>
+		<CLSID ClassFactory="TcIoXPlanar">{FCCD755F-8FB3-4417-A3BA-ECA6580E285B}</CLSID>
+		<Licenses>
+			<License>
+				<LicenseId>{C362DA3A-1771-4019-9AF9-F39972E4A76D}</LicenseId>
+			</License>
+		</Licenses>
+		<InitSequence>PSO</InitSequence>
+		<Contexts>
+			<Context>
+				<Id>1</Id>
+				<ManualConfig>
+					<OTCID>#x02010080</OTCID>
+				</ManualConfig>
+				<Priority>8</Priority>
+				<CycleTime>10000000</CycleTime>
+			</Context>
+		</Contexts>
+		<Interfaces>
+			<Interface DisableCodeGeneration="true">
+				<Type GUID="{00000012-0000-0000-E000-000000000064}">ITComObject</Type>
+			</Interface>
+			<Interface DisableCodeGeneration="true">
+				<Type GUID="{03000012-0000-0000-E000-000000000064}">ITcADI</Type>
+			</Interface>
+			<Interface DisableCodeGeneration="true">
+				<Type GUID="{03000018-0000-0000-E000-000000000064}">ITcWatchSource</Type>
+			</Interface>
+		</Interfaces>
+		<Parameters>
+			<Group><![CDATA[General]]></Group>
+			<Group Collapsed="true"><![CDATA[Movers]]></Group>
+			<Group Collapsed="true"><![CDATA[MoverCouplings]]></Group>
+			<Group><![CDATA[MoverDetection]]></Group>
+			<Group><![CDATA[Diagnostics]]></Group>
+			<Group Collapsed="true"><![CDATA[Tiles]]></Group>
+			<Group Collapsed="true"><![CDATA[Parts]]></Group>
+			<Group Collapsed="true"><![CDATA[MovementAreas]]></Group>
+			<Group Collapsed="true"><![CDATA[ProcessingUnit]]></Group>
+			<Group Collapsed="true"><![CDATA[ProcessingLines]]></Group>
+			<Parameter HideParameter="true" Group="General">
+				<Name>TraceLevelMax</Name>
+				<Comment><![CDATA[Controls the amount of log messages.]]></Comment>
+				<BitSize>32</BitSize>
+				<BaseType GUID="{8007AE3B-86BB-40F2-B385-EF87FCC239A4}">TcTraceLevel</BaseType>
+				<Default>
+					<EnumText>tlInfo</EnumText>
+				</Default>
+				<PTCID>#x03002103</PTCID>
+				<ContextId>1</ContextId>
+			</Parameter>
+			<Parameter DisableCodeGeneration="true" Group="ProcessingUnit">
+				<Name>EtherCatMasterSyncTaskObjectID</Name>
+				<Comment><![CDATA[This is the task whose EtherCAT master is the EtherCAT DC (distributed clocks) master.]]></Comment>
+				<BitSize>32</BitSize>
+				<BaseType GUID="{18071995-0000-0000-0000-00000000000F}">OTCID</BaseType>
+				<PTCID>#x03170000</PTCID>
+				<ContextId>1</ContextId>
+			</Parameter>
+			<Parameter HideParameter="true" DisableCodeGeneration="true" Group="General">
+				<Name>WriteMlLog</Name>
+				<Comment><![CDATA[TRUE: Write a log file for start up of ML-Modules.]]></Comment>
+				<BitSize>8</BitSize>
+				<BaseType GUID="{18071995-0000-0000-0000-000000000030}">BOOL</BaseType>
+				<Default>
+					<EnumText>FALSE</EnumText>
+				</Default>
+				<PTCID>#x03170001</PTCID>
+				<ContextId>1</ContextId>
+			</Parameter>
+			<Parameter HideParameter="true" DisableCodeGeneration="true" Group="General">
+				<Name>MlInstructionSet</Name>
+				<Comment><![CDATA[Instruction Set for ML computation]]></Comment>
+				<BitSize>16</BitSize>
+				<BaseType GUID="{65F54988-12F6-43A1-B150-89B25B7BCAEC}">MlInstructionSet</BaseType>
+				<PTCID>#x0317001b</PTCID>
+				<ContextId>1</ContextId>
+			</Parameter>
+			<Parameter DisableCodeGeneration="true" Group="General">
+				<Name>OperationMode</Name>
+				<Comment><![CDATA[In simulation mode no hardware is needed.]]></Comment>
+				<BitSize>16</BitSize>
+				<BaseType GUID="{8F95FC3F-0911-4CD6-B4BF-D1A71E51942B}">OperationMode</BaseType>
+				<Default>
+					<EnumText>Normal</EnumText>
+				</Default>
+				<PTCID>#x03170010</PTCID>
+				<ContextId>1</ContextId>
+			</Parameter>
+			<Parameter DisableCodeGeneration="true" Group="MoverDetection">
+				<Name>StartMoverIdentification</Name>
+				<Comment><![CDATA[Starts the identification and rearrangement of all movers on the system.]]></Comment>
+				<BitSize>0</BitSize>
+				<BaseType GUID="{FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF}"/>
+				<PTCID>#x03171003</PTCID>
+				<ContextId>1</ContextId>
+			</Parameter>
+			<Parameter HideParameter="true" DisableCodeGeneration="true" Group="MoverDetection">
+				<Name>MoverDetectionMaxDeviation</Name>
+				<Comment><![CDATA[Maximum Mean Deviation for B-field pattern detection.]]></Comment>
+				<BitSize>16</BitSize>
+				<BaseType GUID="{18071995-0000-0000-0000-000000000005}">UINT</BaseType>
+				<Default>
+					<Value>600</Value>
+				</Default>
+				<PTCID>#x03170003</PTCID>
+				<ContextId>1</ContextId>
+			</Parameter>
+			<Parameter DisableCodeGeneration="true" Group="MoverDetection">
+				<Name>MoverDetectionSetup</Name>
+				<Comment><![CDATA[Can be adjusted if e.g. configured movers are not on the system and should not be detected.]]></Comment>
+				<BitSize>0</BitSize>
+				<BaseType GUID="{3BA170DB-7EBC-48C9-BE76-05BF34D6A554}">MoverDetectionSetup</BaseType>
+				<ArrayInfo>
+					<LBound>0</LBound>
+					<Elements Min="0" Max="4">0</Elements>
+				</ArrayInfo>
+				<PTCID>#x03170015</PTCID>
+				<ContextId>1</ContextId>
+			</Parameter>
+			<Parameter DisableCodeGeneration="true" Group="MoverDetection">
+				<Name>StartMoverRedetection</Name>
+				<Comment><![CDATA[Activates the mover detection during runtime. Can only be activated if all movers are deactivated.]]></Comment>
+				<BitSize>0</BitSize>
+				<BaseType GUID="{FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF}"/>
+				<PTCID>#x03171002</PTCID>
+				<ContextId>1</ContextId>
+			</Parameter>
+			<Parameter DisableCodeGeneration="true" Group="Diagnostics">
+				<Name>WriteDump</Name>
+				<Comment><![CDATA[Triggers the writing of a dump file. Dump files can provide useful information for the Beckhoff support in case of error(s).]]></Comment>
+				<BitSize>0</BitSize>
+				<BaseType GUID="{FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF}"/>
+				<PTCID>#x03170002</PTCID>
+				<ContextId>1</ContextId>
+			</Parameter>
+			<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="General">
+				<Name>DriverVersion</Name>
+				<Comment><![CDATA[Returns the software version of the XPlanar driver.]]></Comment>
+				<BitSize>64</BitSize>
+				<BaseType GUID="{F7953E12-2B75-484E-8A62-3CC94BAA1066}">DriverVersion</BaseType>
+				<PTCID>#x0317001a</PTCID>
+				<ContextId>1</ContextId>
+			</Parameter>
+			<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="Movers">
+				<Name>MoverCount</Name>
+				<Comment><![CDATA[Returns the number of movers.]]></Comment>
+				<BitSize>32</BitSize>
+				<BaseType GUID="{18071995-0000-0000-0000-000000000008}">UDINT</BaseType>
+				<PTCID>#x03170004</PTCID>
+				<ContextId>1</ContextId>
+			</Parameter>
+			<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="Movers">
+				<Name>MoverObjectIDs</Name>
+				<Comment><![CDATA[Returns an array containing the object IDs of all movers.]]></Comment>
+				<BitSize>32</BitSize>
+				<BaseType GUID="{18071995-0000-0000-0000-00000000000F}">OTCID</BaseType>
+				<ArrayInfo>
+					<LBound>0</LBound>
+					<Elements Min="1" Max="500">1</Elements>
+				</ArrayInfo>
+				<PTCID>#x03170005</PTCID>
+				<ContextId>1</ContextId>
+			</Parameter>
+			<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="Movers">
+				<Name>MoverPositionInfos</Name>
+				<Comment><![CDATA[Actual positions, part and movement area OIDs]]></Comment>
+				<BitSize>448</BitSize>
+				<BaseType GUID="{FFD2EC73-FD67-47FC-94B1-452D4EA94D28}">MoverPositionInfo</BaseType>
+				<ArrayInfo>
+					<LBound>0</LBound>
+					<Elements Min="1" Max="500">1</Elements>
+				</ArrayInfo>
+				<PTCID>#x03170013</PTCID>
+				<ContextId>1</ContextId>
+			</Parameter>
+			<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="MoverCouplings">
+				<Name>MoverCouplingCount</Name>
+				<Comment><![CDATA[Returns the number of mover couplings.]]></Comment>
+				<BitSize>32</BitSize>
+				<BaseType GUID="{18071995-0000-0000-0000-000000000008}">UDINT</BaseType>
+				<PTCID>#x03170017</PTCID>
+				<ContextId>1</ContextId>
+			</Parameter>
+			<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="MoverCouplings">
+				<Name>MoverCouplingObjectIDs</Name>
+				<Comment><![CDATA[Returns an array containing the object IDs of all mover couplings.]]></Comment>
+				<BitSize>32</BitSize>
+				<BaseType GUID="{18071995-0000-0000-0000-00000000000F}">OTCID</BaseType>
+				<ArrayInfo>
+					<LBound>0</LBound>
+					<Elements Min="1" Max="500">1</Elements>
+				</ArrayInfo>
+				<PTCID>#x03170018</PTCID>
+				<ContextId>1</ContextId>
+			</Parameter>
+			<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="MoverCouplings">
+				<Name>MoverCouplingPositionInfos</Name>
+				<Comment><![CDATA[Actual positions, part and movement area OIDs]]></Comment>
+				<BitSize>448</BitSize>
+				<BaseType GUID="{FFD2EC73-FD67-47FC-94B1-452D4EA94D28}">MoverPositionInfo</BaseType>
+				<ArrayInfo>
+					<LBound>0</LBound>
+					<Elements Min="1" Max="500">1</Elements>
+				</ArrayInfo>
+				<PTCID>#x03170019</PTCID>
+				<ContextId>1</ContextId>
+			</Parameter>
+			<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="Tiles">
+				<Name>TileCount</Name>
+				<Comment><![CDATA[Returns the number of tiles.]]></Comment>
+				<BitSize>32</BitSize>
+				<BaseType GUID="{18071995-0000-0000-0000-000000000008}">UDINT</BaseType>
+				<PTCID>#x03170006</PTCID>
+				<ContextId>1</ContextId>
+			</Parameter>
+			<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="Tiles">
+				<Name>TileObjectIDs</Name>
+				<Comment><![CDATA[Returns an array containing the object IDs of all tiles.]]></Comment>
+				<BitSize>384</BitSize>
+				<BaseType GUID="{18071995-0000-0000-0000-00000000000F}">OTCID</BaseType>
+				<ArrayInfo>
+					<LBound>0</LBound>
+					<Elements Min="1" Max="100">12</Elements>
+				</ArrayInfo>
+				<PTCID>#x03170007</PTCID>
+				<ContextId>1</ContextId>
+			</Parameter>
+			<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="Parts">
+				<Name>PartCount</Name>
+				<Comment><![CDATA[Returns the number of parts.]]></Comment>
+				<BitSize>32</BitSize>
+				<BaseType GUID="{18071995-0000-0000-0000-000000000008}">UDINT</BaseType>
+				<PTCID>#x03170011</PTCID>
+				<ContextId>1</ContextId>
+			</Parameter>
+			<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="Parts">
+				<Name>PartObjectIDs</Name>
+				<Comment><![CDATA[Returns an array containing the object IDs of all parts.]]></Comment>
+				<BitSize>32</BitSize>
+				<BaseType GUID="{18071995-0000-0000-0000-00000000000F}">OTCID</BaseType>
+				<ArrayInfo>
+					<LBound>0</LBound>
+					<Elements Min="1" Max="100">1</Elements>
+				</ArrayInfo>
+				<PTCID>#x03170012</PTCID>
+				<ContextId>1</ContextId>
+			</Parameter>
+			<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="ProcessingLines">
+				<Name>ProcessingLinesCount</Name>
+				<Comment><![CDATA[Returns the number of processing lines.]]></Comment>
+				<BitSize>32</BitSize>
+				<BaseType GUID="{18071995-0000-0000-0000-000000000008}">UDINT</BaseType>
+				<PTCID>#x0317000a</PTCID>
+				<ContextId>1</ContextId>
+			</Parameter>
+			<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="ProcessingLines">
+				<Name>ProcessingLinesObjectIDs</Name>
+				<Comment><![CDATA[Returns an array containing the object IDs of all processing lines.]]></Comment>
+				<BitSize>64</BitSize>
+				<BaseType GUID="{18071995-0000-0000-0000-00000000000F}">OTCID</BaseType>
+				<ArrayInfo>
+					<LBound>0</LBound>
+					<Elements Min="1" Max="100">2</Elements>
+				</ArrayInfo>
+				<PTCID>#x0317000b</PTCID>
+				<ContextId>1</ContextId>
+			</Parameter>
+			<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="MovementAreas">
+				<Name>MovementAreaCount</Name>
+				<Comment><![CDATA[Returns the number of movement areas.]]></Comment>
+				<BitSize>32</BitSize>
+				<BaseType GUID="{18071995-0000-0000-0000-000000000008}">UDINT</BaseType>
+				<PTCID>#x03170008</PTCID>
+				<ContextId>1</ContextId>
+			</Parameter>
+			<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="MovementAreas">
+				<Name>MovementAreaObjectIDs</Name>
+				<Comment><![CDATA[Returns an array containing the object IDs of all movement areas.]]></Comment>
+				<BitSize>32</BitSize>
+				<BaseType GUID="{18071995-0000-0000-0000-00000000000F}">OTCID</BaseType>
+				<ArrayInfo>
+					<LBound>0</LBound>
+					<Elements Min="1" Max="500">1</Elements>
+				</ArrayInfo>
+				<PTCID>#x03170009</PTCID>
+				<ContextId>1</ContextId>
+			</Parameter>
+			<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="ProcessingUnit">
+				<Name>TaskCount</Name>
+				<Comment><![CDATA[Returns the number of tasks.]]></Comment>
+				<BitSize>32</BitSize>
+				<BaseType GUID="{18071995-0000-0000-0000-000000000008}">UDINT</BaseType>
+				<PTCID>#x03171000</PTCID>
+				<ContextId>1</ContextId>
+			</Parameter>
+			<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="ProcessingUnit">
+				<Name>TaskObjectIDs</Name>
+				<Comment><![CDATA[Returns an array with the task object IDs.]]></Comment>
+				<BitSize>64</BitSize>
+				<BaseType GUID="{18071995-0000-0000-0000-00000000000F}">OTCID</BaseType>
+				<ArrayInfo>
+					<LBound>0</LBound>
+					<Elements Min="1" Max="1000">2</Elements>
+				</ArrayInfo>
+				<PTCID>#x03171001</PTCID>
+				<ContextId>1</ContextId>
+			</Parameter>
+			<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="Movers">
+				<Name>MoverDetectionInfos</Name>
+				<Comment><![CDATA[Expected and detected mover count of each different movertype.]]></Comment>
+				<BitSize>320</BitSize>
+				<BaseType GUID="{23B5E354-DC2E-4B41-AB0B-0F62FAF579F6}">XpuMoverDetectionInfos</BaseType>
+				<PTCID>#x03170014</PTCID>
+				<ContextId>1</ContextId>
+			</Parameter>
+			<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="Movers">
+				<Name>MoverIdentificationStatus</Name>
+				<BitSize>16</BitSize>
+				<BaseType GUID="{B1D1DB33-72B5-44D1-9D6F-7348ACC5B461}">MoverIdentificationStatus</BaseType>
+				<PTCID>#x03171004</PTCID>
+				<ContextId>1</ContextId>
+			</Parameter>
+		</Parameters>
+		<EventClasses>
+			<EventClass>
+				<Type GUID="{C10BD6CA-8851-45E9-BA85-9FA6B7EB2841}">XPlanarEvents</Type>
+			</EventClass>
+		</EventClasses>
+		<Properties>
+			<Property>
+				<Name>ChildCategory</Name>
+				<Value>ProcessingUnit</Value>
+			</Property>
+		</Properties>
+		<InstanceName>XPlanar</InstanceName>
+		<OTCID>#x01010010</OTCID>
+		<ParameterValues>
+			<Value>
+				<Name>TraceLevelMax</Name>
+				<EnumText>tlInfo</EnumText>
+			</Value>
+			<Value>
+				<Name>EtherCatMasterSyncTaskObjectID</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>WriteMlLog</Name>
+				<EnumText>FALSE</EnumText>
+			</Value>
+			<Value>
+				<Name>MlInstructionSet</Name>
+				<EnumText>AllowAll</EnumText>
+			</Value>
+			<Value>
+				<Name>OperationMode</Name>
+				<EnumText>BasicSimulation</EnumText>
+			</Value>
+			<Value>
+				<Name>MoverDetectionMaxDeviation</Name>
+				<Value>600</Value>
+			</Value>
+			<Value>
+				<Name>DriverVersion[0]</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>DriverVersion[1]</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>DriverVersion[2]</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>DriverVersion[3]</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>MoverCount</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>MoverObjectIDs[0]</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>MoverPositionInfos[0].ActualPosition.x</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>MoverPositionInfos[0].ActualPosition.y</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>MoverPositionInfos[0].ActualPosition.z</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>MoverPositionInfos[0].ActualPosition.a</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>MoverPositionInfos[0].ActualPosition.b</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>MoverPositionInfos[0].ActualPosition.c</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>MoverPositionInfos[0].PartOID</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>MoverPositionInfos[0].MovementAreaOID</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>MoverCouplingCount</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>MoverCouplingObjectIDs[0]</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>MoverCouplingPositionInfos[0].ActualPosition.x</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>MoverCouplingPositionInfos[0].ActualPosition.y</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>MoverCouplingPositionInfos[0].ActualPosition.z</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>MoverCouplingPositionInfos[0].ActualPosition.a</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>MoverCouplingPositionInfos[0].ActualPosition.b</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>MoverCouplingPositionInfos[0].ActualPosition.c</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>MoverCouplingPositionInfos[0].PartOID</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>MoverCouplingPositionInfos[0].MovementAreaOID</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>TileCount</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>TileObjectIDs[0]</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>TileObjectIDs[1]</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>TileObjectIDs[2]</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>TileObjectIDs[3]</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>TileObjectIDs[4]</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>TileObjectIDs[5]</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>TileObjectIDs[6]</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>TileObjectIDs[7]</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>TileObjectIDs[8]</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>TileObjectIDs[9]</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>TileObjectIDs[10]</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>TileObjectIDs[11]</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>PartCount</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>PartObjectIDs[0]</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>ProcessingLinesCount</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>ProcessingLinesObjectIDs[0]</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>ProcessingLinesObjectIDs[1]</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>MovementAreaCount</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>MovementAreaObjectIDs[0]</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>TaskCount</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>TaskObjectIDs[0]</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>TaskObjectIDs[1]</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>MoverDetectionInfos.Total.Expected</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>MoverDetectionInfos.Total.Detected</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>MoverDetectionInfos.APM4220.Expected</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>MoverDetectionInfos.APM4220.Detected</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>MoverDetectionInfos.APM4330.Expected</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>MoverDetectionInfos.APM4330.Detected</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>MoverDetectionInfos.APM4550.Expected</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>MoverDetectionInfos.APM4550.Detected</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>MoverDetectionInfos.APM4221.Expected</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>MoverDetectionInfos.APM4221.Detected</Name>
+				<Value>0</Value>
+			</Value>
+			<Value>
+				<Name>MoverIdentificationStatus</Name>
+				<EnumText>Ready</EnumText>
+			</Value>
+		</ParameterValues>
+	</Module>
+</TcModuleInstance>

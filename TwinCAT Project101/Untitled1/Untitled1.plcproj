@@ -17,17 +17,16 @@
     <LibraryReferences>{3ae7c3dd-f70e-4137-bcc3-f5b943efce0d}</LibraryReferences>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Configuration\Constraints.TcGVL">
+    <Compile Include="Controller\Controller.TcPOU">
       <SubType>Code</SubType>
-      <LinkAlways>true</LinkAlways>
     </Compile>
-    <Compile Include="Mover\Planar_Mover.TcPOU">
+    <Compile Include="DUTs\Motion_Parameters_Type.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MAIN.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="PlcTask.TcTTO">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Controller\XboxController.TcPOU">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -35,7 +34,6 @@
     <Folder Include="DUTs" />
     <Folder Include="GVLs" />
     <Folder Include="Mover" />
-    <Folder Include="Configuration" />
     <Folder Include="VISUs" />
     <Folder Include="Controller" />
   </ItemGroup>
@@ -52,6 +50,10 @@
       <DefaultResolution>Tc2_System, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc2_System</Namespace>
     </PlaceholderReference>
+    <PlaceholderReference Include="Tc2_Utilities">
+      <DefaultResolution>Tc2_Utilities, * (Beckhoff Automation GmbH)</DefaultResolution>
+      <Namespace>Tc2_Utilities</Namespace>
+    </PlaceholderReference>
     <PlaceholderReference Include="Tc3_Mc3PlanarMotion">
       <DefaultResolution>Tc3_Mc3PlanarMotion, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc3_Mc3PlanarMotion</Namespace>
@@ -64,6 +66,9 @@
       <DefaultResolution>Tc3_Physics, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc3_Physics</Namespace>
     </PlaceholderReference>
+    <PlaceholderReference Include="Tc3_XPlanarUtility">
+      <DefaultResolution>Tc3_XPlanarUtility, * (Beckhoff Automation GmbH &amp; Co. KG)</DefaultResolution>
+    </PlaceholderReference>
     <PlaceholderReference Include="XboxControllerUtilities">
       <DefaultResolution>XboxControllerUtilities, * (Beckhoff Community)</DefaultResolution>
       <Namespace>XboxControllerUtilities</Namespace>
@@ -73,6 +78,9 @@
     <None Include="Untitled1.tmc">
       <SubType>Content</SubType>
     </None>
+    <Content Include="VISUs\Untitled1.tmc">
+      <SubType>Content</SubType>
+    </Content>
   </ItemGroup>
   <ProjectExtensions>
     <PlcProjectOptions>
