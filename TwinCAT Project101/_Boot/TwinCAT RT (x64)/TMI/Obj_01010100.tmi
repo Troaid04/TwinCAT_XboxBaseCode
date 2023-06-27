@@ -1575,13 +1575,13 @@
 			</Interface>
 		</Interfaces>
 		<Parameters>
-			<Group><![CDATA[General]]></Group>
-			<Group><![CDATA[Payload]]></Group>
+			<Group Collapsed="true"><![CDATA[General]]></Group>
+			<Group Collapsed="true"><![CDATA[Payload]]></Group>
 			<Group Collapsed="true"><![CDATA[Inertia]]></Group>
 			<Group Collapsed="true"><![CDATA[ControllerParameters]]></Group>
 			<Group Collapsed="true"><![CDATA[ObserverParameters]]></Group>
-			<Group><![CDATA[SimulationMode]]></Group>
-			<Group><![CDATA[ForceLimits]]></Group>
+			<Group Collapsed="true"><![CDATA[SimulationMode]]></Group>
+			<Group Collapsed="true"><![CDATA[ForceLimits]]></Group>
 			<Group Collapsed="true"><![CDATA[Controller]]></Group>
 			<Group Collapsed="true"><![CDATA[Methods]]></Group>
 			<Group Collapsed="true"><![CDATA[Communication]]></Group>

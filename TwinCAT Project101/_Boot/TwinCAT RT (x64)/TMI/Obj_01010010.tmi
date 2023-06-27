@@ -984,7 +984,7 @@
 			</Value>
 			<Value>
 				<Name>OperationMode</Name>
-				<EnumText>BasicSimulation</EnumText>
+				<EnumText>Normal</EnumText>
 			</Value>
 			<Value>
 				<Name>MoverDetectionMaxDeviation</Name>

@@ -123,6 +123,16 @@ VAR
 			SetTo90						: 		BOOL;
 			isPressed 					: 		BOOL ;
 			OutOfEndlessRotation		:		TON;
+			C_Kp 						:		LREAL:= 0.5;  
+			C_Ki 						:		LREAL:= 0.2;  
+			C_Kd 						:		LREAL:= 0.1;  
+			C_error						: 		LREAL;         
+			C_lastError					: 		LREAL := 0.0; 
+			C_integral					: 		LREAL := 0.0; 
+			C_MaxIntegral				: 		LREAL := 100; 
+			C_MinIntegral 				: 		LREAL := -100; 
+			C_derivative				: 		LREAL;     
+			ActualC_SetPoint			: 		LREAL;         
 
 			//Haptic Feed Back
 			HapticTimerMedium			:		TON;
@@ -180,6 +190,7 @@ END_IF
 
 
 						Xplanar_Mover.SetExternalSetpoint( XPPosition[1], ZeroVector, ZeroVector);
+
 ]]></ST>
     </Implementation>
     <Method Name="Cyclic" Id="{2fac9a76-aad4-4d42-88f9-1c48190d79c5}">
@@ -194,6 +205,8 @@ VAR
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF Ready AND NOT XPlanar_Mover.Error THEN
+	
+
 CompareX := MoverPos[1].X;
 CompareY := MoverPos[1].y;
 BufferC  := MoverPos[1].c - Closest90; 
@@ -202,11 +215,25 @@ BufferC  := MoverPos[1].c - Closest90;
 //Measure cycle time 
 Profiler1(START:=TRUE, RESET:= ResetProfiler , BUSY=> , DATA=> DATA  );
 	
-		IF MoverType = 4330 THEN
+		// Selecting Mover type
+		IF MoverType = 4550 THEN
+			MoverTypeWidth  := 235 / 2 ; 
+		    MoverTypeLength := 235 / 2;
+			RotationDisplacement :=  (MoverTypeWidth) * SIN(0.1745); 
+		ELSIF MoverType = 4330 THEN
 			MoverTypeWidth  := 155 / 2 ; 
 		    MoverTypeLength := 155 / 2;
 			RotationDisplacement :=  (MoverTypeWidth) * SIN(0.1745); 
+		ELSIF MoverType = 4221 THEN
+			MoverTypeWidth  := 127 / 2 ; 
+		    MoverTypeLength := 127 / 2;
+			RotationDisplacement :=  (MoverTypeWidth) * SIN(0.1745);
+		ELSIF MoverType =  4220 THEN
+			MoverTypeWidth  := 113 / 2 ; 
+		    MoverTypeLength := 113 / 2;
+			RotationDisplacement :=  (MoverTypeWidth) * SIN(0.1745);
 		END_IF
+			
 
 		//Calculating Boundries
 		MaxTableYTravel := (NumberOfYTiles * 240) - MoverTypeWidth  - RotationDisplacement - Buffer;
@@ -216,14 +243,17 @@ Profiler1(START:=TRUE, RESET:= ResetProfiler , BUSY=> , DATA=> DATA  );
 		MinTableXTravel :=  MoverTypeLength + RotationDisplacement + Buffer;
 		
 		//Hold down for automatic raise and lowering
-		TON1(IN := XboxController.P_Buttons.bLeft_Shoulder, PT := T#0.5S); 
-		TON2(IN := XboxController.P_Buttons.bRight_Shoulder, PT := T#0.5S);
-		SmoothingTon1(PT := T#0.25S);
-		SmoothingTon2(PT := T#0.25S);
+		TON1(IN := XboxController.P_Buttons.bLeft_Shoulder, PT := T#0.25S); 
+		TON2(IN := XboxController.P_Buttons.bRight_Shoulder, PT := T#0.25S);
+		SmoothingTon1(PT := T#0.1S);
+		SmoothingTon2(PT := T#0.1S);
 		
 		//Mode switching 
 		OutOfEndlessRotation(IN :=IsPressed, PT := T#0.05S);
 		
+		//Time Duration to move C back to 0 
+		Timer_Cyclic(In:=StartTimer, PT := T#2S);
+
 		//Haptic Feedback Duration
 		HapticTimerMedium(IN :=HapticTriggerMedium, PT := T#0.5S);
 		HapticTimerShort(IN :=HapticTriggerShort, PT := T#0.2S);
@@ -252,6 +282,7 @@ Profiler1(START:=TRUE, RESET:= ResetProfiler , BUSY=> , DATA=> DATA  );
 			Height := Height; 
 		END_IF
 
+		XPPosition[1].z		:= Height; 		
 		
 		//A tilt 
 		XPPosition[1].a		:= 0.008 * XboxController.p_Right_Joystick.fY;
@@ -317,7 +348,6 @@ Profiler1(START:=TRUE, RESET:= ResetProfiler , BUSY=> , DATA=> DATA  );
 			AtYPoint := FALSE;
 		END_IF	
 		
-		Timer_Cyclic(In:=StartTimer, PT := T#2S);
 
 		//Holding previous varibles to compare later
 		PrevNegRot := LREAL_TO_INT(MaxNegRot); 
@@ -328,10 +358,10 @@ Profiler1(START:=TRUE, RESET:= ResetProfiler , BUSY=> , DATA=> DATA  );
 		CheckPosRot := XpPosition[1].c + 10; 
 		
 		// Set the smoothing factor (alpha) and ramping factor (ramp_factor) to values between 0 and 1
-		alpha := 0.001;
+		alpha := 0.005;
 		
 		// Calculate the Filtered value of the input signal
-		Filtered_Output := alpha * (XboxController.P_Left_Trigger - XboxController.P_Right_Trigger) + (1-alpha) * Filtered_Output;
+		Filtered_Output := (alpha * (XboxController.P_Left_Trigger - XboxController.P_Right_Trigger) + (1-alpha) * Filtered_Output) ;
 		
 		//Actual C
 		C_VALUE := MoverPos[1].c; 
@@ -392,13 +422,14 @@ Profiler1(START:=TRUE, RESET:= ResetProfiler , BUSY=> , DATA=> DATA  );
 				SetTo90 := FALSE;
 		
 			ELSE 
-				//Nothing
+				ActualC_SetPoint := XpPosition[1].c - Closest90; 
 			END_IF
 		ELSE	
-			//Werid errors still 
-			// Apply exponential smoothing to the ramped input signal and limit the output to the range [ActC-10, ActC+10]
 			IF NOT IsPressed AND NOT PastRot10 THEN
+				//+-10 Rotation Control
+				// Apply exponential smoothing to the ramped input signal and limit the output to the range [ActC-10, ActC+10]
 				XpPosition[1].c := LIMIT(MaxNegRot, (Filtered_Output + Closest90) , MaxPosRot);
+				
 			END_IF
 		END_IF
 		
@@ -445,11 +476,11 @@ Profiler1(START:=TRUE, RESET:= ResetProfiler , BUSY=> , DATA=> DATA  );
 			
 		END_IF
 		
-			//Make Sure that it is ready to move before allowing Movement
-			IF ((RotSetPoint + 0.6) > XpPosition[1].c) AND ((RotSetPoint - 0.6) < XpPosition[1].c) THEN
-				SetTo90 := TRUE;
-				HasMoved := FALSE;
-			END_IF
+		//Make Sure that it is ready to move before allowing Movement
+		IF ((RotSetPoint + 0.6) > XpPosition[1].c) AND ((RotSetPoint - 0.6) < XpPosition[1].c) THEN
+			SetTo90 := TRUE;
+			HasMoved := FALSE;
+		END_IF
 		
 		IF Timer_Cyclic.Q AND SetTo90 THEN
 			IF XboxController.P_Left_Trigger >= 0 AND XboxController.P_Right_Trigger >= 0 THEN
@@ -473,16 +504,17 @@ Profiler1(START:=TRUE, RESET:= ResetProfiler , BUSY=> , DATA=> DATA  );
 				HapticTriggerMedium := FALSE;
 			END_IF
 			
+			//Make an Elsif oops
 			//When found a rotation point or at a boundry 
 			IF (XboxController.P_Buttons.bA_Button AND AtXPoint AND AtYPoint) OR  (XboxController.P_Buttons.bLeft_Shoulder OR XboxController.P_Buttons.bRight_Shoulder) OR ((MinTableXTravel + 1 > CompareX) OR (MinTableYTravel + 1 > CompareY) OR (MaxTableXTravel - 1 < CompareX) OR (MaxTableYTravel - 1 < CompareY))THEN
 				XboxController.SetRumble(0,100);
 			ELSE
 				XboxController.SetRumble(0,0);
 			END_IF
+			
 		END_IF
 		
-
-				//need to figure out a way to limit travel in a direction if a boundry is approched/hit. Thinking about adding a negative in the equation that can update depending on IRL Pos
+		
 		// X and Y Movement from Controller
 		IF NOT PastRot10 OR NOT HasMoved AND SetTo90 THEN
 			invertX				:= SEL(XboxController.P_Left_Joystick.fX < 1,1,-1);
@@ -631,10 +663,12 @@ END_CASE
       <LineId Id="209" Count="0" />
       <LineId Id="127" Count="1" />
       <LineId Id="124" Count="0" />
+      <LineId Id="574" Count="0" />
       <LineId Id="116" Count="0" />
     </LineIds>
     <LineIds Name="Controller.Cyclic">
       <LineId Id="5" Count="0" />
+      <LineId Id="760" Count="1" />
       <LineId Id="9" Count="0" />
       <LineId Id="693" Count="0" />
       <LineId Id="697" Count="0" />
@@ -643,10 +677,20 @@ END_CASE
       <LineId Id="521" Count="0" />
       <LineId Id="432" Count="0" />
       <LineId Id="522" Count="0" />
+      <LineId Id="718" Count="0" />
+      <LineId Id="717" Count="0" />
+      <LineId Id="720" Count="1" />
+      <LineId Id="719" Count="0" />
       <LineId Id="670" Count="0" />
       <LineId Id="672" Count="0" />
       <LineId Id="674" Count="1" />
       <LineId Id="673" Count="0" />
+      <LineId Id="708" Count="2" />
+      <LineId Id="712" Count="0" />
+      <LineId Id="714" Count="1" />
+      <LineId Id="713" Count="0" />
+      <LineId Id="716" Count="0" />
+      <LineId Id="711" Count="0" />
       <LineId Id="688" Count="0" />
       <LineId Id="668" Count="0" />
       <LineId Id="653" Count="0" />
@@ -662,20 +706,24 @@ END_CASE
       <LineId Id="652" Count="0" />
       <LineId Id="604" Count="0" />
       <LineId Id="562" Count="0" />
-      <LineId Id="601" Count="1" />
+      <LineId Id="601" Count="0" />
+      <LineId Id="725" Count="0" />
+      <LineId Id="722" Count="1" />
+      <LineId Id="602" Count="0" />
       <LineId Id="589" Count="0" />
       <LineId Id="600" Count="0" />
       <LineId Id="71" Count="22" />
       <LineId Id="28" Count="0" />
       <LineId Id="96" Count="0" />
       <LineId Id="32" Count="0" />
+      <LineId Id="772" Count="0" />
       <LineId Id="51" Count="3" />
       <LineId Id="34" Count="1" />
       <LineId Id="152" Count="43" />
       <LineId Id="404" Count="11" />
       <LineId Id="196" Count="0" />
       <LineId Id="208" Count="0" />
-      <LineId Id="277" Count="31" />
+      <LineId Id="278" Count="30" />
       <LineId Id="563" Count="0" />
       <LineId Id="565" Count="21" />
       <LineId Id="564" Count="0" />
@@ -683,12 +731,14 @@ END_CASE
       <LineId Id="554" Count="0" />
       <LineId Id="319" Count="5" />
       <LineId Id="555" Count="0" />
-      <LineId Id="325" Count="1" />
+      <LineId Id="325" Count="0" />
+      <LineId Id="746" Count="0" />
       <LineId Id="350" Count="1" />
-      <LineId Id="525" Count="0" />
-      <LineId Id="524" Count="0" />
       <LineId Id="551" Count="0" />
+      <LineId Id="742" Count="0" />
+      <LineId Id="745" Count="0" />
       <LineId Id="509" Count="0" />
+      <LineId Id="743" Count="0" />
       <LineId Id="552" Count="0" />
       <LineId Id="354" Count="28" />
       <LineId Id="418" Count="0" />
@@ -710,12 +760,14 @@ END_CASE
       <LineId Id="591" Count="2" />
       <LineId Id="559" Count="1" />
       <LineId Id="558" Count="0" />
-      <LineId Id="636" Count="2" />
+      <LineId Id="636" Count="0" />
+      <LineId Id="763" Count="0" />
+      <LineId Id="637" Count="1" />
       <LineId Id="641" Count="3" />
+      <LineId Id="762" Count="0" />
       <LineId Id="677" Count="0" />
       <LineId Id="596" Count="0" />
-      <LineId Id="656" Count="0" />
-      <LineId Id="621" Count="0" />
+      <LineId Id="726" Count="0" />
       <LineId Id="38" Count="0" />
       <LineId Id="43" Count="0" />
       <LineId Id="47" Count="1" />

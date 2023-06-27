@@ -10,7 +10,7 @@ MyController : Controller;
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[MyController.Motion_Parameters.maxVelocity := 250;
+      <ST><![CDATA[MyController.Motion_Parameters.maxVelocity := 800;
 
 MyController.NumberOfXTiles := 4;
 MyController.NumberOfYTiles := 3;
