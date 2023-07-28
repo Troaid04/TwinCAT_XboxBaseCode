@@ -10,6 +10,7 @@ VAR_GLOBAL
 	Kp 							:		LREAL      := 3; 		// P Term
 	Ki 							:		LREAL      := 0.5; 		// I Term
 	Kd 							:		LREAL      := 2; 		// D Term
+	Restarting					: 		BOOL;
 	
 	
 END_VAR]]></Declaration>
