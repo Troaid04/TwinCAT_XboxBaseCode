@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Refactors>
+  <Renames>
+    <RenamedType>
+      <Type guid="6365a5dc-96c0-42bf-a26d-9812d6df8683">MAIN</Type>
+      <From>MAIN</From>
+      <To>XboxController</To>
+    </RenamedType>
+    <RenamedType>
+      <Type guid="784e570f-0db5-4c55-af43-82556bea4079">METH</Type>
+      <From>METH</From>
+      <To>SetPoint</To>
+    </RenamedType>
+    <RenamedType>
+      <Type guid="d4047019-2fe0-424f-99f1-436b9776e207">BUTTTONA</Type>
+      <From>butttonA</From>
+      <To>buttonA</To>
+    </RenamedType>
+    <RenamedType>
+      <Type guid="464bc1c8-ce96-4032-abe5-2b4bdb9882a3">X_Y</Type>
+      <From>X_Y</From>
+      <To>Movement_XY</To>
+    </RenamedType>
+  </Renames>
+</Refactors>
