@@ -19,12 +19,12 @@ VAR
 			cmdFB 						:		ARRAY [1..2]  OF MC_PlanarFeedBack ;	
 			Timer						: 		TON;
 			DONE						: 		BOOL;
-			XpAcceleration 				:		MoverVector; 
+			XpPosition					:		MoverVector; 
 			MoverPos					:		MoverVector;
 			ZeroVector 					:		MoverVector;
 			InvertX						:		LREAL; 
 			InvertY						:		LREAL;
-			
+			nCase 						: 		SINT := 1; 
 			
 END_VAR
 VAR_IN_OUT
@@ -36,7 +36,7 @@ Cyclic();
 
 
 
-	Xplanar_Mover.SetExternalSetpoint( ZeroVector, ZeroVector, XpAcceleration);
+	Xplanar_Mover.SetExternalSetpoint( XpPosition, ZeroVector, ZeroVector);
 
 ]]></ST>
     </Implementation>
@@ -74,7 +74,7 @@ VAR_INPUT
 
 END_VAR
 VAR
-	nCase 					: SINT := 1; 
+
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[CASE nCase OF
@@ -131,10 +131,10 @@ END_VAR]]></Declaration>
 10:
 	//Update Positions to real world value before initization of External Setpoint
 	IF cmdFB[1].Done  AND NOT cmdFB[1].Busy AND NOT cmdFB[2].Busy  THEN
-		XpAcceleration.y := MoverPos.y; 
-		XpAcceleration.x := MoverPos.x; 
-		XpAcceleration.z := MoverPos.z;
-		XpAcceleration.c := MoverPos.c;
+		XpPosition.y := MoverPos.y; 
+		XpPosition.x := MoverPos.x; 
+		XpPosition.z := MoverPos.z;
+		XpPosition.c := MoverPos.c;
 		nCase := 11;
 	END_IF
 
@@ -227,7 +227,7 @@ VAR_INPUT
 	
 lStick_X 				: LREAL;
 lStick_Y				: LREAL;
-bButtom_A 				: BOOL; 
+bButton_A 				: BOOL; 
 bButton_X 				: BOOL;
 bButton_Y 				: BOOL;
 
@@ -239,8 +239,8 @@ END_VAR
 	invertX				:= SEL(lStick_X < 1,1,-1);
 	invertY				:= SEL(lStick_Y < 1,1,-1);
 
-	XpAcceleration.y		:= (( EXPT(lStick_Y , 2) / 100 )* (MotionParameters.maxAcceleration / 100) * MotionParameters.deltaT ); //* invertY;
-	XpAcceleration.x		:= (( EXPT(lStick_X , 2) / 100 )* (MotionParameters.maxAcceleration / 100) * MotionParameters.deltaT ); //* invertX;
+	XpPosition.y		:= XPPosition.y + (( EXPT(lStick_Y , 2) / 100 )* (MotionParameters.maxAcceleration / 100) * MotionParameters.deltaT ); //* invertY;
+	XpPosition.x		:= XPPosition.x + (( EXPT(lStick_X , 2) / 100 )* (MotionParameters.maxAcceleration / 100) * MotionParameters.deltaT ); //* invertX;
 
 END_IF]]></ST>
       </Implementation>
