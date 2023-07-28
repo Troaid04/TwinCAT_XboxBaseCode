@@ -1,0 +1,273 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="XPlanarMover" Id="{3939b667-1d94-4118-9d46-041468b4f25e}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK XPlanarMover
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+	
+			Xplanar_Mover 				: 		MC_PlanarMover; 
+			moverState					:		MC_Planar_State;
+
+END_VAR
+VAR
+	
+			stExtOptions				:		ARRAY [1..2]  OF ST_ExternalSetpointGenerationOptions; 
+			cmdFB 						:		ARRAY [1..2]  OF MC_PlanarFeedBack ;	
+			Timer						: 		TON;
+			DONE						: 		BOOL;
+
+END_VAR
+VAR_IN_OUT
+	 
+
+
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+
+
+]]></ST>
+    </Implementation>
+    <Action Name="Cyclic" Id="{82484dc3-e441-4c06-856d-d2ed15a41028}">
+      <Implementation>
+        <ST><![CDATA[//Mover 1 updates
+Xplanar_Mover.Update(); 
+cmdFB[1].Update();
+moverState := Xplanar_Mover.MCTOPLC.STD.State;
+//MoverPos[1] := Xplanar_Mover.MCTOPLC.ACT.ActPos;
+
+
+]]></ST>
+      </Implementation>
+    </Action>
+    <Method Name="Height" Id="{a081a7d9-e07b-49a5-bb9d-587c5faff0c3}">
+      <Declaration><![CDATA[METHOD Height
+VAR_INPUT
+	
+LBumper 					: BOOL; 
+RBumper 					: BOOL; 
+
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[//IF Done AND (NOT MoverState = 5 OR  MoverState = 1) THEN 
+	
+//END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Init" Id="{def29215-c1db-47bd-a987-c8cae1603651}">
+      <Declaration><![CDATA[METHOD Init
+VAR_INPUT
+	
+bStart 						: BOOL ;
+
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[(*CASE nCase OF
+1: 
+
+	Done := FALSE;
+	Xplanar_Mover.Reset(cmdFB[1]);
+	nCase := 2;
+
+2:
+
+	IF cmdFB[1].Done THEN
+		nCase := 3; 
+	END_IF
+	
+3:
+
+	Xplanar_Mover.Enable(cmdFB[1]);
+	nCase := 4;
+	
+4:
+
+	IF cmdFB[1].Done THEN
+		nCase := 5;
+	END_IF
+	
+5:
+
+	stExtOptions[1].mode := MC_EXTERNAL_SET_POSITION_MODE.Absolute; // Setting up external Setpoint generator
+	nCase := 6; 
+6:
+
+
+	nCase := 7;
+
+7:
+
+	IF  MoverState = 5 OR  MoverState = 1 THEN 
+		nCase := 1;		
+	ELSE 		
+		nCase := 8;
+	END_IF 
+
+8:
+	IF MoverState = 3 THEN 
+		nCase := 9;
+	END_IF
+9:
+
+	IF bStart THEN
+		nCase := 10;
+	END_IF
+
+10:
+	//Update Positions to real world value before initization of External Setpoint
+	IF cmdFB[1].Done  AND NOT cmdFB[1].Busy AND NOT cmdFB[2].Busy  THEN
+		XpPosition[1].y := MoverPos[1].y; 
+		XpPosition[1].x := MoverPos[1].x; 
+		XpPosition[1].z := MoverPos[1].z;
+		XpPosition[1].c := MoverPos[1].c;
+		nCase := 11;
+	END_IF
+
+
+11:
+
+	//Start External Setpoint Generatior
+	Xplanar_Mover.StartExternalSetpointGeneration(cmdFB[1], stExtOptions[1]); 
+	nCase := 12; 
+12:
+
+	nCase := 13;
+	
+13:
+
+// If errored be able to reset 
+IF MoverState = 5 OR  MoverState = 1 THEN
+	nCase := 1; 
+ELSE
+	Done := TRUE; 
+END_IF
+ 	
+END_CASE*)]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Recover" Id="{e6a63d81-483f-4a71-99d2-c7f5840dab5a}">
+      <Declaration><![CDATA[METHOD Recover
+VAR_INPUT
+	
+			bBack 							: BOOL ; 
+
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[(*CASE nRecover OF 
+	1:
+		IF Done THEN
+			nRecover := nRecover + 1;
+		END_IF
+	
+	2:
+	
+		IF  MoverState = 5 OR  MoverState = 1 THEN
+			nRecover := nRecover + 1; 
+		END_IF
+		
+	3:
+	
+		IF 
+			
+		END_IF
+		
+END_CASE*)]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Rotation" Id="{93c77cf9-6e7f-471c-a695-31105a4ae36b}">
+      <Declaration><![CDATA[METHOD Rotation : BOOL
+VAR_INPUT
+	
+LTrigger 				: INT ; 
+RTrigger 				: INT ; 
+
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[//IF Done AND (NOT MoverState = 5 OR  MoverState = 1) THEN 
+	
+//END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Tilt" Id="{c7f673dd-bde8-4bb0-a48c-edd491df8f0b}">
+      <Declaration><![CDATA[METHOD Tilt
+VAR_INPUT
+	
+rStick_X 				: LREAL;
+rStick_Y				: LREAL;
+bButton_B 				: BOOL; 
+
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[//IF Done AND (NOT MoverState = 5 OR  MoverState = 1) THEN 
+	
+//END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="XYMovement" Id="{baec03b5-3e08-481e-807f-3454b9c413ba}">
+      <Declaration><![CDATA[METHOD XYMovement
+VAR_INPUT
+	
+lStick_X 				: LREAL;
+lStick_Y				: LREAL;
+bButtom_A 				: BOOL; 
+bButton_X 				: BOOL;
+bButton_Y 				: BOOL;
+
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// Done AND (NOT MoverState = 5 OR  MoverState = 1) THEN 
+	
+//END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="XPlanarMover">
+      <LineId Id="25" Count="0" />
+      <LineId Id="64" Count="0" />
+      <LineId Id="67" Count="0" />
+      <LineId Id="65" Count="0" />
+    </LineIds>
+    <LineIds Name="XPlanarMover.Cyclic">
+      <LineId Id="2" Count="3" />
+      <LineId Id="1" Count="0" />
+      <LineId Id="7" Count="1" />
+      <LineId Id="15" Count="0" />
+    </LineIds>
+    <LineIds Name="XPlanarMover.Height">
+      <LineId Id="5" Count="0" />
+      <LineId Id="13" Count="1" />
+    </LineIds>
+    <LineIds Name="XPlanarMover.Init">
+      <LineId Id="12" Count="24" />
+      <LineId Id="43" Count="22" />
+      <LineId Id="67" Count="29" />
+      <LineId Id="98" Count="1" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="XPlanarMover.Recover">
+      <LineId Id="5" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="14" Count="12" />
+      <LineId Id="33" Count="2" />
+      <LineId Id="13" Count="0" />
+    </LineIds>
+    <LineIds Name="XPlanarMover.Rotation">
+      <LineId Id="13" Count="1" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="XPlanarMover.Tilt">
+      <LineId Id="13" Count="1" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="XPlanarMover.XYMovement">
+      <LineId Id="15" Count="1" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

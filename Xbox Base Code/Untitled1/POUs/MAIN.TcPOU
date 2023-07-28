@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="MAIN" Id="{961e48bf-3b1b-48fd-8912-207c5805ebf3}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR
+	
+MyMover : XplanarMover; 
+
+MyController : XboxController; 
+
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[MyMover(); 
+MyController(); ]]></ST>
+    </Implementation>
+    <Action Name="Cyclic" Id="{b613598b-d147-44e5-bf73-b51c64ea6006}">
+      <Implementation>
+        <ST><![CDATA[//Initizalization
+MyMover.Init(bStart := MyController.Start );
+
+//Recover 
+MyMover.Recover(bBack := MyController.Reset); 
+
+//Height 
+MyMover.Height(LBumper := MyController.lBumper, RBumper := MyController.rBumper); 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+]]></ST>
+      </Implementation>
+    </Action>
+    <LineIds Name="MAIN">
+      <LineId Id="2" Count="0" />
+      <LineId Id="11" Count="0" />
+    </LineIds>
+    <LineIds Name="MAIN.Cyclic">
+      <LineId Id="2" Count="4" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="1" Count="0" />
+      <LineId Id="11" Count="20" />
+      <LineId Id="10" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,169 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="XboxController" Id="{90258775-ce06-40bc-98d6-66658f5c2f7b}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK XboxController
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+	
+			XboxController				: 		FB_Xbox_Controller(NetID := '', iControllerNumber := 1);
+			bIsConnected   				:  		ARRAY [1..2] OF BOOL;
+
+			Start 						:       BOOL; 
+			Reset 						:       BOOL;
+			Button_A            		:       BOOL;
+			Button_B                 	:       BOOL;
+			Button_X             		:       BOOL;
+			Button_Y                    :       BOOL;
+			Dpad_U	                    :       BOOL;
+			Dpad_D	                    :       BOOL;
+			lBumper	                    :       BOOL;
+			rBumper	                    :       BOOL;
+			lTrigger                    :       LREAL;
+			rTrigger                    :       LREAL;
+			lStick_Y	                :       LREAL;
+			lStick_X	                :       LREAL;
+     		rStick_Y	                :       LREAL;
+     		rStick_X	                :       LREAL;
+			
+END_VAR
+VAR    
+END_VAR
+			
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Folder Name="Buttons" Id="{b765c0d2-a1fa-47de-a83a-214fd5ccdffc}" />
+    <Method Name="clearScreenshot" Id="{8d5afaf2-b99a-41f7-9c02-692c817339db}">
+      <Declaration><![CDATA[METHOD clearScreenshot : BOOL
+VAR_INPUT
+	
+bDpad_U 					: BOOL; 
+
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <CFC>
+          <XmlArchive>
+            <Data>
+              <o xml:space="preserve" t="CFCImplementationObject">
+                <o n="Items" t="CFCItemList">
+                  <l2 n="InnerList" />
+                </o>
+                <n n="ParameterInitializationMethodGenerator" />
+                <o n="RoutingPathTable" t="CFCRoutingPathTable">
+                  <d2 n="InnerDictionary" />
+                </o>
+                <v n="AutoSizeCanvas">true</v>
+                <v n="CanvasWidth">1</v>
+                <v n="CanvasHeight">1</v>
+              </o>
+            </Data>
+            <TypeList>
+              <Type n="Boolean">System.Boolean</Type>
+              <Type n="CFCImplementationObject">{32d3375e-c010-41e2-9e43-b2fbf4f2b374}</Type>
+              <Type n="CFCItemList">{cd57ba20-558b-4b98-96c1-73c6000c3087}</Type>
+              <Type n="CFCRoutingPathTable">{4b8bcc79-5980-4868-b49e-005a8148859b}</Type>
+              <Type n="Int32">System.Int32</Type>
+            </TypeList>
+          </XmlArchive>
+        </CFC>
+      </Implementation>
+    </Method>
+    <Action Name="Cyclic" Id="{808b5749-855d-42fa-8193-f16ca32a0879}">
+      <Implementation>
+        <ST><![CDATA[XboxController.Cycle();]]></ST>
+      </Implementation>
+    </Action>
+    <Method Name="Init" Id="{00fb4985-ae41-4cc3-9c5f-7e5a85b6bbf4}">
+      <Declaration><![CDATA[METHOD Init
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[bIsConnected[1] := XboxController.P_Status.bConnected; 
+]]></ST>
+      </Implementation>
+    </Method>
+    <Action Name="Mapping" Id="{f5652c4a-9af9-40f9-9303-5deeb2d277c6}" FolderPath="Buttons\">
+      <Implementation>
+        <ST><![CDATA[
+
+
+
+// Button Mapping
+Start 				:= XboxController.P_Buttons.bStart;
+Reset 				:= XboxController.P_Buttons.bBack;
+Button_A 			:= XboxController.P_Buttons.bA_Button;
+Button_B 			:= XboxController.P_Buttons.bB_Button;
+Button_X 			:= XboxController.P_Buttons.bX_Button;
+Button_Y 			:= XboxController.P_Buttons.bY_Button;
+Dpad_U	 			:= XboxController.P_Buttons.DPad.bUp;
+Dpad_D	 			:= XboxController.P_Buttons.DPad.bDown;
+lBumper	 			:= XboxController.P_Buttons.bLeft_Shoulder;
+rBumper	 			:= XboxController.P_Buttons.bRight_Shoulder;
+lTrigger			:= XboxController.P_Left_Trigger;
+rTrigger			:= XboxController.P_Right_Trigger;
+lStick_Y			:= XboxController.P_Left_Joystick.fY;
+lStick_X			:= XboxController.P_Left_Joystick.fX;
+rStick_Y			:= XboxController.P_Right_Joystick.fY;
+rStick_X			:= XboxController.P_Right_Joystick.fX;]]></ST>
+      </Implementation>
+    </Action>
+    <Method Name="takeScreenshot" Id="{f671d340-a431-47a9-bf30-27c82dc334e5}">
+      <Declaration><![CDATA[METHOD takeScreenshot : BOOL
+VAR_INPUT
+	
+bDpad_D 				: BOOL ;
+
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <CFC>
+          <XmlArchive>
+            <Data>
+              <o xml:space="preserve" t="CFCImplementationObject">
+                <o n="Items" t="CFCItemList">
+                  <l2 n="InnerList" />
+                </o>
+                <n n="ParameterInitializationMethodGenerator" />
+                <o n="RoutingPathTable" t="CFCRoutingPathTable">
+                  <d2 n="InnerDictionary" />
+                </o>
+                <v n="AutoSizeCanvas">true</v>
+                <v n="CanvasWidth">1</v>
+                <v n="CanvasHeight">1</v>
+              </o>
+            </Data>
+            <TypeList>
+              <Type n="Boolean">System.Boolean</Type>
+              <Type n="CFCImplementationObject">{32d3375e-c010-41e2-9e43-b2fbf4f2b374}</Type>
+              <Type n="CFCItemList">{cd57ba20-558b-4b98-96c1-73c6000c3087}</Type>
+              <Type n="CFCRoutingPathTable">{4b8bcc79-5980-4868-b49e-005a8148859b}</Type>
+              <Type n="Int32">System.Int32</Type>
+            </TypeList>
+          </XmlArchive>
+        </CFC>
+      </Implementation>
+    </Method>
+    <LineIds Name="XboxController">
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="XboxController.Cyclic">
+      <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="XboxController.Init">
+      <LineId Id="5" Count="1" />
+    </LineIds>
+    <LineIds Name="XboxController.Mapping">
+      <LineId Id="17" Count="4" />
+      <LineId Id="1" Count="5" />
+      <LineId Id="9" Count="5" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="24" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
