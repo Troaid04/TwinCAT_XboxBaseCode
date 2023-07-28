@@ -21,10 +21,16 @@
     <Compile Include="DUTs\Motion_Parameters.TcDUT">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DUTs\Enviroment_Parameters.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="PlcTask.TcTTO">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="POUs\Controller\XboxController.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\Enviorment\Enviorment.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="POUs\MAIN.TcPOU">
@@ -44,6 +50,7 @@
     <Folder Include="DUTs" />
     <Folder Include="GVLs" />
     <Folder Include="POUs\Controller" />
+    <Folder Include="POUs\Enviorment" />
     <Folder Include="POUs\Xplanar" />
     <Folder Include="POUs\Xplanar\Mover Type" />
     <Folder Include="VISUs" />

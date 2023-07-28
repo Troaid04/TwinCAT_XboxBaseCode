@@ -3,6 +3,14 @@
   <DUT Name="Motion_Parameters" Id="{8a77553b-194c-4510-ae1e-272b07e08d0a}">
     <Declaration><![CDATA[TYPE Motion_Parameters :
 STRUCT
+	
+	
+		maxAcceleration					: 		LREAL	:= 1500;			// mm/s^2
+		
+		RotationScailing				: 		LREAL 	:= 0.0002; 			// Radians/s^2
+		
+		deltaT							:		LREAL	:= 0.00025;			//Cycle time 
+
 END_STRUCT
 END_TYPE
 ]]></Declaration>

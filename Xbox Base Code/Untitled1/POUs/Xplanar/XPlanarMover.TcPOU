@@ -3,6 +3,9 @@
   <POU Name="XPlanarMover" Id="{3939b667-1d94-4118-9d46-041468b4f25e}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK XPlanarMover
 VAR_INPUT
+	
+			MotionParameters			:		Motion_Parameters; 
+
 END_VAR
 VAR_OUTPUT
 	
@@ -16,26 +19,33 @@ VAR
 			cmdFB 						:		ARRAY [1..2]  OF MC_PlanarFeedBack ;	
 			Timer						: 		TON;
 			DONE						: 		BOOL;
-
+			XpAcceleration 				:		MoverVector; 
+			MoverPos					:		MoverVector;
+			ZeroVector 					:		MoverVector;
+			InvertX						:		LREAL; 
+			InvertY						:		LREAL;
+			
+			
 END_VAR
 VAR_IN_OUT
-	 
-
-
 END_VAR]]></Declaration>
     <Implementation>
-      <ST><![CDATA[
+      <ST><![CDATA[Xplanar_Mover.Update(); 
+cmdFB[1].Update();
+Cyclic(); 
 
+
+
+	Xplanar_Mover.SetExternalSetpoint( ZeroVector, ZeroVector, XpAcceleration);
 
 ]]></ST>
     </Implementation>
     <Action Name="Cyclic" Id="{82484dc3-e441-4c06-856d-d2ed15a41028}">
       <Implementation>
         <ST><![CDATA[//Mover 1 updates
-Xplanar_Mover.Update(); 
-cmdFB[1].Update();
+
 moverState := Xplanar_Mover.MCTOPLC.STD.State;
-//MoverPos[1] := Xplanar_Mover.MCTOPLC.ACT.ActPos;
+MoverPos := Xplanar_Mover.MCTOPLC.ACT.ActPos;
 
 
 ]]></ST>
@@ -60,12 +70,14 @@ END_VAR
       <Declaration><![CDATA[METHOD Init
 VAR_INPUT
 	
-bStart 						: BOOL ;
+	bStart 						: BOOL ;
 
 END_VAR
-]]></Declaration>
+VAR
+	nCase 					: SINT := 1; 
+END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[(*CASE nCase OF
+        <ST><![CDATA[CASE nCase OF
 1: 
 
 	Done := FALSE;
@@ -119,10 +131,10 @@ END_VAR
 10:
 	//Update Positions to real world value before initization of External Setpoint
 	IF cmdFB[1].Done  AND NOT cmdFB[1].Busy AND NOT cmdFB[2].Busy  THEN
-		XpPosition[1].y := MoverPos[1].y; 
-		XpPosition[1].x := MoverPos[1].x; 
-		XpPosition[1].z := MoverPos[1].z;
-		XpPosition[1].c := MoverPos[1].c;
+		XpAcceleration.y := MoverPos.y; 
+		XpAcceleration.x := MoverPos.x; 
+		XpAcceleration.z := MoverPos.z;
+		XpAcceleration.c := MoverPos.c;
 		nCase := 11;
 	END_IF
 
@@ -145,7 +157,7 @@ ELSE
 	Done := TRUE; 
 END_IF
  	
-END_CASE*)]]></ST>
+END_CASE]]></ST>
       </Implementation>
     </Method>
     <Method Name="Recover" Id="{e6a63d81-483f-4a71-99d2-c7f5840dab5a}">
@@ -222,19 +234,30 @@ bButton_Y 				: BOOL;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[// Done AND (NOT MoverState = 5 OR  MoverState = 1) THEN 
+        <ST><![CDATA[IF Done AND (NOT MoverState = 5 OR  MoverState = 1) THEN 
 	
-//END_IF]]></ST>
+	invertX				:= SEL(lStick_X < 1,1,-1);
+	invertY				:= SEL(lStick_Y < 1,1,-1);
+
+	XpAcceleration.y		:= (( EXPT(lStick_Y , 2) / 100 )* (MotionParameters.maxAcceleration / 100) * MotionParameters.deltaT ); //* invertY;
+	XpAcceleration.x		:= (( EXPT(lStick_X , 2) / 100 )* (MotionParameters.maxAcceleration / 100) * MotionParameters.deltaT ); //* invertX;
+
+END_IF]]></ST>
       </Implementation>
     </Method>
     <LineIds Name="XPlanarMover">
+      <LineId Id="103" Count="0" />
+      <LineId Id="100" Count="0" />
+      <LineId Id="104" Count="0" />
+      <LineId Id="101" Count="1" />
       <LineId Id="25" Count="0" />
-      <LineId Id="64" Count="0" />
+      <LineId Id="92" Count="0" />
       <LineId Id="67" Count="0" />
       <LineId Id="65" Count="0" />
     </LineIds>
     <LineIds Name="XPlanarMover.Cyclic">
-      <LineId Id="2" Count="3" />
+      <LineId Id="2" Count="0" />
+      <LineId Id="4" Count="1" />
       <LineId Id="1" Count="0" />
       <LineId Id="7" Count="1" />
       <LineId Id="15" Count="0" />
@@ -267,6 +290,11 @@ END_VAR
     </LineIds>
     <LineIds Name="XPlanarMover.XYMovement">
       <LineId Id="15" Count="1" />
+      <LineId Id="32" Count="1" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="27" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
   </POU>

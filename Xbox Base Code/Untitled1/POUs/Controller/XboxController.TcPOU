@@ -32,7 +32,10 @@ END_VAR
 			
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[]]></ST>
+      <ST><![CDATA[Cyclic(); 
+
+
+]]></ST>
     </Implementation>
     <Folder Name="Buttons" Id="{b765c0d2-a1fa-47de-a83a-214fd5ccdffc}" />
     <Method Name="clearScreenshot" Id="{8d5afaf2-b99a-41f7-9c02-692c817339db}">
@@ -73,7 +76,10 @@ END_VAR
     </Method>
     <Action Name="Cyclic" Id="{808b5749-855d-42fa-8193-f16ca32a0879}">
       <Implementation>
-        <ST><![CDATA[XboxController.Cycle();]]></ST>
+        <ST><![CDATA[XboxController.Cycle();
+mapping(); 
+init();
+bIsConnected[1] := XboxController.P_Status.bConnected; ]]></ST>
       </Implementation>
     </Action>
     <Method Name="Init" Id="{00fb4985-ae41-4cc3-9c5f-7e5a85b6bbf4}">
@@ -82,7 +88,7 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[bIsConnected[1] := XboxController.P_Status.bConnected; 
+        <ST><![CDATA[
 ]]></ST>
       </Implementation>
     </Method>
@@ -149,9 +155,15 @@ END_VAR
     </Method>
     <LineIds Name="XboxController">
       <LineId Id="9" Count="0" />
+      <LineId Id="58" Count="0" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="39" Count="0" />
     </LineIds>
     <LineIds Name="XboxController.Cyclic">
       <LineId Id="1" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="XboxController.Init">
       <LineId Id="5" Count="1" />

@@ -12,7 +12,7 @@ END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[MyMover(); 
-MyController(); ]]></ST>
+MyController();]]></ST>
     </Implementation>
     <Action Name="Cyclic" Id="{b613598b-d147-44e5-bf73-b51c64ea6006}">
       <Implementation>

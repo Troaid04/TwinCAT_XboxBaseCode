@@ -2347,6 +2347,112 @@
 				<BitOffs>96</BitOffs>
 			</SubItem>
 		</DataType>
+		<DataType>
+			<Name GUID="{1500FFCE-0727-F0FF-6AEB-C3B7FBED5C6B}" Namespace="Tc3_Mc3PlanarMotion" IecLibraryType="true" AutoDeleteType="true">CDT_MCTOPLC_PLANAR_MOVER</Name>
+			<Comment><![CDATA[ Contains the information of the Planar Mover passed from MC to PLC. ]]></Comment>
+			<BitSize>320</BitSize>
+			<SubItem>
+				<Name>STD</Name>
+				<Type GUID="{7D131116-81E4-45B0-AC50-A71EE4201E30}" Namespace="MC" ReferenceTo="true">CDT_MCTOPLC_PLANAR_MOVER_STD</Type>
+				<Comment><![CDATA[ Mover standard data that is transferred from the Planar Mover to this function block. ]]></Comment>
+				<BitSize>64</BitSize>
+				<BitOffs>0</BitOffs>
+				<Properties>
+					<Property>
+						<Name>TcPointerMapping</Name>
+					</Property>
+					<Property>
+						<Name>Namespace</Name>
+						<Value>MC</Value>
+					</Property>
+				</Properties>
+			</SubItem>
+			<SubItem>
+				<Name>SET</Name>
+				<Type GUID="{D7D4F146-9962-4745-8631-17F5FB457164}" Namespace="MC" ReferenceTo="true">CDT_MCTOPLC_PLANAR_MOVER_SET</Type>
+				<Comment><![CDATA[ Mover setpoint data that is transferred from the Planar Mover to this function block. ]]></Comment>
+				<BitSize>64</BitSize>
+				<BitOffs>64</BitOffs>
+				<Properties>
+					<Property>
+						<Name>TcPointerMapping</Name>
+					</Property>
+					<Property>
+						<Name>Namespace</Name>
+						<Value>MC</Value>
+					</Property>
+				</Properties>
+			</SubItem>
+			<SubItem>
+				<Name>ACT</Name>
+				<Type GUID="{F18FBB92-D68F-43D8-95AE-0E42EDCD14E2}" Namespace="MC" ReferenceTo="true">CDT_MCTOPLC_PLANAR_MOVER_ACT</Type>
+				<Comment><![CDATA[ Mover actpoint data that is transferred from the Planar Mover to this function block. ]]></Comment>
+				<BitSize>64</BitSize>
+				<BitOffs>128</BitOffs>
+				<Properties>
+					<Property>
+						<Name>TcPointerMapping</Name>
+					</Property>
+					<Property>
+						<Name>Namespace</Name>
+						<Value>MC</Value>
+					</Property>
+				</Properties>
+			</SubItem>
+			<SubItem>
+				<Name>COORDMODE</Name>
+				<Type GUID="{B2D0D1AF-2BA9-49BA-AF3F-BC95009CD9CD}" Namespace="MC" ReferenceTo="true">CDT_MCTOPLC_PLANAR_MOVER_COORDMODE</Type>
+				<Comment><![CDATA[ Mover coordinate mode information that is transferred from the Planar Mover to this function block. ]]></Comment>
+				<BitSize>64</BitSize>
+				<BitOffs>192</BitOffs>
+				<Properties>
+					<Property>
+						<Name>TcPointerMapping</Name>
+					</Property>
+					<Property>
+						<Name>Namespace</Name>
+						<Value>MC</Value>
+					</Property>
+				</Properties>
+			</SubItem>
+			<SubItem>
+				<Name>SETONTRACK</Name>
+				<Type GUID="{DB4B14FF-1923-4ED2-A97C-3D3120BDBDAA}" Namespace="MC" ReferenceTo="true">CDT_MCTOPLC_PLANAR_MOVER_TRACK</Type>
+				<Comment><![CDATA[ Mover busy information that is transferred from the Planar Mover to this function block. ]]></Comment>
+				<BitSize>64</BitSize>
+				<BitOffs>256</BitOffs>
+				<Properties>
+					<Property>
+						<Name>TcPointerMapping</Name>
+					</Property>
+					<Property>
+						<Name>Namespace</Name>
+						<Value>MC</Value>
+					</Property>
+				</Properties>
+			</SubItem>
+		</DataType>
+		<DataType>
+			<Name GUID="{8CF7E034-6BBC-291C-E83F-2D2297581DBB}" Namespace="Tc3_Mc3PlanarMotion" IecLibraryType="true" AutoDeleteType="true">CDT_PLCTOMC_PLANAR_MOVER</Name>
+			<Comment><![CDATA[ Contains the information of the Planar Mover passed from PLC to MC. ]]></Comment>
+			<BitSize>64</BitSize>
+			<SubItem>
+				<Name>STD</Name>
+				<Type GUID="{BC77732B-A71D-4084-AA53-85A5016932F3}" Namespace="MC" ReferenceTo="true">CDT_PLCTOMC_PLANAR_MOVER_STD</Type>
+				<Comment><![CDATA[ Mover standard data that is transferred from this function block to the Planar Mover. ]]></Comment>
+				<BitSize>64</BitSize>
+				<BitOffs>0</BitOffs>
+				<Properties>
+					<Property>
+						<Name>TcPointerMapping</Name>
+					</Property>
+					<Property>
+						<Name>Namespace</Name>
+						<Value>MC</Value>
+					</Property>
+				</Properties>
+			</SubItem>
+		</DataType>
 	</DataTypes>
 	<ModuleTmcs>
 		<ModuleTmc GUID="{5FC17892-62EA-4736-9999-D79964E87717}" TcSmClass="TComMcPlanarMoverObj">
@@ -2590,7 +2696,7 @@
 					</Default>
 					<PTCID>#x050300bf</PTCID>
 				</Parameter>
-				<Parameter Group="Maximum Dynamics">
+				<Parameter ShowSubItems="true" Group="Maximum Dynamics">
 					<Name>Maximum dynamic XY</Name>
 					<Comment><![CDATA[Maximum dynamic of the mover in the XY plane.]]></Comment>
 					<BitSize>256</BitSize>
@@ -3102,7 +3208,7 @@
 		<ImageData Id="1003">424d360300000000000036000000280000001000000010000000010018000000000000000000c30e0000c30e000000000000000000003d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b297a766e7a756d79746ba5a29ca5a29c746f66736e63716c626e695fa5a29ca5a29c686357656054635d513d3b293d3b297f7a737e7972a5a29c3d3b293d3b29a5a29c767168746f64726d623d3b293d3b29a5a29c6863576560543d3b293d3b2988837da5a29c3d3b293d3b293d3b293d3b29a5a29ca5a29c3d3b293d3b293d3b293d3b29a5a29c6862573d3b293d3b29a5a29c3d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b29a5a29c3d3b293d3b29a09d983d3b293d3b293d3b293d3b293d3b29949088a5a29c3d3b293d3b293d3b293d3b293d3b29a5a29c3d3b293d3b29aba8a4adaaa63d3b293d3b293d3b29a5a29c3d3b293d3b29a5a29c3d3b293d3b293d3b29726d626e695f3d3b293d3b29b6b3afb8b5b1b9b6b33d3b29b5b2ad3d3b293d3b293d3b293d3b29a5a29c3d3b2978736a746f64716c623d3b293d3b29c1bebbc3c1bdc5c3c0c4c2be3d3b293d3b293d3b293d3b293d3b293d3b29a5a29c7d7970777168736e643d3b293d3b29c9c7c5cccac8cfcecb3d3b29cac8c53d3b293d3b293d3b293d3b299b98913d3b29a5a29c79746b746f663d3b293d3b29d0ceccd5d3d13d3b293d3b293d3b29cbc9c63d3b293d3b29aca8a33d3b293d3b293d3b29a5a29c7671683d3b293d3b29d5d4d23d3b293d3b293d3b293d3b293d3b29c5c4c0bab8b43d3b293d3b293d3b293d3b293d3b29a5a29c3d3b293d3b29d7d6d4dfdedd3d3b293d3b293d3b29d0cfccc7c5c2bcb9b6b1aea83d3b293d3b293d3b297f7b7279746c3d3b293d3b29d6d5d4dddcdbe1e0de3d3b29d9d7d5d0ceccc6c4c1bcb9b5b0ada9a5a29c3d3b298d8882807b747a756d3d3b293d3b29d2d1cfd7d6d4d9d8d6d8d7d5d3d2d0cccbc8c3c2bfb9b7b3aeaca8a4a09b98948f8c8781807b747a766e3d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b29</ImageData>
 		<ImageData Id="1004">424d360300000000000036000000280000001000000010000000010018000000000000000000c30e0000c30e000000000000000000003d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b297b766f7a756d79746c77726a767168756f66736e64716c626f695f6d675d6b655a696358666155645e523d3b293d3b297f7a737f7b727e7a717c78707a766d78746bb6b4aeb6b4ae726d63706a606d685d6b665b6964586661553d3b293d3b2989847e8a867f8a867e88847cb6b4aeb6b4ae3d3b293d3b29b6b4aeb6b4ae706b606d685d6b665b6863583d3b293d3b2995918b96938db6b4aeb6b4ae3d3b293d3b2988837b817c743d3b293d3b29b6b4aeb6b4ae6d685d6b655a3d3b293d3b29a19e98b6b4ae3d3b293d3b299e9b943d3b29b6b4aeb6b4ae3d3b29a09c963d3b293d3b29b6b4ae6d675d3d3b293d3b29aca9a43d3b29aeaba6adaaa4a9a6a13d3b293d3b293d3b293d3b29a09c967b766d7570663d3b29b6b4ae3d3b293d3b29b6b3ae3d3b29b9b6b2b7b5b13d3b293d3b29a9a6a0a09c963d3b293d3b29a09c96a09c963d3b29b6b4ae3d3b293d3b29c1bfbb3d3b293d3b293d3b29bfbcb8bab8b3b3b0aba9a6a0a09c9696928b3d3b293d3b293d3b29b6b4ae3d3b293d3b29cac8c53d3b29ceccc9cccbc7c9c7c4c3c1bdbbb8b4b1aea9a6a39d9c9891908c85847f773d3b29b6b4ae3d3b293d3b29d1cfcd3d3b29d7d6d3d6d5d2d1cfcdcac8c5c1bebab6b4afaca9a3a09d9795918a89847d3d3b29b6b4ae3d3b293d3b29d6d4d2dcdbd93d3b293d3b29d6d5d2cfcdcac5c3c0bab8b3afaca7a4a19b3d3b293d3b297f7a7277736b3d3b293d3b29d9d7d6e0dfdde5e4e2e2e1df3d3b293d3b29c7c5c2bcb9b53d3b293d3b299a96908d8982807c7479756c3d3b293d3b29d8d6d5dedddce2e1e0dfdeddd8d7d5d0cfcc3d3b293d3b29b1aeaaa6a39d9a96918e8a84817d767a766e3d3b293d3b29d4d2d1d9d7d6dad9d8d9d8d6d4d2d0cdcbc9c4c2bfbab7b3afaca8a5a19c9995908d8983817c757b766f3d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b293d3b29</ImageData>
 	</ImageDatas>
-	<Project ProjectGUID="{893DED4F-94DE-405E-B342-BD5831DA37B9}" AutoPrioManagement="true" ShowHideConfigurations="#x106">
+	<Project ProjectGUID="{893DED4F-94DE-405E-B342-BD5831DA37B9}" Target64Bit="true" AutoPrioManagement="true" ShowHideConfigurations="#x106">
 		<System>
 			<Settings MaxCpus="16" NonWinCpus="6">
 				<Cpu/>
@@ -5907,8 +6013,8 @@
 								<ManualConfig>
 									<OTCID>#x02010060</OTCID>
 								</ManualConfig>
-								<Priority>18</Priority>
-								<CycleTime>2000000</CycleTime>
+								<Priority>10</Priority>
+								<CycleTime>250000</CycleTime>
 								<DependOn>ParentObject</DependOn>
 							</Context>
 							<Context>
@@ -5917,7 +6023,7 @@
 								<ManualConfig>
 									<OTCID>#x02010070</OTCID>
 								</ManualConfig>
-								<Priority>19</Priority>
+								<Priority>14</Priority>
 								<CycleTime>10000000</CycleTime>
 								<DependOn>ParentObject</DependOn>
 							</Context>
@@ -6213,8 +6319,8 @@
 								<ManualConfig>
 									<OTCID>#x02010060</OTCID>
 								</ManualConfig>
-								<Priority>18</Priority>
-								<CycleTime>2000000</CycleTime>
+								<Priority>10</Priority>
+								<CycleTime>250000</CycleTime>
 								<DependOn>ParentObject</DependOn>
 							</Context>
 							<Context>
@@ -6223,7 +6329,7 @@
 								<ManualConfig>
 									<OTCID>#x02010070</OTCID>
 								</ManualConfig>
-								<Priority>19</Priority>
+								<Priority>14</Priority>
 								<CycleTime>10000000</CycleTime>
 								<DependOn>ParentObject</DependOn>
 							</Context>
@@ -6319,8 +6425,8 @@
 								<ManualConfig>
 									<OTCID>#x02010060</OTCID>
 								</ManualConfig>
-								<Priority>18</Priority>
-								<CycleTime>2000000</CycleTime>
+								<Priority>10</Priority>
+								<CycleTime>250000</CycleTime>
 								<DependOn>ParentObject</DependOn>
 							</Context>
 							<Context>
@@ -6329,7 +6435,7 @@
 								<ManualConfig>
 									<OTCID>#x02010070</OTCID>
 								</ManualConfig>
-								<Priority>19</Priority>
+								<Priority>14</Priority>
 								<CycleTime>10000000</CycleTime>
 								<DependOn>ParentObject</DependOn>
 							</Context>
@@ -6438,29 +6544,66 @@
 		</Motion>
 		<Plc>
 			<Project GUID="{AB93C029-67A5-4685-8C9C-13D55F0D692C}" Name="Untitled1" PrjFilePath="Untitled1\Untitled1.plcproj" TmcFilePath="Untitled1\Untitled1.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Untitled1\Untitled1.tmc" TmcHash="{39A51893-5656-B1DD-F21B-43B23FE9ABD6}">
 					<Name>Untitled1 Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
+					<Vars VarGrpType="1">
+						<Name>PlcTask Inputs</Name>
+						<Var>
+							<Name>MAIN.MyMover.Xplanar_Mover.MCTOPLC</Name>
+							<Comment><![CDATA[ Mover data that is transferred from the Planar Mover to this function block. ]]></Comment>
+							<Type GUID="{1500FFCE-0727-F0FF-6AEB-C3B7FBED5C6B}" Namespace="Tc3_Mc3PlanarMotion">CDT_MCTOPLC_PLANAR_MOVER</Type>
+						</Var>
+					</Vars>
+					<Vars VarGrpType="2" AreaNo="1">
+						<Name>PlcTask Outputs</Name>
+						<Var>
+							<Name>MAIN.MyMover.Xplanar_Mover.PLCTOMC</Name>
+							<Comment><![CDATA[ Mover data that is transferred from the Planar Mover to this function block. ]]></Comment>
+							<Type GUID="{8CF7E034-6BBC-291C-E83F-2D2297581DBB}" Namespace="Tc3_Mc3PlanarMotion">CDT_PLCTOMC_PLANAR_MOVER</Type>
+						</Var>
+					</Vars>
 					<Contexts>
 						<Context>
-							<Id>1</Id>
-							<Name>Default</Name>
+							<Id>0</Id>
+							<Name>PlcTask</Name>
+							<ManualConfig>
+								<OTCID>#x02010030</OTCID>
+							</ManualConfig>
+							<Priority>8</Priority>
+							<CycleTime>250000</CycleTime>
 						</Context>
 					</Contexts>
+					<TaskPouOids>
+						<TaskPouOid Prio="8" OTCID="#x08502001"/>
+					</TaskPouOids>
 				</Instance>
 			</Project>
 			<PlcAuxTask Affinity="#x00008000"/>
 		</Plc>
+		<Io/>
 	</Project>
 	<Mappings>
+		<MappingInfo Identifier="{08502001-0060-0201-0020-500810001005}" Id="#x02030020" Watchdog="04000000040000000400000004000000"/>
+		<MappingInfo Identifier="{02010040-0060-0201-6000-010110001105}" Id="#x02030010" Watchdog="04000000040000000400000004000000"/>
 		<OwnerA Name="TINC^XPlanar MC Project^Axes^Mover4220_1">
 			<OwnerB Name="TIRC^TcCOM Objects^XPlanar^Mover4220_1">
-				<Link VarA="IoToMc^STD" VarB="OutputsToNC3^HWToNC3" Size="960"/>
+				<Link VarA="McToIo^STD" VarB="InputsFromNC3^NC3ToHW" Size="1408"/>
+			</OwnerB>
+		</OwnerA>
+		<OwnerA Name="TIPC^Untitled1^Untitled1 Instance">
+			<OwnerB Name="TINC^XPlanar MC Project^Axes^Mover4220_1">
+				<Link VarA="PlcTask Inputs^MAIN.MyMover.Xplanar_Mover.MCTOPLC^ACT" VarB="McToPlc^ACT" Size="896"/>
+				<Link VarA="PlcTask Inputs^MAIN.MyMover.Xplanar_Mover.MCTOPLC^COORDMODE" VarB="McToPlc^COORDMODE" Size="80"/>
+				<Link VarA="PlcTask Inputs^MAIN.MyMover.Xplanar_Mover.MCTOPLC^SET" VarB="McToPlc^SET" Size="1280"/>
+				<Link VarA="PlcTask Inputs^MAIN.MyMover.Xplanar_Mover.MCTOPLC^SETONTRACK" VarB="McToPlc^SETONTRACK" Size="320"/>
+				<Link VarA="PlcTask Inputs^MAIN.MyMover.Xplanar_Mover.MCTOPLC^STD" VarB="McToPlc^STD" Size="160"/>
+				<Link VarA="PlcTask Outputs^MAIN.MyMover.Xplanar_Mover.PLCTOMC^STD" VarB="PlcToMc^STD" Size="8"/>
 			</OwnerB>
 		</OwnerA>
 		<OwnerA Name="TIRC^TcCOM Objects^XPlanar^Mover4220_1">
 			<OwnerB Name="TINC^XPlanar MC Project^Axes^Mover4220_1">
-				<Link VarA="InputsFromNC3^NC3ToHW" VarB="McToIo^STD" Size="1408"/>
+				<Link VarA="OutputsToNC3^HWToNC3" VarB="IoToMc^STD" Size="960"/>
 			</OwnerB>
 		</OwnerA>
 	</Mappings>
