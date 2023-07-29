@@ -3,6 +3,9 @@
   <DUT Name="Enviroment_Parameters" Id="{48760720-f476-4b9e-97b3-896a9e24eb50}">
     <Declaration><![CDATA[TYPE Enviroment_Parameters :
 STRUCT
+	
+			Friction_coefficient		:  LREAL := 0.02 ; 
+
 END_STRUCT
 END_TYPE
 ]]></Declaration>
