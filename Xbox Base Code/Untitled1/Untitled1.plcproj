@@ -21,7 +21,7 @@
     <Compile Include="DUTs\Motion_Parameters.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DUTs\Enviroment_Parameters.TcDUT">
+    <Compile Include="DUTs\Environment_Parameters.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="PlcTask.TcTTO">
@@ -30,7 +30,7 @@
     <Compile Include="POUs\Controller\XboxController.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="POUs\Enviorment\Enviorment.TcPOU">
+    <Compile Include="POUs\Enviorment\Environment.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="POUs\MAIN.TcPOU">

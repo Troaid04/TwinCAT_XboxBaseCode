@@ -4,14 +4,18 @@
     <Declaration><![CDATA[FUNCTION_BLOCK XPlanarMover
 VAR_INPUT
 	
-			MotionParameters			:		Motion_Parameters; 
+			MotionParameters			:		Motion_Parameters;
+
+			MoverType					: 		STRING(7);  
 
 END_VAR
 VAR_OUTPUT
 	
 			Xplanar_Mover 				: 		MC_PlanarMover; 
 			moverState					:		MC_Planar_State;
-
+			
+			TypeWidth					: 		LREAL;		
+			TypeLength					:		LREAL;
 END_VAR
 VAR
 	
@@ -26,7 +30,7 @@ VAR
 			InvertY						:		LREAL;
 			nCase 						: 		SINT := 1; 
 			
-			EnviromentParameters		:		Enviroment_Parameters; 
+			EnvironmentParameters		:		Environment_Parameters; 
 			
 			
 			//testing xandy 
@@ -39,7 +43,8 @@ VAR
 	ratio					: LREAL;
 	MoverActVelocity		: MoverVector;
 	SumnedVelocity			: MoverVector;
-			
+		
+	typeAMP4220					: AMP4220;	
 			
 END_VAR
 VAR_IN_OUT
@@ -60,8 +65,14 @@ Xplanar_Mover.Update();
 cmdFB[1].Update();
 moverState := Xplanar_Mover.MCTOPLC.STD.State;
 MoverPos := Xplanar_Mover.MCTOPLC.ACT.ActPos;
+typeAMP4220(); 
 
 
+
+IF MoverType = 'AMP4220' THEN
+	TypeWidth := typeAMP4220.MoverTypeWidth;
+	TypeLength := typeAMP4220.MoverTypeLength;
+END_IF
 ]]></ST>
       </Implementation>
     </Action>
@@ -88,90 +99,96 @@ VAR_INPUT
 
 END_VAR
 VAR
-
+	Run : BOOL;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[CASE nCase OF
-1: 
-
-	Done := FALSE;
-	Xplanar_Mover.Reset(cmdFB[1]);
-	nCase := 2;
-
-2:
-
-	IF cmdFB[1].Done THEN
-		nCase := 3; 
-	END_IF
-	
-3:
-
-	Xplanar_Mover.Enable(cmdFB[1]);
-	nCase := 4;
-	
-4:
-
-	IF cmdFB[1].Done THEN
-		nCase := 5;
-	END_IF
-	
-5:
-
-	stExtOptions[1].mode := MC_EXTERNAL_SET_POSITION_MODE.Absolute; // Setting up external Setpoint generator
-	nCase := 6; 
-6:
-
-
-	nCase := 7;
-
-7:
-
-	IF  MoverState = 5 OR  MoverState = 1 THEN 
-		nCase := 1;		
-	ELSE 		
-		nCase := 8;
-	END_IF 
-
-8:
-	IF MoverState = 3 THEN 
-		nCase := 9;
-	END_IF
-9:
-
-	IF bStart THEN
-		nCase := 10;
-	END_IF
-
-10:
-	//Update Positions to real world value before initization of External Setpoint
-	IF cmdFB[1].Done  AND NOT cmdFB[1].Busy AND NOT cmdFB[2].Busy  THEN
-		XpPosition.y := MoverPos.y; 
-		XpPosition.x := MoverPos.x; 
-		XpPosition.z := MoverPos.z;
-		XpPosition.c := MoverPos.c;
-		nCase := 11;
-	END_IF
-
-
-11:
-
-	//Start External Setpoint Generatior
-	Xplanar_Mover.StartExternalSetpointGeneration(cmdFB[1], stExtOptions[1]); 
-	nCase := 12; 
-12:
-
-	nCase := 13;
-	
-13:
-
-// If errored be able to reset 
-IF MoverState = 5 OR  MoverState = 1 THEN
-	nCase := 1; 
-ELSE
-	Done := TRUE; 
+        <ST><![CDATA[IF bStart THEN
+	Run := TRUE;
 END_IF
- 	
-END_CASE]]></ST>
+
+
+IF Run THEN
+	CASE nCase OF
+	1: 
+	
+		Done := FALSE;
+		Xplanar_Mover.Reset(cmdFB[1]);
+		nCase := 2;
+	
+	2:
+	
+		IF cmdFB[1].Done THEN
+			nCase := 3; 
+		END_IF
+		
+	3:
+	
+		Xplanar_Mover.Enable(cmdFB[1]);
+		nCase := 4;
+		
+	4:
+	
+		IF cmdFB[1].Done THEN
+			nCase := 5;
+		END_IF
+		
+	5:
+	
+		stExtOptions[1].mode := MC_EXTERNAL_SET_POSITION_MODE.Absolute; // Setting up external Setpoint generator
+		nCase := 6; 
+	6:
+	
+	
+		nCase := 7;
+	
+	7:
+	
+		IF  MoverState = 5 OR  MoverState = 1 THEN 
+			nCase := 1;		
+		ELSE 		
+			nCase := 8;
+		END_IF 
+	
+	8:
+		IF MoverState = 3 THEN 
+			nCase := 9;
+		END_IF
+	9:
+	
+		nCase := 10;
+	
+	10:
+		//Update Positions to real world value before initization of External Setpoint
+		IF cmdFB[1].Done  AND NOT cmdFB[1].Busy AND NOT cmdFB[2].Busy  THEN
+			XpPosition.y := MoverPos.y; 
+			XpPosition.x := MoverPos.x; 
+			XpPosition.z := MoverPos.z;
+			XpPosition.c := MoverPos.c;
+			nCase := 11;
+		END_IF
+	
+	
+	11:
+	
+		//Start External Setpoint Generatior
+		Xplanar_Mover.StartExternalSetpointGeneration(cmdFB[1], stExtOptions[1]); 
+		nCase := 12; 
+	12:
+	
+		nCase := 13;
+		
+	13:
+	
+	// If errored be able to reset 
+	IF MoverState = 5 OR  MoverState = 1 THEN
+		nCase := 1; 
+	ELSE
+		Done := TRUE;
+		Run := FALSE;  
+	END_IF
+		
+	END_CASE
+END_IF]]></ST>
       </Implementation>
     </Method>
     <Method Name="Recover" Id="{e6a63d81-483f-4a71-99d2-c7f5840dab5a}">
@@ -244,14 +261,16 @@ lStick_Y				: LREAL;
 bButton_A 				: BOOL; 
 bButton_X 				: BOOL;
 bButton_Y 				: BOOL;
+maxXtravel              : LREAL;
+minXTravel              : LREAL;
+maxYTravel              : LREAL;
+minYTravel				: LREAL;
 
 END_VAR
 VAR
  
-	
-	
-	
-	
+Velocity_eplison_x 	: LREAL ; 
+Velocity_eplison_y 	: LREAL ; 
 	
 END_VAR
 VAR_IN_OUT
@@ -273,42 +292,36 @@ END_VAR
   	// Calculate the magnitude of the current acceleration
   	acceleration_magnitude := SQRT(Mover_acceleration.x * Mover_acceleration.x + Mover_acceleration.y * Mover_acceleration.y);
 
-
-  	// Calculate the friction force
-	// EnviromentParameters.Friction_coefficient is positive and < 1 friction force is negative (opposite of velocity direction)
-  	friction_force.x := -1 * EnviromentParameters.Friction_coefficient * MoverActVelocity.x;
-	friction_force.y := -1 * EnviromentParameters.Friction_coefficient * MoverActVelocity.y;
-
-  
-	// Apply friction to the acceleration
-	IF acceleration_magnitude >= 0.00001 THEN // divde by zero check
-
-  		// Reduce acceleration based on the friction force
- 		SumnedForce_X := Mover_acceleration.x + (friction_force.x);
- 		SumnedForce_Y := Mover_acceleration.y + (friction_force.y);
+	// Calculate the friction force for acceleration and apply it
+	IF acceleration_magnitude > 0.00001 OR acceleration_magnitude < -0.00001 THEN
+		friction_force.x := 0.0;
+		friction_force.y := 0.0;
 	ELSE
-  		// If the acceleration is already zero, set it to exactly zero
-  		SumnedForce_X := 0.0;
-  		SumnedForce_Y := 0.0;
-	END_IF;
+		friction_force.x := -1 *  EnvironmentParameters.Friction_coefficient * SumnedVelocity.x;
+		friction_force.y := -1 * EnvironmentParameters.Friction_coefficient * SumnedVelocity.y ;
+	END_IF
+  
+
+	// Reduce acceleration based on the friction force
+	SumnedForce_X := (Mover_acceleration.x * 100)+ (friction_force.x );
+	SumnedForce_Y := (Mover_acceleration.y * 100) + (friction_force.y );
+
 
 //	position <= MAX position possible based on MAX velocity in 250us 
 //					tableboundry					500mm/s
 // max velocity cannot exceed the physical Xplanar mover Velocity 
 // position cannot go outisde table boundries  
 	
+	//It drives like a boat - maybe Acceleration feed forward? 
 	// Update the object's velocity based on the acceleration (INTEGRATING)
- 	SumnedVelocity.x := SumnedVelocity.x + Mover_acceleration.x * MotionParameters.deltaT / 100.0;
-    SumnedVelocity.y := SumnedVelocity.y + Mover_acceleration.y * MotionParameters.deltaT / 100.0;
-
-	//invert Controls for correct direction of travel
-	invertX				:= SEL(lStick_X < 1,1,-1);
-	invertY				:= SEL(lStick_Y < 1,1,-1);
+	SumnedVelocity.x := SumnedVelocity.x + LIMIT(MotionParameters.minVelocity, (SumnedForce_X  / 100.0), MotionParameters.maxVelocity);
+	SumnedVelocity.y := SumnedVelocity.y + LIMIT(MotionParameters.minVelocity, (SumnedForce_Y  / 100.0), MotionParameters.maxVelocity);
+	
 	
 	// Update the object's position based on the velocity(INTEGRATING)
 	//Position 						 //Velocity 	
-	XpPosition.y		:= XpPosition.y + (( EXPT( SumnedVelocity.y , 2) / 100 )* MotionParameters.deltaT ) * invertY;
-	XpPosition.x		:= XpPosition.x + (( EXPT( SumnedVelocity.x , 2) / 100 )* MotionParameters.deltaT ) * invertX;
+	XpPosition.y		:= LIMIT(minYTravel, XpPosition.y + ((SumnedVelocity.y / 100.0) * MotionParameters.deltaT ) ,maxYTravel);
+	XpPosition.x		:= LIMIT(minXTravel, XpPosition.x + ((SumnedVelocity.x / 100.0)* MotionParameters.deltaT ) ,maxXTravel);
 
 END_IF]]></ST>
       </Implementation>
@@ -326,7 +339,12 @@ END_IF]]></ST>
       <LineId Id="16" Count="0" />
       <LineId Id="4" Count="1" />
       <LineId Id="1" Count="0" />
+      <LineId Id="21" Count="1" />
+      <LineId Id="20" Count="0" />
       <LineId Id="7" Count="1" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="18" Count="0" />
       <LineId Id="15" Count="0" />
     </LineIds>
     <LineIds Name="XPlanarMover.Height">
@@ -334,11 +352,18 @@ END_IF]]></ST>
       <LineId Id="13" Count="1" />
     </LineIds>
     <LineIds Name="XPlanarMover.Init">
+      <LineId Id="110" Count="1" />
+      <LineId Id="108" Count="0" />
+      <LineId Id="115" Count="0" />
+      <LineId Id="114" Count="0" />
+      <LineId Id="109" Count="0" />
       <LineId Id="12" Count="24" />
-      <LineId Id="43" Count="22" />
-      <LineId Id="67" Count="29" />
+      <LineId Id="43" Count="21" />
+      <LineId Id="68" Count="28" />
+      <LineId Id="112" Count="0" />
       <LineId Id="98" Count="1" />
       <LineId Id="5" Count="0" />
+      <LineId Id="113" Count="0" />
     </LineIds>
     <LineIds Name="XPlanarMover.Recover">
       <LineId Id="5" Count="0" />
@@ -366,17 +391,11 @@ END_IF]]></ST>
       <LineId Id="58" Count="0" />
       <LineId Id="60" Count="0" />
       <LineId Id="69" Count="1" />
-      <LineId Id="132" Count="0" />
-      <LineId Id="71" Count="1" />
-      <LineId Id="138" Count="0" />
-      <LineId Id="73" Count="0" />
-      <LineId Id="137" Count="0" />
+      <LineId Id="170" Count="7" />
       <LineId Id="77" Count="1" />
-      <LineId Id="96" Count="1" />
       <LineId Id="100" Count="1" />
       <LineId Id="133" Count="0" />
       <LineId Id="144" Count="0" />
-      <LineId Id="104" Count="3" />
       <LineId Id="61" Count="0" />
       <LineId Id="139" Count="0" />
       <LineId Id="89" Count="0" />
@@ -384,12 +403,9 @@ END_IF]]></ST>
       <LineId Id="141" Count="0" />
       <LineId Id="143" Count="0" />
       <LineId Id="140" Count="0" />
-      <LineId Id="62" Count="0" />
-      <LineId Id="88" Count="0" />
-      <LineId Id="63" Count="0" />
-      <LineId Id="92" Count="0" />
-      <LineId Id="57" Count="0" />
-      <LineId Id="53" Count="1" />
+      <LineId Id="190" Count="0" />
+      <LineId Id="192" Count="2" />
+      <LineId Id="196" Count="0" />
       <LineId Id="90" Count="1" />
       <LineId Id="55" Count="1" />
       <LineId Id="28" Count="0" />

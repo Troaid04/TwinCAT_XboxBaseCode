@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="Environment" Id="{bc804a70-ba27-434f-a722-0a692fdcb6d7}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK Environment
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+	
+MaxTableYTravel 		: LREAL ; 
+MaxTableXTravel 		: LREAL ;
+		             
+MinTableYTravel 		: LREAL ; 
+MinTableXTravel 		: LREAL ; 
+
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Boundry" Id="{bdc5a1ba-4bdc-4f6e-891d-211745460f60}">
+      <Declaration><![CDATA[METHOD Boundry 
+VAR_INPUT
+	
+			NumberOfXTiles				: INT;
+			NumberOfYTiles				: INT; 
+			MoverTypeWidth 				: LREAL;
+		    MoverTypeLength				: LREAL;
+			
+END_VAR 
+
+VAR 
+			Buffer						: INT := 5; 
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[MaxTableYTravel := (NumberOfYTiles * 240) - MoverTypeWidth  - Buffer;
+MaxTableXTravel := (NumberOfXTiles * 240) - MoverTypeLength - Buffer;
+		
+MinTableYTravel :=  MoverTypeWidth   + Buffer;
+MinTableXTravel :=  MoverTypeLength  + Buffer;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Forces" Id="{97bf2863-1c46-48a8-8c41-067ed868cafd}">
+      <Declaration><![CDATA[METHOD Forces 
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="Environment">
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="Environment.Boundry">
+      <LineId Id="13" Count="3" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="Environment.Forces">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
