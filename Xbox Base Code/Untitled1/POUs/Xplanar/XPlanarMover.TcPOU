@@ -286,7 +286,6 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF Done (*AND NOT MoverState = 5 OR  MoverState = 1*) THEN 
-	
 
 	// Read the analog stick inputs (x and y) and scale them to control acceleration
     // Input values are assumed to be in the range [-100, 100] for both x and y axes
@@ -405,7 +404,6 @@ END_IF
     </LineIds>
     <LineIds Name="XPlanarMover.XYMovement">
       <LineId Id="15" Count="0" />
-      <LineId Id="95" Count="0" />
       <LineId Id="134" Count="0" />
       <LineId Id="93" Count="1" />
       <LineId Id="16" Count="0" />
