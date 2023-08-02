@@ -3,12 +3,19 @@
   <POU Name="XPlanarMover" Id="{3939b667-1d94-4118-9d46-041468b4f25e}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK XPlanarMover
 VAR_INPUT
+	
+			MotionParameters			:		Motion_Parameters;
+
+			MoverType					: 		STRING(7);  
+
 END_VAR
 VAR_OUTPUT
 	
 			Xplanar_Mover 				: 		MC_PlanarMover; 
 			moverState					:		MC_Planar_State;
-
+			
+			TypeWidth					: 		LREAL;		
+			TypeLength					:		LREAL;
 END_VAR
 VAR
 	
@@ -16,16 +23,45 @@ VAR
 			cmdFB 						:		ARRAY [1..2]  OF MC_PlanarFeedBack ;	
 			Timer						: 		TON;
 			DONE						: 		BOOL;
-
+			XpPosition					:		MoverVector; 
+			MoverPos					:		MoverVector;
+			ZeroVector 					:		MoverVector;
+			InvertX						:		LREAL; 
+			InvertY						:		LREAL;
+			nCase 						: 		SINT := 1; 
+			
+			EnvironmentParameters		:		Environment_Parameters; 
+			
+			
+			//testing xandy 
+				
+	SumnedForce_Y 			: LREAL; 
+	SumnedForce_X			: LREAL;
+	acceleration_magnitude 	: LREAL;
+	Mover_acceleration		: MoverVector;
+	friction_force			: MoverVector; 
+	MoverActVelocity		: MoverVector;
+	SumnedVelocity			: MoverVector;
+	
+	latest_acceleration 			: MoverVector;
+	earliest_acceleration 			: MoverVector; 
+	acceleration_threshold			: LREAL := 10000;
+	acceleration_arrayX 	 		: ARRAY[0..1999] OF LREAL;
+	acceleration_arrayY 	 		: ARRAY[0..1999] OF LREAL; 
+	buffer_index					: INT; 
+	significant_acceleration_changeX: BOOL; 
+	significant_acceleration_changeY: BOOL; 
+	typeAMP4220					: AMP4220;	
+			
 END_VAR
 VAR_IN_OUT
-	 
-
-
 END_VAR]]></Declaration>
     <Implementation>
-      <ST><![CDATA[
+      <ST><![CDATA[Cyclic(); 
 
+
+
+	Xplanar_Mover.SetExternalSetpoint( XpPosition, ZeroVector, ZeroVector);
 
 ]]></ST>
     </Implementation>
@@ -35,9 +71,15 @@ END_VAR]]></Declaration>
 Xplanar_Mover.Update(); 
 cmdFB[1].Update();
 moverState := Xplanar_Mover.MCTOPLC.STD.State;
-//MoverPos[1] := Xplanar_Mover.MCTOPLC.ACT.ActPos;
+MoverPos := Xplanar_Mover.MCTOPLC.ACT.ActPos;
+typeAMP4220(); 
 
 
+
+IF MoverType = 'AMP4220' THEN
+	TypeWidth := typeAMP4220.MoverTypeWidth;
+	TypeLength := typeAMP4220.MoverTypeLength;
+END_IF
 ]]></ST>
       </Implementation>
     </Action>
@@ -60,92 +102,100 @@ END_VAR
       <Declaration><![CDATA[METHOD Init
 VAR_INPUT
 	
-bStart 						: BOOL ;
+	bStart 						: BOOL ;
 
 END_VAR
-]]></Declaration>
+VAR
+	Run : BOOL;
+END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[(*CASE nCase OF
-1: 
-
-	Done := FALSE;
-	Xplanar_Mover.Reset(cmdFB[1]);
-	nCase := 2;
-
-2:
-
-	IF cmdFB[1].Done THEN
-		nCase := 3; 
-	END_IF
-	
-3:
-
-	Xplanar_Mover.Enable(cmdFB[1]);
-	nCase := 4;
-	
-4:
-
-	IF cmdFB[1].Done THEN
-		nCase := 5;
-	END_IF
-	
-5:
-
-	stExtOptions[1].mode := MC_EXTERNAL_SET_POSITION_MODE.Absolute; // Setting up external Setpoint generator
-	nCase := 6; 
-6:
-
-
-	nCase := 7;
-
-7:
-
-	IF  MoverState = 5 OR  MoverState = 1 THEN 
-		nCase := 1;		
-	ELSE 		
-		nCase := 8;
-	END_IF 
-
-8:
-	IF MoverState = 3 THEN 
-		nCase := 9;
-	END_IF
-9:
-
-	IF bStart THEN
-		nCase := 10;
-	END_IF
-
-10:
-	//Update Positions to real world value before initization of External Setpoint
-	IF cmdFB[1].Done  AND NOT cmdFB[1].Busy AND NOT cmdFB[2].Busy  THEN
-		XpPosition[1].y := MoverPos[1].y; 
-		XpPosition[1].x := MoverPos[1].x; 
-		XpPosition[1].z := MoverPos[1].z;
-		XpPosition[1].c := MoverPos[1].c;
-		nCase := 11;
-	END_IF
-
-
-11:
-
-	//Start External Setpoint Generatior
-	Xplanar_Mover.StartExternalSetpointGeneration(cmdFB[1], stExtOptions[1]); 
-	nCase := 12; 
-12:
-
-	nCase := 13;
-	
-13:
-
-// If errored be able to reset 
-IF MoverState = 5 OR  MoverState = 1 THEN
-	nCase := 1; 
-ELSE
-	Done := TRUE; 
+        <ST><![CDATA[IF bStart THEN
+	Run := TRUE;
 END_IF
- 	
-END_CASE*)]]></ST>
+
+
+IF Run THEN
+	CASE nCase OF
+	1: 
+	
+		Done := FALSE;
+		Xplanar_Mover.Reset(cmdFB[1]);
+		nCase := 2;
+	
+	2:
+	
+		IF cmdFB[1].Done THEN
+			nCase := 3; 
+		END_IF
+		
+	3:
+	
+		Xplanar_Mover.Enable(cmdFB[1]);
+		nCase := 4;
+		
+	4:
+	
+		IF cmdFB[1].Done THEN
+			nCase := 5;
+		END_IF
+		
+	5:
+	
+		stExtOptions[1].mode := MC_EXTERNAL_SET_POSITION_MODE.Absolute; // Setting up external Setpoint generator
+		nCase := 6; 
+	6:
+	
+	
+		nCase := 7;
+	
+	7:
+	
+		IF  MoverState = 5 OR  MoverState = 1 THEN 
+			nCase := 1;		
+		ELSE 		
+			nCase := 8;
+		END_IF 
+	
+	8:
+		IF MoverState = 3 THEN 
+			nCase := 9;
+		END_IF
+	9:
+	
+		nCase := 10;
+	
+	10:
+		//Update Positions to real world value before initization of External Setpoint
+		IF cmdFB[1].Done  AND NOT cmdFB[1].Busy AND NOT cmdFB[2].Busy  THEN
+			XpPosition.y := MoverPos.y; 
+			XpPosition.x := MoverPos.x; 
+			XpPosition.z := MoverPos.z;
+			XpPosition.c := MoverPos.c;
+			nCase := 11;
+		END_IF
+	
+	
+	11:
+	
+		//Start External Setpoint Generatior
+		Xplanar_Mover.StartExternalSetpointGeneration(cmdFB[1], stExtOptions[1]); 
+		nCase := 12; 
+	12:
+	
+		nCase := 13;
+		
+	13:
+	
+	// If errored be able to reset 
+	IF MoverState = 5 OR  MoverState = 1 THEN
+		nCase := 1; 
+	ELSE
+		Done := TRUE;
+		Run := FALSE;  
+	END_IF
+		
+	END_CASE
+END_IF]]></ST>
       </Implementation>
     </Method>
     <Method Name="Recover" Id="{e6a63d81-483f-4a71-99d2-c7f5840dab5a}">
@@ -215,28 +265,109 @@ VAR_INPUT
 	
 lStick_X 				: LREAL;
 lStick_Y				: LREAL;
-bButtom_A 				: BOOL; 
+bButton_A 				: BOOL; 
 bButton_X 				: BOOL;
 bButton_Y 				: BOOL;
+maxXtravel              : LREAL;
+minXTravel              : LREAL;
+maxYTravel              : LREAL;
+minYTravel				: LREAL;
+
+END_VAR
+VAR
+ 
+Velocity_eplison_x 	: LREAL ; 
+Velocity_eplison_y 	: LREAL ; 
+	
+END_VAR
+VAR_IN_OUT
 
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[// Done AND (NOT MoverState = 5 OR  MoverState = 1) THEN 
+        <ST><![CDATA[IF Done (*AND NOT MoverState = 5 OR  MoverState = 1*) THEN 
 	
-//END_IF]]></ST>
+
+	// Read the analog stick inputs (x and y) and scale them to control acceleration
+    // Input values are assumed to be in the range [-100, 100] for both x and y axes
+    // Scale them to the range [-max_acceleration, max_acceleration] for acceleration
+	Mover_acceleration.x := lStick_X * MotionParameters.maxAcceleration / 200.0;
+   	Mover_acceleration.y := lStick_Y * MotionParameters.maxAcceleration / 200.0;
+
+
+    // If there is no acceleration command, apply friction to reduce velocity
+	// -10 is a scailing factor
+	friction_force.x := -1 * EnvironmentParameters.Friction_coefficient * SumnedVelocity.x;
+	friction_force.y := -1 * EnvironmentParameters.Friction_coefficient * SumnedVelocity.y;
+
+	
+	// Reduce acceleration based on the friction force
+	SumnedForce_X := Mover_acceleration.x + friction_force.x;
+	SumnedForce_Y := Mover_acceleration.y + friction_force.y;
+	
+	//It drives like a boat - maybe Acceleration feed forward? 
+	// Update the object's velocity based on the acceleration (INTEGRATING)
+	SumnedVelocity.x := LIMIT(MotionParameters.minVelocity, SumnedVelocity.x, MotionParameters.maxVelocity) + (SumnedForce_X * MotionParameters.deltaT);
+	SumnedVelocity.y := LIMIT(MotionParameters.minVelocity, SumnedVelocity.y, MotionParameters.maxVelocity) + (SumnedForce_Y * MotionParameters.deltaT);
+
+	
+	// Update the object's position based on the velocity(INTEGRATING)
+	//Position 						 //Velocity 	
+	XpPosition.x		:= LIMIT(minXTravel, XpPosition.x + ((SumnedVelocity.x)* MotionParameters.deltaT ) ,maxXTravel);
+	XpPosition.y		:= LIMIT(minYTravel, XpPosition.y + ((SumnedVelocity.y) * MotionParameters.deltaT ) ,maxYTravel);
+
+	
+END_IF
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+]]></ST>
       </Implementation>
     </Method>
     <LineIds Name="XPlanarMover">
+      <LineId Id="104" Count="0" />
+      <LineId Id="101" Count="1" />
       <LineId Id="25" Count="0" />
-      <LineId Id="64" Count="0" />
+      <LineId Id="92" Count="0" />
       <LineId Id="67" Count="0" />
       <LineId Id="65" Count="0" />
     </LineIds>
     <LineIds Name="XPlanarMover.Cyclic">
-      <LineId Id="2" Count="3" />
+      <LineId Id="2" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="4" Count="1" />
       <LineId Id="1" Count="0" />
+      <LineId Id="21" Count="1" />
+      <LineId Id="20" Count="0" />
       <LineId Id="7" Count="1" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="18" Count="0" />
       <LineId Id="15" Count="0" />
     </LineIds>
     <LineIds Name="XPlanarMover.Height">
@@ -244,11 +375,18 @@ END_VAR
       <LineId Id="13" Count="1" />
     </LineIds>
     <LineIds Name="XPlanarMover.Init">
+      <LineId Id="110" Count="1" />
+      <LineId Id="108" Count="0" />
+      <LineId Id="115" Count="0" />
+      <LineId Id="114" Count="0" />
+      <LineId Id="109" Count="0" />
       <LineId Id="12" Count="24" />
-      <LineId Id="43" Count="22" />
-      <LineId Id="67" Count="29" />
+      <LineId Id="43" Count="21" />
+      <LineId Id="68" Count="28" />
+      <LineId Id="112" Count="0" />
       <LineId Id="98" Count="1" />
       <LineId Id="5" Count="0" />
+      <LineId Id="113" Count="0" />
     </LineIds>
     <LineIds Name="XPlanarMover.Recover">
       <LineId Id="5" Count="0" />
@@ -266,8 +404,37 @@ END_VAR
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="XPlanarMover.XYMovement">
-      <LineId Id="15" Count="1" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="95" Count="0" />
+      <LineId Id="134" Count="0" />
+      <LineId Id="93" Count="1" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="84" Count="0" />
+      <LineId Id="58" Count="0" />
+      <LineId Id="70" Count="0" />
+      <LineId Id="77" Count="0" />
+      <LineId Id="424" Count="0" />
+      <LineId Id="426" Count="0" />
+      <LineId Id="425" Count="0" />
+      <LineId Id="418" Count="1" />
+      <LineId Id="397" Count="0" />
+      <LineId Id="101" Count="0" />
+      <LineId Id="133" Count="0" />
+      <LineId Id="144" Count="0" />
+      <LineId Id="140" Count="0" />
+      <LineId Id="190" Count="0" />
+      <LineId Id="192" Count="2" />
+      <LineId Id="287" Count="0" />
+      <LineId Id="286" Count="0" />
+      <LineId Id="91" Count="0" />
+      <LineId Id="55" Count="0" />
+      <LineId Id="396" Count="0" />
+      <LineId Id="56" Count="0" />
+      <LineId Id="285" Count="0" />
+      <LineId Id="27" Count="0" />
       <LineId Id="5" Count="0" />
+      <LineId Id="368" Count="27" />
+      <LineId Id="367" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>
