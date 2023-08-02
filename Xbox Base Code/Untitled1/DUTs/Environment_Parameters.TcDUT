@@ -4,7 +4,7 @@
     <Declaration><![CDATA[TYPE Environment_Parameters :
 STRUCT
 	
-			Friction_coefficient		:  LREAL := 0.15 ; 
+			Friction_coefficient		:  LREAL := 9.50 ; 
 			
 
 

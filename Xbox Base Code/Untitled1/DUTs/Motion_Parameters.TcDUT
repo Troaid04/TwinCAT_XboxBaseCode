@@ -7,9 +7,9 @@ STRUCT
 	
 		maxAcceleration					: 		LREAL	:= 15000;			// mm/s^2
 		
-		maxVelocity						: 		LREAL	:= 50.0;			// mm/s
+		maxVelocity						: 		LREAL	:= 500.0;			// mm/s
 		
-		minVelocity						: 		LREAL	:= -50.0;			// -mm/s
+		minVelocity						: 		LREAL	:= -500.0;			// -mm/s
 		
 		RotationScailing				: 		LREAL 	:= 0.0002; 			// Radians/s^2
 		

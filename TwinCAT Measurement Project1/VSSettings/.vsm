@@ -14,6 +14,12 @@
           <FileName></FileName>
           <Children>
             <Node>
+              <Title>lStick_Y</Title>
+              <Expanded>False</Expanded>
+              <FileName></FileName>
+              <Children />
+            </Node>
+            <Node>
               <Title>MoverActVelo.X</Title>
               <Expanded>False</Expanded>
               <FileName></FileName>
@@ -21,6 +27,12 @@
             </Node>
             <Node>
               <Title>MoverActVelo.y</Title>
+              <Expanded>False</Expanded>
+              <FileName></FileName>
+              <Children />
+            </Node>
+            <Node>
+              <Title>rStick_Y</Title>
               <Expanded>False</Expanded>
               <FileName></FileName>
               <Children />
@@ -56,22 +68,52 @@
                   <FileName></FileName>
                   <Children />
                 </Node>
+                <Node>
+                  <Title>MoverActVelo.y</Title>
+                  <Expanded>False</Expanded>
+                  <FileName></FileName>
+                  <Children />
+                </Node>
               </Children>
             </Node>
           </Children>
         </Node>
         <Node>
-          <Title>YT Chart (2)</Title>
-          <Expanded>False</Expanded>
+          <Title>YT Chart (4)</Title>
+          <Expanded>True</Expanded>
           <FileName></FileName>
           <Children>
             <Node>
-              <Title>Axis Group (2)</Title>
-              <Expanded>False</Expanded>
+              <Title>Axis Group (4)</Title>
+              <Expanded>True</Expanded>
               <FileName></FileName>
               <Children>
                 <Node>
-                  <Title>MoverActVelo.y</Title>
+                  <Title>rStick_Y</Title>
+                  <Expanded>False</Expanded>
+                  <FileName></FileName>
+                  <Children />
+                </Node>
+                <Node>
+                  <Title>lStick_Y</Title>
+                  <Expanded>False</Expanded>
+                  <FileName></FileName>
+                  <Children />
+                </Node>
+                <Node>
+                  <Title>Marker</Title>
+                  <Expanded>False</Expanded>
+                  <FileName></FileName>
+                  <Children />
+                </Node>
+                <Node>
+                  <Title>Time Marker (1)</Title>
+                  <Expanded>False</Expanded>
+                  <FileName></FileName>
+                  <Children />
+                </Node>
+                <Node>
+                  <Title>Time Marker (2)</Title>
                   <Expanded>False</Expanded>
                   <FileName></FileName>
                   <Children />
