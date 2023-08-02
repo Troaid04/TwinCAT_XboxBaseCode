@@ -8,56 +8,106 @@ MyMover : XplanarMover;
 
 MyController : XboxController; 
 
+MyEnvironment : Environment; 
+
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[MyMover(); 
-MyController(); ]]></ST>
+      <ST><![CDATA[Cyclic(); 
+
+
+MyMover(
+	
+MoverType := 'AMP4220'
+
+); 
+
+
+MyEnvironment.Boundry(
+
+NumberOfXTiles := 4, 
+NumberOfYTiles := 4	,
+MoverTypeWidth 				:= MyMover.TypeWidth, 
+MoverTypeLength				:= MyMover.TypeLength 
+);
+
+]]></ST>
     </Implementation>
     <Action Name="Cyclic" Id="{b613598b-d147-44e5-bf73-b51c64ea6006}">
       <Implementation>
         <ST><![CDATA[//Initizalization
-MyMover.Init(bStart := MyController.Start );
+MyMover.Init(
+bStart := MyController.Start
+);
 
 //Recover 
-MyMover.Recover(bBack := MyController.Reset); 
+MyMover.Recover(
+bBack := MyController.Reset
+); 
 
 //Height 
-MyMover.Height(LBumper := MyController.lBumper, RBumper := MyController.rBumper); 
+MyMover.Height(
+LBumper := MyController.lBumper, 
+RBumper := MyController.rBumper
+); 
+
+//X and Y Movement 
+MyMover.XYMovement(
+lStick_X := MyController.lStick_X, 
+lStick_Y := MyController.lStick_Y, 
+bButton_A := MyController.Button_A, 
+bButton_X := MyController.Button_X, 
+bButton_Y := MyController.Button_Y, 
+maxXTravel := MyEnvironment.MaxTableXTravel,
+minXTravel := MyEnvironment.MinTableXTravel,
+maxYTravel := MyEnvironment.MaxTableYTravel,
+minYTravel := MyEnvironment.MinTableYTravel,
+);
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+MyMover(); 
+MyController();
+MyEnvironment();
 ]]></ST>
       </Implementation>
     </Action>
     <LineIds Name="MAIN">
-      <LineId Id="2" Count="0" />
-      <LineId Id="11" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="51" Count="1" />
+      <LineId Id="54" Count="3" />
+      <LineId Id="53" Count="0" />
+      <LineId Id="37" Count="1" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="43" Count="0" />
+      <LineId Id="50" Count="0" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="48" Count="0" />
     </LineIds>
     <LineIds Name="MAIN.Cyclic">
-      <LineId Id="2" Count="4" />
+      <LineId Id="2" Count="1" />
+      <LineId Id="63" Count="1" />
+      <LineId Id="4" Count="2" />
+      <LineId Id="60" Count="0" />
+      <LineId Id="62" Count="0" />
       <LineId Id="9" Count="0" />
       <LineId Id="8" Count="0" />
       <LineId Id="1" Count="0" />
-      <LineId Id="11" Count="20" />
+      <LineId Id="54" Count="0" />
+      <LineId Id="56" Count="1" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="43" Count="0" />
+      <LineId Id="45" Count="4" />
+      <LineId Id="51" Count="2" />
+      <LineId Id="50" Count="0" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="34" Count="2" />
+      <LineId Id="14" Count="0" />
       <LineId Id="10" Count="0" />
     </LineIds>
   </POU>

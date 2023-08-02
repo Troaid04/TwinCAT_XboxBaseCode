@@ -21,10 +21,16 @@
     <Compile Include="DUTs\Motion_Parameters.TcDUT">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DUTs\Environment_Parameters.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="PlcTask.TcTTO">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="POUs\Controller\XboxController.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\Enviorment\Environment.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="POUs\MAIN.TcPOU">
@@ -44,6 +50,7 @@
     <Folder Include="DUTs" />
     <Folder Include="GVLs" />
     <Folder Include="POUs\Controller" />
+    <Folder Include="POUs\Enviorment" />
     <Folder Include="POUs\Xplanar" />
     <Folder Include="POUs\Xplanar\Mover Type" />
     <Folder Include="VISUs" />
@@ -60,10 +67,14 @@
     </PlaceholderReference>
     <PlaceholderReference Include="Tc3_Mc3PlanarMotion">
       <DefaultResolution>Tc3_Mc3PlanarMotion, * (Beckhoff Automation GmbH)</DefaultResolution>
+      <Namespace>Tc3_Mc3PlanarMotion</Namespace>
     </PlaceholderReference>
     <PlaceholderReference Include="Tc3_Module">
       <DefaultResolution>Tc3_Module, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc3_Module</Namespace>
+    </PlaceholderReference>
+    <PlaceholderReference Include="Tc3_Physics">
+      <DefaultResolution>Tc3_Physics, * (Beckhoff Automation GmbH)</DefaultResolution>
     </PlaceholderReference>
     <PlaceholderReference Include="Tc3_XPlanarUtility">
       <DefaultResolution>Tc3_XPlanarUtility, * (Beckhoff Automation GmbH &amp; Co. KG)</DefaultResolution>

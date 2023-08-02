@@ -1,10 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="AMP4220" Id="{53faabf0-435f-451c-bfbb-05458eef97df}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK AMP4220 EXTENDS XPlanarMover
+    <Declaration><![CDATA[FUNCTION_BLOCK AMP4220 
 VAR_INPUT
 END_VAR
 VAR_OUTPUT
+	
+MoverTypeWidth 			: LREAL := 56.5; 
+MoverTypeLength			: LREAL := 56.5; 
+
 END_VAR
 VAR
 END_VAR
