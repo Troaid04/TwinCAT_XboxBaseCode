@@ -286,7 +286,6 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF Done (*AND NOT MoverState = 5 OR  MoverState = 1*) THEN 
-	
 
 	// Read the analog stick inputs (x and y) and scale them to control acceleration
     // Input values are assumed to be in the range [-100, 100] for both x and y axes
@@ -304,8 +303,7 @@ END_VAR
 	// Reduce acceleration based on the friction force
 	SumnedForce_X := Mover_acceleration.x + friction_force.x;
 	SumnedForce_Y := Mover_acceleration.y + friction_force.y;
-	
-	//It drives like a boat - maybe Acceleration feed forward? 
+
 	// Update the object's velocity based on the acceleration (INTEGRATING)
 	SumnedVelocity.x := LIMIT(MotionParameters.minVelocity, SumnedVelocity.x, MotionParameters.maxVelocity) + (SumnedForce_X * MotionParameters.deltaT);
 	SumnedVelocity.y := LIMIT(MotionParameters.minVelocity, SumnedVelocity.y, MotionParameters.maxVelocity) + (SumnedForce_Y * MotionParameters.deltaT);
@@ -405,7 +403,6 @@ END_IF
     </LineIds>
     <LineIds Name="XPlanarMover.XYMovement">
       <LineId Id="15" Count="0" />
-      <LineId Id="95" Count="0" />
       <LineId Id="134" Count="0" />
       <LineId Id="93" Count="1" />
       <LineId Id="16" Count="0" />
@@ -421,7 +418,6 @@ END_IF
       <LineId Id="101" Count="0" />
       <LineId Id="133" Count="0" />
       <LineId Id="144" Count="0" />
-      <LineId Id="140" Count="0" />
       <LineId Id="190" Count="0" />
       <LineId Id="192" Count="2" />
       <LineId Id="287" Count="0" />
