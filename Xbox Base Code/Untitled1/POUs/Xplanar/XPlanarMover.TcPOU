@@ -7,6 +7,8 @@ VAR_INPUT
 			MotionParameters			:		Motion_Parameters;
 
 			MoverType					: 		STRING(7);  
+			
+			bStart 						: 		BOOL;
 
 END_VAR
 VAR_OUTPUT
@@ -26,32 +28,17 @@ VAR
 			XpPosition					:		MoverVector; 
 			MoverPos					:		MoverVector;
 			ZeroVector 					:		MoverVector;
-			InvertX						:		LREAL; 
-			InvertY						:		LREAL;
 			nCase 						: 		SINT := 1; 
 			
 			EnvironmentParameters		:		Environment_Parameters; 
+			typeAMP4220					: AMP4220;	
 			
 			
-			//testing xandy 
-				
-	SumnedForce_Y 			: LREAL; 
-	SumnedForce_X			: LREAL;
-	acceleration_magnitude 	: LREAL;
-	Mover_acceleration		: MoverVector;
-	friction_force			: MoverVector; 
-	MoverActVelocity		: MoverVector;
-	SumnedVelocity			: MoverVector;
-	
-	latest_acceleration 			: MoverVector;
-	earliest_acceleration 			: MoverVector; 
-	acceleration_threshold			: LREAL := 10000;
-	acceleration_arrayX 	 		: ARRAY[0..1999] OF LREAL;
-	acceleration_arrayY 	 		: ARRAY[0..1999] OF LREAL; 
-	buffer_index					: INT; 
-	significant_acceleration_changeX: BOOL; 
-	significant_acceleration_changeY: BOOL; 
-	typeAMP4220					: AMP4220;	
+			//testing start up
+			
+			Run : BOOL; 	
+
+			
 			
 END_VAR
 VAR_IN_OUT
@@ -80,6 +67,8 @@ IF MoverType = 'AMP4220' THEN
 	TypeWidth := typeAMP4220.MoverTypeWidth;
 	TypeLength := typeAMP4220.MoverTypeLength;
 END_IF
+
+//Condition for init of mover to run
 ]]></ST>
       </Implementation>
     </Action>
@@ -102,17 +91,17 @@ END_VAR
       <Declaration><![CDATA[METHOD Init
 VAR_INPUT
 	
-	bStart 						: BOOL ;
+	bStart 			: BOOL; 
 
 END_VAR
 VAR
-	Run : BOOL;
+
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF bStart THEN
+        <ST><![CDATA[
+IF bStart THEN
 	Run := TRUE;
 END_IF
-
 
 IF Run THEN
 	CASE nCase OF
@@ -276,8 +265,23 @@ minYTravel				: LREAL;
 END_VAR
 VAR
  
-Velocity_eplison_x 	: LREAL ; 
-Velocity_eplison_y 	: LREAL ; 
+
+	SumnedForce_Y 			: LREAL; 
+	SumnedForce_X			: LREAL;
+	acceleration_magnitude 	: LREAL;
+	Mover_acceleration		: MoverVector;
+	friction_force			: MoverVector; 
+	MoverActVelocity		: MoverVector;
+	SumnedVelocity			: MoverVector;
+	
+	latest_acceleration 			: MoverVector;
+	earliest_acceleration 			: MoverVector; 
+	acceleration_threshold			: LREAL := 10000;
+	acceleration_arrayX 	 		: ARRAY[0..1999] OF LREAL;
+	acceleration_arrayY 	 		: ARRAY[0..1999] OF LREAL; 
+	buffer_index					: INT; 
+	significant_acceleration_changeX: BOOL; 
+	significant_acceleration_changeY: BOOL; 
 	
 END_VAR
 VAR_IN_OUT
@@ -366,6 +370,7 @@ END_IF
       <LineId Id="17" Count="0" />
       <LineId Id="19" Count="0" />
       <LineId Id="18" Count="0" />
+      <LineId Id="23" Count="1" />
       <LineId Id="15" Count="0" />
     </LineIds>
     <LineIds Name="XPlanarMover.Height">
@@ -373,8 +378,8 @@ END_IF
       <LineId Id="13" Count="1" />
     </LineIds>
     <LineIds Name="XPlanarMover.Init">
-      <LineId Id="110" Count="1" />
       <LineId Id="108" Count="0" />
+      <LineId Id="124" Count="1" />
       <LineId Id="115" Count="0" />
       <LineId Id="114" Count="0" />
       <LineId Id="109" Count="0" />
