@@ -303,8 +303,7 @@ END_VAR
 	// Reduce acceleration based on the friction force
 	SumnedForce_X := Mover_acceleration.x + friction_force.x;
 	SumnedForce_Y := Mover_acceleration.y + friction_force.y;
-	
-	//It drives like a boat - maybe Acceleration feed forward? 
+
 	// Update the object's velocity based on the acceleration (INTEGRATING)
 	SumnedVelocity.x := LIMIT(MotionParameters.minVelocity, SumnedVelocity.x, MotionParameters.maxVelocity) + (SumnedForce_X * MotionParameters.deltaT);
 	SumnedVelocity.y := LIMIT(MotionParameters.minVelocity, SumnedVelocity.y, MotionParameters.maxVelocity) + (SumnedForce_Y * MotionParameters.deltaT);
@@ -419,7 +418,6 @@ END_IF
       <LineId Id="101" Count="0" />
       <LineId Id="133" Count="0" />
       <LineId Id="144" Count="0" />
-      <LineId Id="140" Count="0" />
       <LineId Id="190" Count="0" />
       <LineId Id="192" Count="2" />
       <LineId Id="287" Count="0" />
