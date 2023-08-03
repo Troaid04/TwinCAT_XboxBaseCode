@@ -4,40 +4,44 @@
     <Declaration><![CDATA[FUNCTION_BLOCK XPlanarMover
 VAR_INPUT
 	
-			MotionParameters			:		Motion_Parameters;
+			MotionParameters			:		Motion_Parameters; // Min-max Motion parameters
 
-			MoverType					: 		STRING(7);  
-			
-			bStart 						: 		BOOL;
+			MoverType					: 		STRING(7);  //Input what mover is being controlled
 
 END_VAR
 VAR_OUTPUT
 	
-			Xplanar_Mover 				: 		MC_PlanarMover; 
-			moverState					:		MC_Planar_State;
+			Xplanar_Mover 				: 		MC_PlanarMover;  // Xplanr Mover fb
+			moverState					:		MC_Planar_State;	// State of mover
 			
-			TypeWidth					: 		LREAL;		
-			TypeLength					:		LREAL;
+			TypeWidth					: 		LREAL; //Mover Width  		
+			TypeLength					:		LREAL; //Mover Length
 END_VAR
 VAR
 	
-			stExtOptions				:		ARRAY [1..2]  OF ST_ExternalSetpointGenerationOptions; 
-			cmdFB 						:		ARRAY [1..2]  OF MC_PlanarFeedBack ;	
-			Timer						: 		TON;
-			DONE						: 		BOOL;
-			XpPosition					:		MoverVector; 
-			MoverPos					:		MoverVector;
-			ZeroVector 					:		MoverVector;
-			nCase 						: 		SINT := 1; 
-			
-			EnvironmentParameters		:		Environment_Parameters; 
-			typeAMP4220					: AMP4220;	
-			
-			
-			//testing start up
-			
-			Run : BOOL; 	
+			stExtOptions				:		ARRAY [1..2]  OF ST_ExternalSetpointGenerationOptions; // External Setpoint options
+			cmdFB 						:		ARRAY [1..2]  OF MC_PlanarFeedBack ; //Mover Feedback 
+			XpPosition					:		MoverVector; // Commanded mover pos
+			MoverPos					:		MoverVector; // Act pos of mover
+			ZeroVector 					:		MoverVector; // Zero feed for External Pos
 
+			
+			
+			EnvironmentParameters		:		Environment_Parameters; // Enviroment parameters like table boundry, fricition coeffecent 
+			typeAMP4220					: 		AMP4220; // Mover 4220 decleration	
+			
+		
+			
+			Run 						:		BOOL; // Run init case	
+			DONE						: 		BOOL; // Done running init
+
+ 
+			SumnedForce_X				: 		LREAL; // Calculation of applied force on X
+			SumnedForce_Y 				: 		LREAL; // Calculation of applied force on Y
+			
+			Mover_acceleration			: 		MoverVector; // Commanded Mover Acc
+			friction_force				: 		MoverVector; // Fricition against mover
+			SumnedVelocity				: 		MoverVector; // Commanded Velocity after intergation 
 			
 			
 END_VAR
@@ -91,11 +95,11 @@ END_VAR
       <Declaration><![CDATA[METHOD Init
 VAR_INPUT
 	
-	bStart 			: BOOL; 
+	bStart 						: 		BOOL; // Start button on controller
 
 END_VAR
 VAR
-
+	nCase 						: 		SINT := 1; // Case of init
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[
@@ -252,54 +256,35 @@ END_VAR
       <Declaration><![CDATA[METHOD XYMovement
 VAR_INPUT
 	
-lStick_X 				: LREAL;
-lStick_Y				: LREAL;
-bButton_A 				: BOOL; 
-bButton_X 				: BOOL;
-bButton_Y 				: BOOL;
-maxXtravel              : LREAL;
-minXTravel              : LREAL;
-maxYTravel              : LREAL;
-minYTravel				: LREAL;
+lStick_X 				: LREAL; // Left stick X axis for X movement of mover
+lStick_Y				: LREAL; // LEft stick Y axis for Y movement of mover
+
+bButton_A 				: BOOL;  // Button A on controller for homing to rotation position
+bButton_X 				: BOOL;  // Button X on controller for locking into X movement 
+bButton_Y 				: BOOL;	 // Button Y on controller for locking into Y movement
+ 
+maxXtravel              : LREAL; // Max X travel on table
+minXTravel              : LREAL; // Min X travel on table
+maxYTravel              : LREAL; // Max Y travel on table
+minYTravel				: LREAL; // Min Y travel on table
 
 END_VAR
 VAR
- 
-
-	SumnedForce_Y 			: LREAL; 
-	SumnedForce_X			: LREAL;
-	acceleration_magnitude 	: LREAL;
-	Mover_acceleration		: MoverVector;
-	friction_force			: MoverVector; 
-	MoverActVelocity		: MoverVector;
-	SumnedVelocity			: MoverVector;
-	
-	latest_acceleration 			: MoverVector;
-	earliest_acceleration 			: MoverVector; 
-	acceleration_threshold			: LREAL := 10000;
-	acceleration_arrayX 	 		: ARRAY[0..1999] OF LREAL;
-	acceleration_arrayY 	 		: ARRAY[0..1999] OF LREAL; 
-	buffer_index					: INT; 
-	significant_acceleration_changeX: BOOL; 
-	significant_acceleration_changeY: BOOL; 
-	
 END_VAR
 VAR_IN_OUT
-
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF Done (*AND NOT MoverState = 5 OR  MoverState = 1*) THEN 
 
 	// Read the analog stick inputs (x and y) and scale them to control acceleration
-    // Input values are assumed to be in the range [-100, 100] for both x and y axes
+    // Input values are assumed to be in the range [-200, 200] for both x and y axes
     // Scale them to the range [-max_acceleration, max_acceleration] for acceleration
 	Mover_acceleration.x := lStick_X * MotionParameters.maxAcceleration / 200.0;
    	Mover_acceleration.y := lStick_Y * MotionParameters.maxAcceleration / 200.0;
 
 
     // If there is no acceleration command, apply friction to reduce velocity
-	// -10 is a scailing factor
 	friction_force.x := -1 * EnvironmentParameters.Friction_coefficient * SumnedVelocity.x;
 	friction_force.y := -1 * EnvironmentParameters.Friction_coefficient * SumnedVelocity.y;
 
@@ -313,8 +298,7 @@ END_VAR
 	SumnedVelocity.y := LIMIT(MotionParameters.minVelocity, SumnedVelocity.y, MotionParameters.maxVelocity) + (SumnedForce_Y * MotionParameters.deltaT);
 
 	
-	// Update the object's position based on the velocity(INTEGRATING)
-	//Position 						 //Velocity 	
+	// Update the object's position based on the velocity(INTEGRATING)	
 	XpPosition.x		:= LIMIT(minXTravel, XpPosition.x + ((SumnedVelocity.x)* MotionParameters.deltaT ) ,maxXTravel);
 	XpPosition.y		:= LIMIT(minYTravel, XpPosition.y + ((SumnedVelocity.y) * MotionParameters.deltaT ) ,maxYTravel);
 
@@ -415,9 +399,7 @@ END_IF
       <LineId Id="58" Count="0" />
       <LineId Id="70" Count="0" />
       <LineId Id="77" Count="0" />
-      <LineId Id="424" Count="0" />
-      <LineId Id="426" Count="0" />
-      <LineId Id="425" Count="0" />
+      <LineId Id="424" Count="1" />
       <LineId Id="418" Count="1" />
       <LineId Id="397" Count="0" />
       <LineId Id="101" Count="0" />
@@ -428,7 +410,6 @@ END_IF
       <LineId Id="287" Count="0" />
       <LineId Id="286" Count="0" />
       <LineId Id="91" Count="0" />
-      <LineId Id="55" Count="0" />
       <LineId Id="396" Count="0" />
       <LineId Id="56" Count="0" />
       <LineId Id="285" Count="0" />
