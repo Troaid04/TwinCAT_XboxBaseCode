@@ -6,8 +6,8 @@ VAR_INPUT
 END_VAR
 VAR_OUTPUT
 	
-			XboxController				: 		FB_Xbox_Controller(NetID := '', iControllerNumber := 1);
-			bIsConnected   				:  		ARRAY [1..2] OF BOOL;
+			XboxController				: 		FB_Xbox_Controller(NetID := '', iControllerNumber := 1); // Xbox Controller Decleration 
+			bIsConnected   				:  		ARRAY [1..2] OF BOOL; // Controller conection validated 
 
 			Start 						:       BOOL; 
 			Reset 						:       BOOL;
@@ -28,6 +28,11 @@ VAR_OUTPUT
 			
 END_VAR
 VAR    
+	
+			Open_Controller_Service		:	NT_StartProcess;
+			RUN							:	BOOL := TRUE; 
+
+
 END_VAR
 			
 ]]></Declaration>
@@ -76,20 +81,36 @@ END_VAR
     </Method>
     <Action Name="Cyclic" Id="{808b5749-855d-42fa-8193-f16ca32a0879}">
       <Implementation>
-        <ST><![CDATA[XboxController.Cycle();
-mapping(); 
-init();
-bIsConnected[1] := XboxController.P_Status.bConnected; ]]></ST>
+        <ST><![CDATA[XboxController.Cycle(); // Xbox Controller FB cycle 
+mapping(); // Call mapping of Controller
+init(); // Call init of controller
+bIsConnected[1] := XboxController.P_Status.bConnected; // Is controller COnnected]]></ST>
       </Implementation>
     </Action>
     <Method Name="Init" Id="{00fb4985-ae41-4cc3-9c5f-7e5a85b6bbf4}">
       <Declaration><![CDATA[METHOD Init
 VAR_INPUT
 END_VAR
+VAR
+	Busy				:	BOOL;
+	ERR					:	BOOL;
+	ErrID				:	UDINT;
+END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[
-]]></ST>
+IF RUN = TRUE THEN
+Open_Controller_Service(
+	NETID:='' , 
+	PATHSTR:='C:\Program Files\Beckhoff Community\TwinCAT Xbox Controller Service\ADS-Controller-Server.exe' , 
+	DIRNAME:= 'C:\Program Files\Beckhoff Community\TwinCAT Xbox Controller Service', 
+	COMNDLINE:='start ADS-Controller-Server.exe', 
+	START:= TRUE , 
+	TMOUT:= T#5S , 
+	BUSY=> BUSY , 
+	ERR=> ERR , 
+	ERRID=> ERRID );
+END_IF]]></ST>
       </Implementation>
     </Method>
     <Action Name="Mapping" Id="{f5652c4a-9af9-40f9-9303-5deeb2d277c6}" FolderPath="Buttons\">
@@ -99,7 +120,8 @@ END_VAR
 
 
 // Button Mapping
-Start 				:= XboxController.P_Buttons.bStart;
+//Mapping from Controller instance to PLC vars
+Start 				:= XboxController.P_Buttons.bStart; 
 Reset 				:= XboxController.P_Buttons.bBack;
 Button_A 			:= XboxController.P_Buttons.bA_Button;
 Button_B 			:= XboxController.P_Buttons.bB_Button;
@@ -166,10 +188,15 @@ END_VAR
       <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="XboxController.Init">
-      <LineId Id="5" Count="1" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="10" Count="8" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="25" Count="0" />
     </LineIds>
     <LineIds Name="XboxController.Mapping">
       <LineId Id="17" Count="4" />
+      <LineId Id="25" Count="0" />
       <LineId Id="1" Count="5" />
       <LineId Id="9" Count="5" />
       <LineId Id="16" Count="0" />

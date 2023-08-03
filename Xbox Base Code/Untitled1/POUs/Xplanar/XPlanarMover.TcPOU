@@ -34,6 +34,7 @@ VAR
 			
 			Run 						:		BOOL; // Run init case	
 			DONE						: 		BOOL; // Done running init
+			nCase 						: 		SINT := 1; // Case of init
 
  
 			SumnedForce_X				: 		LREAL; // Calculation of applied force on X
@@ -99,7 +100,7 @@ VAR_INPUT
 
 END_VAR
 VAR
-	nCase 						: 		SINT := 1; // Case of init
+	
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[
