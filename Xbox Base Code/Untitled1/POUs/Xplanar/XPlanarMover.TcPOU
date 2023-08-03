@@ -6,13 +6,13 @@ VAR_INPUT
 	
 			MotionParameters			:		Motion_Parameters; // Min-max Motion parameters
 
-			MoverType					: 		STRING(7);  //Input what mover is being controlled
+			MoverType					: 		STRING(7); //Input what mover is being controlled
 
 END_VAR
 VAR_OUTPUT
 	
-			Xplanar_Mover 				: 		MC_PlanarMover;  // Xplanr Mover fb
-			moverState					:		MC_Planar_State;	// State of mover
+			Xplanar_Mover 				: 		MC_PlanarMover; // Xplanr Mover fb
+			moverState					:		MC_Planar_State; // State of mover
 			
 			TypeWidth					: 		LREAL; //Mover Width  		
 			TypeLength					:		LREAL; //Mover Length
@@ -31,18 +31,37 @@ VAR
 			typeAMP4220					: 		AMP4220; // Mover 4220 decleration	
 			
 		
-			
+			//Init Vars
 			Run 						:		BOOL; // Run init case	
 			DONE						: 		BOOL; // Done running init
 			nCase 						: 		SINT := 1; // Case of init
+			init_counter				:		INT; // How many times we can try to recover
 
- 
+			
+ 			//X Y vars
 			SumnedForce_X				: 		LREAL; // Calculation of applied force on X
 			SumnedForce_Y 				: 		LREAL; // Calculation of applied force on Y
-			
 			Mover_acceleration			: 		MoverVector; // Commanded Mover Acc
 			friction_force				: 		MoverVector; // Fricition against mover
 			SumnedVelocity				: 		MoverVector; // Commanded Velocity after intergation 
+			
+			
+			//Recover Vars
+			nRecover					:		SINT := 1; // Case of Recover
+			bRecover					: 		BOOL; // Recover mover 
+			
+			
+			//Height Vars
+			Height 						: 		LREAL := 2; // Varible in which height is passed
+			Left_OSR					: 		R_TRIG; // OSR to make sure a left bumper click is counted a one
+			Right_OSR					: 		R_TRIG; // OSR to make sure a right bumper click is counted a one
+			Left_Bumer_TON				:		TON; // Timer for incremental lowering 
+			Right_Bumper_TON			:		TON; // Timer for incremental rising 
+			Smoothing_Left_TON			:		TON; // Timer for smoothing on lowering 
+			Smoothing_Right_TON			:		TON; // Timer for smoothing on rising 
+
+			
+			
 			
 			
 END_VAR
@@ -87,9 +106,48 @@ RBumper 					: BOOL;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[//IF Done AND (NOT MoverState = 5 OR  MoverState = 1) THEN 
+        <ST><![CDATA[IF Done THEN 
 	
-//END_IF]]></ST>
+	// Hold down for automatic raise and lowering
+	Left_Bumer_TON(IN := LBumper, PT := T#0.25S); 
+	Right_Bumper_TON(IN := RBumper, PT := T#0.25S);
+	Smoothing_Left_TON(PT := T#0.1S);
+	Smoothing_Right_TON(PT := T#0.1S);
+
+	// If timer then activate other then repeat
+	IF Left_Bumer_TON.Q THEN
+		Smoothing_Left_TON.IN := TRUE AND NOT Smoothing_Left_TON.Q;
+	ELSE
+		Smoothing_Left_TON.IN := FALSE;		
+	END_IF
+	
+	// If timer then activate other then repeat
+	IF Right_Bumper_TON.Q THEN
+		Smoothing_Right_TON.IN := TRUE AND NOT Smoothing_Right_TON.Q;
+	ELSE
+		Smoothing_Right_TON.IN := FALSE;
+	END_IF
+	
+	
+	// OSR to make sure only one is seen per click if intention
+	Left_OSR(CLK:= LBumper, Q=> ); // OSR for left bumper 
+	Right_OSR(CLK:= RBumper, Q=> ); // OSR for right bumper 
+	
+	// Raise and lowering of mover + implemntation of limits on height
+	// Can go negative for holding force 
+	IF (Left_OSR.Q OR Smoothing_Left_TON.Q) AND Height >= -0.35 THEN 
+		Height :=  Height - 0.15; // Decrease Height 
+	ELSIF (Right_OSR.Q OR Smoothing_Right_TON.Q) AND Height < 5.0 THEN
+		Height := Height + 0.15; // Increase Height 
+	ELSE
+		Height := Height; // No change 
+	END_IF
+
+	XPPosition.z		:= Height; // Passing in height to Exterenal setpoint generator
+	
+END_IF
+
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="Init" Id="{def29215-c1db-47bd-a987-c8cae1603651}">
@@ -108,7 +166,7 @@ IF bStart THEN
 	Run := TRUE;
 END_IF
 
-IF Run THEN
+IF (Run OR bRecover) AND NOT (init_counter = 3) THEN
 	CASE nCase OF
 	1: 
 	
@@ -137,55 +195,52 @@ IF Run THEN
 	
 		stExtOptions[1].mode := MC_EXTERNAL_SET_POSITION_MODE.Absolute; // Setting up external Setpoint generator
 		nCase := 6; 
+	
 	6:
-	
-	
-		nCase := 7;
-	
-	7:
 	
 		IF  MoverState = 5 OR  MoverState = 1 THEN 
 			nCase := 1;		
 		ELSE 		
-			nCase := 8;
+			nCase := 7;
 		END_IF 
 	
-	8:
+	7:
 		IF MoverState = 3 THEN 
-			nCase := 9;
+			nCase := 8;
 		END_IF
-	9:
 	
-		nCase := 10;
 	
-	10:
+	8:
 		//Update Positions to real world value before initization of External Setpoint
 		IF cmdFB[1].Done  AND NOT cmdFB[1].Busy AND NOT cmdFB[2].Busy  THEN
 			XpPosition.y := MoverPos.y; 
 			XpPosition.x := MoverPos.x; 
 			XpPosition.z := MoverPos.z;
 			XpPosition.c := MoverPos.c;
-			nCase := 11;
+			nCase := 9;
 		END_IF
 	
 	
-	11:
+	9:
 	
 		//Start External Setpoint Generatior
 		Xplanar_Mover.StartExternalSetpointGeneration(cmdFB[1], stExtOptions[1]); 
-		nCase := 12; 
-	12:
+		nCase := 10; 
+	10:
 	
-		nCase := 13;
+		nCase := 11;
 		
-	13:
+	11:
 	
 	// If errored be able to reset 
 	IF MoverState = 5 OR  MoverState = 1 THEN
+		init_Counter := init_Counter + 1; 
 		nCase := 1; 
 	ELSE
-		Done := TRUE;
-		Run := FALSE;  
+		Done := TRUE; // Set true to allow for movement 
+		Run := FALSE; // Dont call init over again
+		bRecover := FALSE; // Dont recover if enabled and ready
+		init_counter := 0; // Reset init try's counter
 	END_IF
 		
 	END_CASE
@@ -201,25 +256,33 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[(*CASE nRecover OF 
+        <ST><![CDATA[CASE nRecover OF 
 	1:
-		IF Done THEN
+		IF Done OR (init_Counter = 3) THEN
 			nRecover := nRecover + 1;
 		END_IF
 	
 	2:
 	
 		IF  MoverState = 5 OR  MoverState = 1 THEN
+			Done := FALSE; // Done bit false so no movement can be called	
 			nRecover := nRecover + 1; 
 		END_IF
 		
 	3:
-	
-		IF 
-			
+		//Mapped as reset of mover
+		IF bBack = TRUE THEN
+			nRecover := nRecover + 1; 
 		END_IF
 		
-END_CASE*)]]></ST>
+	4:
+		
+		nCase := 1; // places in case one of init 	
+		bRecover := TRUE; // Calls init of mover
+		init_counter := 0; // Resets mover init count 
+
+		
+END_CASE]]></ST>
       </Implementation>
     </Method>
     <Method Name="Rotation" Id="{93c77cf9-6e7f-471c-a695-31105a4ae36b}">
@@ -241,28 +304,35 @@ END_VAR
       <Declaration><![CDATA[METHOD Tilt
 VAR_INPUT
 	
-rStick_X 				: LREAL;
-rStick_Y				: LREAL;
-bButton_B 				: BOOL; 
+rStick_X 				: LREAL; // Right stick X axis - tilt on B
+rStick_Y				: LREAL; // Right stick Y axis - tilit on A
+bButton_B 				: BOOL;  // Button B on controller - anti slosh
 
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[//IF Done AND (NOT MoverState = 5 OR  MoverState = 1) THEN 
+        <ST><![CDATA[IF Done THEN 
 	
-//END_IF]]></ST>
+	//A tilt 
+	XpPosition.a	:= EnvironmentParameters.tiltscailing * rStick_Y;
+	
+	//B tilt 	
+	XPPosition.b   	:= EnvironmentParameters.tiltscailing * rStick_X; 
+
+
+END_IF]]></ST>
       </Implementation>
     </Method>
     <Method Name="XYMovement" Id="{baec03b5-3e08-481e-807f-3454b9c413ba}">
       <Declaration><![CDATA[METHOD XYMovement
 VAR_INPUT
 	
-lStick_X 				: LREAL; // Left stick X axis for X movement of mover
-lStick_Y				: LREAL; // LEft stick Y axis for Y movement of mover
+lStick_X 				: LREAL; // Left stick X axis - X movement of mover
+lStick_Y				: LREAL; // LEft stick Y axis - Y movement of mover
 
-bButton_A 				: BOOL;  // Button A on controller for homing to rotation position
-bButton_X 				: BOOL;  // Button X on controller for locking into X movement 
-bButton_Y 				: BOOL;	 // Button Y on controller for locking into Y movement
+bButton_A 				: BOOL;  // Button A on controller - homing to rotation position
+bButton_X 				: BOOL;  // Button X on controller - locking into X movement 
+bButton_Y 				: BOOL;	 // Button Y on controller - locking into Y movement
  
 maxXtravel              : LREAL; // Max X travel on table
 minXTravel              : LREAL; // Min X travel on table
@@ -276,7 +346,7 @@ VAR_IN_OUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF Done (*AND NOT MoverState = 5 OR  MoverState = 1*) THEN 
+        <ST><![CDATA[IF Done THEN 
 
 	// Read the analog stick inputs (x and y) and scale them to control acceleration
     // Input values are assumed to be in the range [-200, 200] for both x and y axes
@@ -300,7 +370,7 @@ END_VAR
 
 	
 	// Update the object's position based on the velocity(INTEGRATING)	
-	XpPosition.x		:= LIMIT(minXTravel, XpPosition.x + ((SumnedVelocity.x)* MotionParameters.deltaT ) ,maxXTravel);
+	XpPosition.x		:= LIMIT(minXTravel, XpPosition.x + ((SumnedVelocity.x) * MotionParameters.deltaT ) ,maxXTravel);
 	XpPosition.y		:= LIMIT(minYTravel, XpPosition.y + ((SumnedVelocity.y) * MotionParameters.deltaT ) ,maxYTravel);
 
 	
@@ -359,8 +429,18 @@ END_IF
       <LineId Id="15" Count="0" />
     </LineIds>
     <LineIds Name="XPlanarMover.Height">
-      <LineId Id="5" Count="0" />
-      <LineId Id="13" Count="1" />
+      <LineId Id="126" Count="6" />
+      <LineId Id="162" Count="0" />
+      <LineId Id="133" Count="6" />
+      <LineId Id="163" Count="0" />
+      <LineId Id="140" Count="4" />
+      <LineId Id="164" Count="0" />
+      <LineId Id="145" Count="4" />
+      <LineId Id="165" Count="1" />
+      <LineId Id="150" Count="8" />
+      <LineId Id="160" Count="1" />
+      <LineId Id="159" Count="0" />
+      <LineId Id="14" Count="0" />
     </LineIds>
     <LineIds Name="XPlanarMover.Init">
       <LineId Id="108" Count="0" />
@@ -369,9 +449,15 @@ END_IF
       <LineId Id="114" Count="0" />
       <LineId Id="109" Count="0" />
       <LineId Id="12" Count="24" />
-      <LineId Id="43" Count="21" />
-      <LineId Id="68" Count="28" />
+      <LineId Id="43" Count="2" />
+      <LineId Id="50" Count="12" />
+      <LineId Id="64" Count="0" />
+      <LineId Id="69" Count="24" />
+      <LineId Id="135" Count="0" />
+      <LineId Id="94" Count="2" />
       <LineId Id="112" Count="0" />
+      <LineId Id="134" Count="0" />
+      <LineId Id="136" Count="0" />
       <LineId Id="98" Count="1" />
       <LineId Id="5" Count="0" />
       <LineId Id="113" Count="0" />
@@ -379,8 +465,15 @@ END_IF
     <LineIds Name="XPlanarMover.Recover">
       <LineId Id="5" Count="0" />
       <LineId Id="12" Count="0" />
-      <LineId Id="14" Count="12" />
+      <LineId Id="14" Count="6" />
+      <LineId Id="55" Count="0" />
+      <LineId Id="21" Count="5" />
       <LineId Id="33" Count="2" />
+      <LineId Id="43" Count="1" />
+      <LineId Id="62" Count="0" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="53" Count="1" />
+      <LineId Id="52" Count="0" />
       <LineId Id="13" Count="0" />
     </LineIds>
     <LineIds Name="XPlanarMover.Rotation">
@@ -389,6 +482,9 @@ END_IF
     </LineIds>
     <LineIds Name="XPlanarMover.Tilt">
       <LineId Id="13" Count="1" />
+      <LineId Id="26" Count="3" />
+      <LineId Id="24" Count="1" />
+      <LineId Id="23" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="XPlanarMover.XYMovement">
