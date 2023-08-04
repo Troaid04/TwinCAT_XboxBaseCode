@@ -45,11 +45,14 @@ MyMover.Recover(
 bBack := MyController.Reset
 ); 
 
-//Height 
-MyMover.Height(
-LBumper := MyController.lBumper, 
-RBumper := MyController.rBumper
-); 
+//tilt
+MyMover.Tilt_Height(
+rStick_X := MyController.rStick_X,
+rStick_Y := MyController.rStick_Y,
+bButton_B := MyController.Button_B,
+LBumper := MyController.lBumper,
+RBumper	:= MyController.rBumper
+);
 
 //X and Y Movement 
 MyMover.XYMovement(
@@ -63,6 +66,12 @@ minXTravel := MyEnvironment.MinTableXTravel,
 maxYTravel := MyEnvironment.MaxTableYTravel,
 minYTravel := MyEnvironment.MinTableYTravel,
 );
+
+MyMover.Rotation(
+LTrigger := MyController.lTrigger,
+RTrigger := MyController.rTrigger
+);
+
 
 
 MyMover(); 
@@ -88,27 +97,9 @@ MyEnvironment();
       <LineId Id="48" Count="0" />
     </LineIds>
     <LineIds Name="MAIN.Cyclic">
-      <LineId Id="2" Count="1" />
-      <LineId Id="65" Count="0" />
-      <LineId Id="64" Count="0" />
-      <LineId Id="4" Count="2" />
-      <LineId Id="60" Count="0" />
-      <LineId Id="62" Count="0" />
-      <LineId Id="9" Count="0" />
-      <LineId Id="8" Count="0" />
-      <LineId Id="1" Count="0" />
-      <LineId Id="54" Count="0" />
-      <LineId Id="56" Count="1" />
-      <LineId Id="11" Count="0" />
-      <LineId Id="13" Count="0" />
-      <LineId Id="32" Count="0" />
-      <LineId Id="43" Count="0" />
-      <LineId Id="45" Count="4" />
-      <LineId Id="51" Count="2" />
-      <LineId Id="50" Count="0" />
-      <LineId Id="38" Count="0" />
-      <LineId Id="34" Count="2" />
-      <LineId Id="14" Count="0" />
+      <LineId Id="85" Count="14" />
+      <LineId Id="125" Count="1" />
+      <LineId Id="100" Count="24" />
       <LineId Id="10" Count="0" />
     </LineIds>
   </POU>

@@ -29,6 +29,7 @@ VAR
 			
 			EnvironmentParameters		:		Environment_Parameters; // Enviroment parameters like table boundry, fricition coeffecent 
 			typeAMP4220					: 		AMP4220; // Mover 4220 decleration	
+			typeAMP4330					:		AMP4330; // Mover 4330 decleration
 			
 		
 			//Init Vars
@@ -59,7 +60,21 @@ VAR
 			Right_Bumper_TON			:		TON; // Timer for incremental rising 
 			Smoothing_Left_TON			:		TON; // Timer for smoothing on lowering 
 			Smoothing_Right_TON			:		TON; // Timer for smoothing on rising 
-
+			
+			//Rotation Vars
+			DestinationX				: 		DINT; // Rotation point on X plane
+			DestinationY				: 		DINT; // Rotation point on Y plane 
+			AtXPoint					: 		BOOL;
+			AtYPoint					: 		BOOL;
+			MaxPosRot					: 		LREAL;
+			MaxNegRot					: 		LREAL;
+			isintent					: 		BOOL;
+			Closest90					:		LREAL;
+			MODDED_C					: 		INT;
+			PastRot10					: 		BOOL;
+			Centering_Direction			:		SINT;
+			LowerBound 					: 		LREAL;
+			UpperBound 					: 		LREAL;
 			
 			
 			
@@ -79,77 +94,28 @@ END_VAR]]></Declaration>
     <Action Name="Cyclic" Id="{82484dc3-e441-4c06-856d-d2ed15a41028}">
       <Implementation>
         <ST><![CDATA[//Mover 1 updates
-Xplanar_Mover.Update(); 
-cmdFB[1].Update();
-moverState := Xplanar_Mover.MCTOPLC.STD.State;
-MoverPos := Xplanar_Mover.MCTOPLC.ACT.ActPos;
-typeAMP4220(); 
+Xplanar_Mover.Update();  // Updating Mopver FB
+cmdFB[1].Update(); // Updating Mover feedback
+moverState := Xplanar_Mover.MCTOPLC.STD.State; // passing in mover state 
+MoverPos := Xplanar_Mover.MCTOPLC.ACT.ActPos; // passing in mover act pos
+typeAMP4220(); // update mover 4220 FB
+typeAMP4330(); // Update mover 4330 FB
 
 
 
+//Choose varibles to pass based on which mover is called
 IF MoverType = 'AMP4220' THEN
 	TypeWidth := typeAMP4220.MoverTypeWidth;
 	TypeLength := typeAMP4220.MoverTypeLength;
+ELSIF MoverType = 'AMP4330' THEN
+	TypeWidth := typeAMP4330.MoverTypeWidth;
+	TypeLength := typeAMP4330.MoverTypeLength;
 END_IF
 
-//Condition for init of mover to run
+
 ]]></ST>
       </Implementation>
     </Action>
-    <Method Name="Height" Id="{a081a7d9-e07b-49a5-bb9d-587c5faff0c3}">
-      <Declaration><![CDATA[METHOD Height
-VAR_INPUT
-	
-LBumper 					: BOOL; 
-RBumper 					: BOOL; 
-
-END_VAR
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[IF Done THEN 
-	
-	// Hold down for automatic raise and lowering
-	Left_Bumer_TON(IN := LBumper, PT := T#0.25S); 
-	Right_Bumper_TON(IN := RBumper, PT := T#0.25S);
-	Smoothing_Left_TON(PT := T#0.1S);
-	Smoothing_Right_TON(PT := T#0.1S);
-
-	// If timer then activate other then repeat
-	IF Left_Bumer_TON.Q THEN
-		Smoothing_Left_TON.IN := TRUE AND NOT Smoothing_Left_TON.Q;
-	ELSE
-		Smoothing_Left_TON.IN := FALSE;		
-	END_IF
-	
-	// If timer then activate other then repeat
-	IF Right_Bumper_TON.Q THEN
-		Smoothing_Right_TON.IN := TRUE AND NOT Smoothing_Right_TON.Q;
-	ELSE
-		Smoothing_Right_TON.IN := FALSE;
-	END_IF
-	
-	
-	// OSR to make sure only one is seen per click if intention
-	Left_OSR(CLK:= LBumper, Q=> ); // OSR for left bumper 
-	Right_OSR(CLK:= RBumper, Q=> ); // OSR for right bumper 
-	
-	// Raise and lowering of mover + implemntation of limits on height
-	// Can go negative for holding force 
-	IF (Left_OSR.Q OR Smoothing_Left_TON.Q) AND Height >= -0.35 THEN 
-		Height :=  Height - 0.15; // Decrease Height 
-	ELSIF (Right_OSR.Q OR Smoothing_Right_TON.Q) AND Height < 5.0 THEN
-		Height := Height + 0.15; // Increase Height 
-	ELSE
-		Height := Height; // No change 
-	END_IF
-
-	XPPosition.z		:= Height; // Passing in height to Exterenal setpoint generator
-	
-END_IF
-
-]]></ST>
-      </Implementation>
-    </Method>
     <Method Name="Init" Id="{def29215-c1db-47bd-a987-c8cae1603651}">
       <Declaration><![CDATA[METHOD Init
 VAR_INPUT
@@ -170,34 +136,40 @@ IF (Run OR bRecover) AND NOT (init_counter = 3) THEN
 	CASE nCase OF
 	1: 
 	
+		//Reset Mover
 		Done := FALSE;
 		Xplanar_Mover.Reset(cmdFB[1]);
 		nCase := 2;
 	
 	2:
 	
+		// Check to see if done with action
 		IF cmdFB[1].Done THEN
 			nCase := 3; 
 		END_IF
 		
 	3:
 	
+		// Enable mover
 		Xplanar_Mover.Enable(cmdFB[1]);
 		nCase := 4;
 		
 	4:
 	
+		// Check to see if done with action
 		IF cmdFB[1].Done THEN
 			nCase := 5;
 		END_IF
 		
 	5:
 	
+		// Start External Setpoint generator 
 		stExtOptions[1].mode := MC_EXTERNAL_SET_POSITION_MODE.Absolute; // Setting up external Setpoint generator
 		nCase := 6; 
 	
 	6:
 	
+		// If mover is errored then re init 
 		IF  MoverState = 5 OR  MoverState = 1 THEN 
 			nCase := 1;		
 		ELSE 		
@@ -205,13 +177,17 @@ IF (Run OR bRecover) AND NOT (init_counter = 3) THEN
 		END_IF 
 	
 	7:
+	
+		// If mover enabled continue 
 		IF MoverState = 3 THEN 
 			nCase := 8;
 		END_IF
 	
 	
 	8:
-		//Update Positions to real world value before initization of External Setpoint
+		
+		// Check to see if done with action
+		// Update Positions to real world value before initization of External Setpoint
 		IF cmdFB[1].Done  AND NOT cmdFB[1].Busy AND NOT cmdFB[2].Busy  THEN
 			XpPosition.y := MoverPos.y; 
 			XpPosition.x := MoverPos.x; 
@@ -223,14 +199,11 @@ IF (Run OR bRecover) AND NOT (init_counter = 3) THEN
 	
 	9:
 	
-		//Start External Setpoint Generatior
+		// Start External Setpoint Generatior
 		Xplanar_Mover.StartExternalSetpointGeneration(cmdFB[1], stExtOptions[1]); 
 		nCase := 10; 
-	10:
-	
-		nCase := 11;
 		
-	11:
+	10:
 	
 	// If errored be able to reset 
 	IF MoverState = 5 OR  MoverState = 1 THEN
@@ -280,6 +253,11 @@ END_VAR
 		nCase := 1; // places in case one of init 	
 		bRecover := TRUE; // Calls init of mover
 		init_counter := 0; // Resets mover init count 
+		nRecover := nRecover + 1; 
+	
+	5:
+	
+		nRecover := 1;
 
 		
 END_CASE]]></ST>
@@ -289,36 +267,191 @@ END_CASE]]></ST>
       <Declaration><![CDATA[METHOD Rotation : BOOL
 VAR_INPUT
 	
-LTrigger 				: INT ; 
-RTrigger 				: INT ; 
-
-END_VAR
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[//IF Done AND (NOT MoverState = 5 OR  MoverState = 1) THEN 
-	
-//END_IF]]></ST>
-      </Implementation>
-    </Method>
-    <Method Name="Tilt" Id="{c7f673dd-bde8-4bb0-a48c-edd491df8f0b}">
-      <Declaration><![CDATA[METHOD Tilt
-VAR_INPUT
-	
-rStick_X 				: LREAL; // Right stick X axis - tilt on B
-rStick_Y				: LREAL; // Right stick Y axis - tilit on A
-bButton_B 				: BOOL;  // Button B on controller - anti slosh
+LTrigger 				: LREAL ; // Left trigger - left rotation
+RTrigger 				: LREAL ; // Right Trigger - right rotation 
 
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF Done THEN 
 	
+//Rotation Handeling
+
+		// Find Nearest X rotation point based on act pos
+		IF LREAL_TO_INT(MoverPos.X) MOD 120 < 60 THEN
+			DestinationX	:= 120 * MODTURNS(MoverPos.X , 120);
+		ELSE
+			DestinationX	:= 120 * (MODTURNS(MoverPos.X, 120) + 1);
+		END_IF
+		
+		// Find Nearest Y rotation point based on act pos
+		IF LREAL_TO_INT(MoverPos.Y) MOD 120 < 60 THEN
+			DestinationY	:= 120 * MODTURNS(MoverPos.Y , 120);
+		ELSE
+			DestinationY	:= 120 * (MODTURNS(MoverPos.Y, 120) + 1);
+		END_IF
+		
+		// Set Boundries for X to not move to edge of table 
+		IF DestinationX = 0 THEN
+			DestinationX := DestinationX + 120;
+		ELSIF DestinationX = 960 THEN
+			DestinationX := DestinationX - 120;
+		END_IF 	
+		
+		// Set Boundries for Y to not move to edge of table 
+		IF DestinationY = 0 THEN 
+			DestinationY := DestinationY + 120;
+		ELSIF DestinationY = 720 THEN
+			DestinationY := DestinationY - 120;
+		END_IF 		
+		
+		// The direction the mover neds to turn to home to our closest 90 value
+		IF Closest90 <= MoverPOs.c THEN
+			Centering_Direction := -1; 
+		ELSE
+			Centering_Direction := 1;
+		END_IF
+		
+		// Set Lower and Upper Bounds
+		lowerBound := (Closest90 - 0.3);
+		UpperBound := (Closest90 + 0.3);
+		
+		
+		//Checking to make sure Tile is within 1 mm +- of a point that is modulo by 120 and = 0 and then truning a bool true or false
+		IF ((LREAL_TO_INT(MoverPos.x) MOD 120) >= 119) OR ((LREAL_TO_INT(MoverPos.x) MOD 120) <= 1)  THEN
+			AtXPOint := TRUE; 
+		ELSE 
+			AtXPoint := FALSE; 
+		END_IF
+		
+		IF ((LREAL_TO_INT(MoverPos.y) MOD 120) >= 119) OR ((LREAL_TO_INT(MoverPos.y) MOD 120) <= 1) THEN
+			AtYPOint := TRUE; 
+		ELSE
+			AtYPoint := FALSE;
+		END_IF	
+		
+		
+		//Modded C Value
+		//Make sure to not divide by 0 
+		IF  MoverPos.c <> 0 THEN
+			MODDED_C:=LREAL_TO_INT(MODABS(MoverPos.c,90));
+		END_IF	
+		
+		IF Modded_C <= 45 THEN 
+			Closest90 := LREAL_TO_INT(MoverPos.c) - Modded_C;  // find our closet 90
+		ELSIF Modded_C >= 46 THEN
+			Closest90 := LREAL_TO_INT(MoverPos.c) + ( 90 - Modded_C); // find our closet 90
+		END_IF
+		
+		MaxNegRot := Closest90 - 10; // Our max neg rotation that can happen based off closet 90
+		MaxPosRot := Closest90 + 10; // Our max pos rotation that can happen based off closet 90
+
+
+		//Cant move out of rotation point unless within 10 degress 
+		IF (10.1 <= Modded_C)AND (Modded_C <= 79.9) THEN
+			PastRot10 := TRUE;
+		ELSE 
+			PastRot10 := FALSE; 
+		END_IF
+		
+	
+		//Kind of Working, needs to be exactly a value that can be modulod by 90 = 0 to leave endless rotation point		
+		//Endless Rotation 
+		IF (AtXPoint AND AtYPoint) AND isintent THEN // If mover is at X and y rotation point and the rotation is intentenal and A button is not pressed
+			IF (RTrigger >= 5 AND LTrigger <= 5) THEN // 
+				//Negative Rotation
+				XpPosition.c := XpPosition.c - ( MotionParameters.RotationScailing * RTrigger);			
+			ELSIF LTrigger >= 5 AND RTrigger <= 5 THEN
+				//Positive Rotation 
+				XpPosition.c := XpPosition.c + (MotionParameters.RotationScailing * LTrigger);
+			ELSE 
+				 // Do nothing  
+			END_IF
+		ELSE	
+			IF NOT PastRot10 THEN // If A is not pressed and we are not past +- 10 degrees
+				//+-10 Rotation Control
+				IF LTrigger = 0 AND RTrigger = 0 THEN
+		  			(* If both triggers are inactive, move towards 0 (center) gradually *)
+		  			IF MoverPos.c > (UpperBound) OR MoverPos.c < (lowerBound) THEN
+		  				XpPosition.c := XpPosition.c + (MotionParameters.CenteringFactor * Centering_Direction);
+		  			END_IF
+				ELSE
+		  			(* If any trigger is active, update the rotation value accordingly *)
+		  			XpPosition.c := LIMIT(MaxNegRot, XpPosition.c + (MotionParameters.RotationScailing * LTrigger) + (-1*( MotionParameters.RotationScailing * RTrigger)) , MaxPosRot);
+				END_IF
+			END_IF
+		END_IF
+	
+
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Tilt_Height" Id="{c7f673dd-bde8-4bb0-a48c-edd491df8f0b}">
+      <Declaration><![CDATA[METHOD Tilt_Height
+VAR_INPUT
+
+//Tilt Inputs	
+rStick_X 				: LREAL; // Right stick X axis - tilt on B
+rStick_Y				: LREAL; // Right stick Y axis - tilit on A
+bButton_B 				: BOOL;  // Button B on controller - anti slosh
+
+//Height inputs
+LBumper					: 	BOOL;
+RBumper					:	BOOL;
+
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF Done THEN 
+	
+
+	// Hold down for automatic raise and lowering
+	Left_Bumer_TON(IN := LBumper, PT := T#0.25S); 
+	Right_Bumper_TON(IN := RBumper, PT := T#0.25S);
+	Smoothing_Left_TON(PT := T#0.1S);
+	Smoothing_Right_TON(PT := T#0.1S);
+
+	// If timer then activate other then repeat
+	IF Left_Bumer_TON.Q THEN
+		Smoothing_Left_TON.IN := TRUE AND NOT Smoothing_Left_TON.Q;
+	ELSE
+		Smoothing_Left_TON.IN := FALSE;		
+	END_IF
+	
+	// If timer then activate other then repeat
+	IF Right_Bumper_TON.Q THEN
+		Smoothing_Right_TON.IN := TRUE AND NOT Smoothing_Right_TON.Q;
+	ELSE
+		Smoothing_Right_TON.IN := FALSE;
+	END_IF
+	
+	
+	// OSR to make sure only one is seen per click if intention
+	Left_OSR(CLK:= LBumper, Q=> ); // OSR for left bumper 
+	Right_OSR(CLK:= RBumper, Q=> ); // OSR for right bumper 
+	
+	// Raise and lowering of mover + implemntation of limits on height
+	// Can go negative for holding force 
+	IF (Left_OSR.Q OR Smoothing_Left_TON.Q) AND Height >= -0.35 THEN 
+		Height :=  Height - 0.15; // Decrease Height 
+	ELSIF (Right_OSR.Q OR Smoothing_Right_TON.Q) AND Height < 5.0 THEN
+		Height := Height + 0.15; // Increase Height 
+	ELSE
+		Height := Height; // No change 
+	END_IF
+
+	XPPosition.z		:= Height; // Passing in height to Exterenal setpoint generator
+	
+(*	IF bButton_B THEN
+		Holding_Contact := TRUE
+	END_IF
+	*)
+	
 	//A tilt 
-	XpPosition.a	:= EnvironmentParameters.tiltscailing * rStick_Y;
+	XpPosition.a	:= MotionParameters.tiltscailing * rStick_Y;
 	
 	//B tilt 	
-	XPPosition.b   	:= EnvironmentParameters.tiltscailing * rStick_X; 
-
+	XPPosition.b   	:= MotionParameters.tiltscailing * rStick_X; 
 
 END_IF]]></ST>
       </Implementation>
@@ -348,6 +481,14 @@ END_VAR
       <Implementation>
         <ST><![CDATA[IF Done THEN 
 
+	// Is intention to stop moving based on dead zone
+	IF (lStick_X < 15 AND lStick_X > -15 ) AND (lStick_Y < 15 AND lStick_Y > -15)THEN
+		isintent := TRUE;
+	ELSE 
+		isintent := FALSE;;
+	END_IF
+
+
 	// Read the analog stick inputs (x and y) and scale them to control acceleration
     // Input values are assumed to be in the range [-200, 200] for both x and y axes
     // Scale them to the range [-max_acceleration, max_acceleration] for acceleration
@@ -365,14 +506,40 @@ END_VAR
 	SumnedForce_Y := Mover_acceleration.y + friction_force.y;
 
 	// Update the object's velocity based on the acceleration (INTEGRATING)
-	SumnedVelocity.x := LIMIT(MotionParameters.minVelocity, SumnedVelocity.x, MotionParameters.maxVelocity) + (SumnedForce_X * MotionParameters.deltaT);
-	SumnedVelocity.y := LIMIT(MotionParameters.minVelocity, SumnedVelocity.y, MotionParameters.maxVelocity) + (SumnedForce_Y * MotionParameters.deltaT);
+	IF NOT bButton_Y THEN // Dont allow for X movement 
+		SumnedVelocity.x := LIMIT(MotionParameters.minVelocity, SumnedVelocity.x, MotionParameters.maxVelocity) + (SumnedForce_X * EnvironmentParameters.deltaT);
+	ELSE
+		SumnedVelocity.x := 0;
+	END_IF
+	
+	IF NOT bButton_X THEN // Dont allow for Y movement 
+		SumnedVelocity.y := LIMIT(MotionParameters.minVelocity, SumnedVelocity.y, MotionParameters.maxVelocity) + (SumnedForce_Y * EnvironmentParameters.deltaT);
+	ELSE
+		SumnedVelocity.Y := 0;
+	END_IF
+	
 
 	
-	// Update the object's position based on the velocity(INTEGRATING)	
-	XpPosition.x		:= LIMIT(minXTravel, XpPosition.x + ((SumnedVelocity.x) * MotionParameters.deltaT ) ,maxXTravel);
-	XpPosition.y		:= LIMIT(minYTravel, XpPosition.y + ((SumnedVelocity.y) * MotionParameters.deltaT ) ,maxYTravel);
-
+	// Move to Nearest Rotation point
+	// Go to nearest X point
+	IF bButton_A AND MoverPos.X < DestinationX THEN
+		XpPosition.X := XpPosition.X + ( 40 * EnvironmentParameters.deltaT );
+	ELSIF bButton_A AND MoverPos.X > DestinationX THEN
+		XpPosition.X := XpPosition.X -( 40 * EnvironmentParameters.deltaT );
+	END_IF;
+	
+	// Go to nearst Y point 
+	IF bButton_A AND MoverPos.Y < DestinationY THEN
+		XpPosition.Y := XpPosition.Y + ( 40 * EnvironmentParameters.deltaT );
+	ELSIF bButton_A AND MoverPos.Y > DestinationY THEN
+		XpPosition.Y := XpPosition.Y -( 40 * EnvironmentParameters.deltaT );
+	END_IF;
+	
+	IF NOT PastRot10 THEN // Dont let mover out of rotation if its passed -+10 degrees
+		// Update the object's position based on the velocity(INTEGRATING)	
+		XpPosition.x		:= LIMIT(minXTravel, XpPosition.x + ((SumnedVelocity.x) * EnvironmentParameters.deltaT ) ,maxXTravel);
+		XpPosition.y		:= LIMIT(minYTravel, XpPosition.y + ((SumnedVelocity.y) * EnvironmentParameters.deltaT ) ,maxYTravel);
+	END_IF
 	
 END_IF
 
@@ -419,28 +586,18 @@ END_IF
       <LineId Id="16" Count="0" />
       <LineId Id="4" Count="1" />
       <LineId Id="1" Count="0" />
-      <LineId Id="21" Count="1" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="22" Count="0" />
       <LineId Id="20" Count="0" />
       <LineId Id="7" Count="1" />
       <LineId Id="17" Count="0" />
       <LineId Id="19" Count="0" />
+      <LineId Id="26" Count="2" />
       <LineId Id="18" Count="0" />
       <LineId Id="23" Count="1" />
       <LineId Id="15" Count="0" />
-    </LineIds>
-    <LineIds Name="XPlanarMover.Height">
-      <LineId Id="126" Count="6" />
-      <LineId Id="162" Count="0" />
-      <LineId Id="133" Count="6" />
-      <LineId Id="163" Count="0" />
-      <LineId Id="140" Count="4" />
-      <LineId Id="164" Count="0" />
-      <LineId Id="145" Count="4" />
-      <LineId Id="165" Count="1" />
-      <LineId Id="150" Count="8" />
-      <LineId Id="160" Count="1" />
-      <LineId Id="159" Count="0" />
-      <LineId Id="14" Count="0" />
     </LineIds>
     <LineIds Name="XPlanarMover.Init">
       <LineId Id="108" Count="0" />
@@ -448,11 +605,28 @@ END_IF
       <LineId Id="115" Count="0" />
       <LineId Id="114" Count="0" />
       <LineId Id="109" Count="0" />
-      <LineId Id="12" Count="24" />
-      <LineId Id="43" Count="2" />
-      <LineId Id="50" Count="12" />
+      <LineId Id="12" Count="2" />
+      <LineId Id="145" Count="0" />
+      <LineId Id="15" Count="5" />
+      <LineId Id="146" Count="0" />
+      <LineId Id="21" Count="5" />
+      <LineId Id="154" Count="0" />
+      <LineId Id="27" Count="4" />
+      <LineId Id="147" Count="0" />
+      <LineId Id="32" Count="4" />
+      <LineId Id="43" Count="0" />
+      <LineId Id="153" Count="0" />
+      <LineId Id="44" Count="1" />
+      <LineId Id="50" Count="2" />
+      <LineId Id="150" Count="0" />
+      <LineId Id="53" Count="6" />
+      <LineId Id="151" Count="1" />
+      <LineId Id="60" Count="2" />
       <LineId Id="64" Count="0" />
-      <LineId Id="69" Count="24" />
+      <LineId Id="69" Count="1" />
+      <LineId Id="148" Count="1" />
+      <LineId Id="71" Count="14" />
+      <LineId Id="89" Count="4" />
       <LineId Id="135" Count="0" />
       <LineId Id="94" Count="2" />
       <LineId Id="112" Count="0" />
@@ -472,23 +646,59 @@ END_IF
       <LineId Id="43" Count="1" />
       <LineId Id="62" Count="0" />
       <LineId Id="42" Count="0" />
-      <LineId Id="53" Count="1" />
+      <LineId Id="53" Count="0" />
+      <LineId Id="73" Count="0" />
+      <LineId Id="69" Count="3" />
+      <LineId Id="54" Count="0" />
       <LineId Id="52" Count="0" />
       <LineId Id="13" Count="0" />
     </LineIds>
     <LineIds Name="XPlanarMover.Rotation">
-      <LineId Id="13" Count="1" />
+      <LineId Id="254" Count="2" />
+      <LineId Id="263" Count="28" />
+      <LineId Id="575" Count="0" />
+      <LineId Id="542" Count="4" />
+      <LineId Id="549" Count="0" />
+      <LineId Id="576" Count="0" />
+      <LineId Id="547" Count="1" />
+      <LineId Id="541" Count="0" />
+      <LineId Id="292" Count="12" />
+      <LineId Id="550" Count="0" />
+      <LineId Id="553" Count="21" />
+      <LineId Id="551" Count="0" />
+      <LineId Id="305" Count="0" />
+      <LineId Id="351" Count="6" />
+      <LineId Id="362" Count="2" />
+      <LineId Id="369" Count="5" />
+      <LineId Id="506" Count="1" />
+      <LineId Id="533" Count="0" />
+      <LineId Id="509" Count="4" />
+      <LineId Id="375" Count="0" />
+      <LineId Id="378" Count="0" />
+      <LineId Id="488" Count="0" />
+      <LineId Id="500" Count="0" />
+      <LineId Id="437" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
-    <LineIds Name="XPlanarMover.Tilt">
+    <LineIds Name="XPlanarMover.Tilt_Height">
       <LineId Id="13" Count="1" />
-      <LineId Id="26" Count="3" />
-      <LineId Id="24" Count="1" />
+      <LineId Id="46" Count="35" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="87" Count="0" />
+      <LineId Id="107" Count="0" />
+      <LineId Id="110" Count="1" />
+      <LineId Id="108" Count="1" />
+      <LineId Id="90" Count="3" />
+      <LineId Id="89" Count="0" />
       <LineId Id="23" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="XPlanarMover.XYMovement">
       <LineId Id="15" Count="0" />
+      <LineId Id="470" Count="0" />
+      <LineId Id="462" Count="0" />
+      <LineId Id="466" Count="3" />
+      <LineId Id="463" Count="1" />
       <LineId Id="134" Count="0" />
       <LineId Id="93" Count="1" />
       <LineId Id="16" Count="0" />
@@ -503,9 +713,21 @@ END_IF
       <LineId Id="133" Count="0" />
       <LineId Id="144" Count="0" />
       <LineId Id="190" Count="0" />
-      <LineId Id="192" Count="2" />
+      <LineId Id="192" Count="0" />
+      <LineId Id="492" Count="0" />
+      <LineId Id="193" Count="0" />
+      <LineId Id="493" Count="3" />
+      <LineId Id="498" Count="3" />
+      <LineId Id="497" Count="0" />
+      <LineId Id="194" Count="0" />
       <LineId Id="287" Count="0" />
       <LineId Id="286" Count="0" />
+      <LineId Id="449" Count="0" />
+      <LineId Id="461" Count="0" />
+      <LineId Id="450" Count="5" />
+      <LineId Id="460" Count="0" />
+      <LineId Id="456" Count="3" />
+      <LineId Id="446" Count="2" />
       <LineId Id="91" Count="0" />
       <LineId Id="396" Count="0" />
       <LineId Id="56" Count="0" />

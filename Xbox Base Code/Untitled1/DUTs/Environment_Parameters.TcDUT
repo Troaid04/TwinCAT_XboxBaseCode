@@ -4,9 +4,9 @@
     <Declaration><![CDATA[TYPE Environment_Parameters :
 STRUCT
 	
-			Friction_coefficient		:  LREAL := 9.50 ; // Frictiton of table
+			Friction_coefficient			:  		LREAL 	:= 9.50 ; 			// Frictiton of table
 			
-			tiltscailing				:  LREAL := 0.008; // scailing from controller to radians 
+			deltaT							:		LREAL	:= 0.00025;			//Cycle time 
 
 END_STRUCT
 END_TYPE

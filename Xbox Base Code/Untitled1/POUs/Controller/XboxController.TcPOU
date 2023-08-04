@@ -9,22 +9,22 @@ VAR_OUTPUT
 			XboxController				: 		FB_Xbox_Controller(NetID := '', iControllerNumber := 1); // Xbox Controller Decleration 
 			bIsConnected   				:  		ARRAY [1..2] OF BOOL; // Controller conection validated 
 
-			Start 						:       BOOL; 
-			Reset 						:       BOOL;
-			Button_A            		:       BOOL;
-			Button_B                 	:       BOOL;
-			Button_X             		:       BOOL;
-			Button_Y                    :       BOOL;
-			Dpad_U	                    :       BOOL;
-			Dpad_D	                    :       BOOL;
-			lBumper	                    :       BOOL;
-			rBumper	                    :       BOOL;
-			lTrigger                    :       LREAL;
-			rTrigger                    :       LREAL;
-			lStick_Y	                :       LREAL;
-			lStick_X	                :       LREAL;
-     		rStick_Y	                :       LREAL;
-     		rStick_X	                :       LREAL;
+			Start 						:       BOOL; // Start Buttom
+			Reset 						:       BOOL; // Reset Button
+			Button_A            		:       BOOL; // Button A
+			Button_B                 	:       BOOL; // Button B
+			Button_X             		:       BOOL; // Button X
+			Button_Y                    :       BOOL; // Button Y
+			Dpad_U	                    :       BOOL; // Dpad UP
+			Dpad_D	                    :       BOOL; // Dpad Down
+			lBumper	                    :       BOOL; // Left Bumper
+			rBumper	                    :       BOOL; // Right Bumper
+			lTrigger                    :       LREAL; // Left Trigger
+			rTrigger                    :       LREAL; // Right Trigger
+			lStick_Y	                :       LREAL; // Left Stick Y axis
+			lStick_X	                :       LREAL; // Left Stick X axis
+     		rStick_Y	                :       LREAL; // Right Stick Y axis
+     		rStick_X	                :       LREAL; // Right Stick X axis
 			
 END_VAR
 VAR    
@@ -47,7 +47,7 @@ END_VAR
       <Declaration><![CDATA[METHOD clearScreenshot : BOOL
 VAR_INPUT
 	
-bDpad_U 					: BOOL; 
+bDpad_U 					: BOOL; // Dpad Up on controller 
 
 END_VAR
 ]]></Declaration>
@@ -82,9 +82,15 @@ END_VAR
     <Action Name="Cyclic" Id="{808b5749-855d-42fa-8193-f16ca32a0879}">
       <Implementation>
         <ST><![CDATA[XboxController.Cycle(); // Xbox Controller FB cycle 
+
 mapping(); // Call mapping of Controller
+
 init(); // Call init of controller
-bIsConnected[1] := XboxController.P_Status.bConnected; // Is controller COnnected]]></ST>
+
+
+
+
+bIsConnected[1] := XboxController.P_Status.bConnected; // Is controller Connected]]></ST>
       </Implementation>
     </Action>
     <Method Name="Init" Id="{00fb4985-ae41-4cc3-9c5f-7e5a85b6bbf4}">
@@ -98,8 +104,8 @@ VAR
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[
-IF RUN = TRUE THEN
+        <ST><![CDATA[//Open Ads Controller Service on start up
+IF RUN = TRUE THEN 
 Open_Controller_Service(
 	NETID:='' , 
 	PATHSTR:='C:\Program Files\Beckhoff Community\TwinCAT Xbox Controller Service\ADS-Controller-Server.exe' , 
@@ -143,7 +149,7 @@ rStick_X			:= XboxController.P_Right_Joystick.fX;]]></ST>
       <Declaration><![CDATA[METHOD takeScreenshot : BOOL
 VAR_INPUT
 	
-bDpad_D 				: BOOL ;
+bDpad_D 				: BOOL ; // Dpad Down on controller
 
 END_VAR
 ]]></Declaration>
@@ -183,8 +189,12 @@ END_VAR
     </LineIds>
     <LineIds Name="XboxController.Cyclic">
       <LineId Id="1" Count="0" />
+      <LineId Id="12" Count="0" />
       <LineId Id="5" Count="0" />
+      <LineId Id="13" Count="0" />
       <LineId Id="7" Count="0" />
+      <LineId Id="9" Count="2" />
+      <LineId Id="8" Count="0" />
       <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="XboxController.Init">

@@ -6,11 +6,11 @@ VAR_INPUT
 END_VAR
 VAR_OUTPUT
 	
-MaxTableYTravel 		: LREAL ; 
-MaxTableXTravel 		: LREAL ;
+			MaxTableYTravel 			: 		LREAL ; // Max Y travel of mover
+			MaxTableXTravel 			: 		LREAL ; // Max X travel of mover
 		             
-MinTableYTravel 		: LREAL ; 
-MinTableXTravel 		: LREAL ; 
+			MinTableYTravel 			: 		LREAL ; // Min Y travel of mover
+			MinTableXTravel 			:		LREAL ; // Min X travel of mover
 
 END_VAR
 VAR
@@ -23,23 +23,29 @@ END_VAR
       <Declaration><![CDATA[METHOD Boundry 
 VAR_INPUT
 	
-			NumberOfXTiles				: INT;
-			NumberOfYTiles				: INT; 
-			MoverTypeWidth 				: LREAL;
-		    MoverTypeLength				: LREAL;
+			NumberOfXTiles				: 		INT; // Number of X tiles in a System
+			NumberOfYTiles				: 		INT; // Number of Y tiles in a System
+			MoverTypeWidth 				: 		LREAL; // Movers Width/2
+		    MoverTypeLength				: 		LREAL; // Movers Length/2
 			
 END_VAR 
 
 VAR 
-			Buffer						: INT := 5; 
+			Buffer						: 		INT := 5; // Buffer space 
+			RotationDisplacement		:		LREAL; // Rotation displacemnt caused by mover   
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[MaxTableYTravel := (NumberOfYTiles * 240) - MoverTypeWidth  - Buffer;
-MaxTableXTravel := (NumberOfXTiles * 240) - MoverTypeLength - Buffer;
+        <ST><![CDATA[MaxTableYTravel := (NumberOfYTiles * 240) - MoverTypeWidth  - Buffer - RotationDisplacement ; // Calculate Max Y travel of Mover
+MaxTableXTravel := (NumberOfXTiles * 240) - MoverTypeLength - Buffer - RotationDisplacement; // Calculate Max X travel of Mover
 		
-MinTableYTravel :=  MoverTypeWidth   + Buffer;
-MinTableXTravel :=  MoverTypeLength  + Buffer;]]></ST>
+MinTableYTravel :=  MoverTypeWidth   + Buffer + RotationDisplacement; // Calculate Min Y travel of Mover
+MinTableXTravel :=  MoverTypeLength  + Buffer + RotationDisplacement; // Calculate Min X travel of Mover
+
+RotationDisplacement :=  (MoverTypeWidth) * SIN(0.1745); // Calculate Rotation displacemnt of Mover
+
+
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="Forces" Id="{97bf2863-1c46-48a8-8c41-067ed868cafd}">
@@ -57,6 +63,8 @@ END_VAR
     <LineIds Name="Environment.Boundry">
       <LineId Id="13" Count="3" />
       <LineId Id="5" Count="0" />
+      <LineId Id="31" Count="3" />
+      <LineId Id="30" Count="0" />
     </LineIds>
     <LineIds Name="Environment.Forces">
       <LineId Id="5" Count="0" />
