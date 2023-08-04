@@ -61,20 +61,26 @@ VAR
 			Smoothing_Left_TON			:		TON; // Timer for smoothing on lowering 
 			Smoothing_Right_TON			:		TON; // Timer for smoothing on rising 
 			
+			//Tilt Vars
+			Holding_Contact				:		BOOL; // Holding bool for Button B
+			Release_Contact				:		BOOL; // Release bool for holding contact
+			Button_B_OSR				: 		R_TRIG; // OSR to make sure a Button B click is counted a one
+			nButton						:		INT := 1; // Case for holding contact
+			
 			//Rotation Vars
 			DestinationX				: 		DINT; // Rotation point on X plane
 			DestinationY				: 		DINT; // Rotation point on Y plane 
-			AtXPoint					: 		BOOL;
-			AtYPoint					: 		BOOL;
-			MaxPosRot					: 		LREAL;
-			MaxNegRot					: 		LREAL;
-			isintent					: 		BOOL;
-			Closest90					:		LREAL;
-			MODDED_C					: 		INT;
-			PastRot10					: 		BOOL;
-			Centering_Direction			:		SINT;
-			LowerBound 					: 		LREAL;
-			UpperBound 					: 		LREAL;
+			AtXPoint					: 		BOOL; // At x point on table 
+			AtYPoint					: 		BOOL; // At Y point on table 
+			MaxPosRot					: 		LREAL; // Max Positive rotation allowed if not at rotation point
+			MaxNegRot					: 		LREAL; // Max Negative rotation allowed if not at rotation point
+			isintent					: 		BOOL; // mChecking to see if mover is standstill
+			Closest90					:		LREAL; // Finding the closest position that is moduled by 90 from actual pos
+			MODDED_C					: 		INT; // Modded C value for math check
+			PastRot10					: 		BOOL; // Past +- 01 degress check
+			Centering_Direction			:		SINT; // Check to see which direction mover needs to center in
+			LowerBound 					: 		LREAL; // Lower bound of Centering position
+			UpperBound 					: 		LREAL; // Upper bound of Centering position
 			
 			
 			
@@ -86,8 +92,8 @@ END_VAR]]></Declaration>
       <ST><![CDATA[Cyclic(); 
 
 
-
-	Xplanar_Mover.SetExternalSetpoint( XpPosition, ZeroVector, ZeroVector);
+	//External Setpint Generator 
+	Xplanar_Mover.SetExternalSetpoint( XpPosition, ZeroVector, ZeroVector); 
 
 ]]></ST>
     </Implementation>
@@ -432,26 +438,83 @@ END_VAR
 	
 	// Raise and lowering of mover + implemntation of limits on height
 	// Can go negative for holding force 
-	IF (Left_OSR.Q OR Smoothing_Left_TON.Q) AND Height >= -0.35 THEN 
-		Height :=  Height - 0.15; // Decrease Height 
-	ELSIF (Right_OSR.Q OR Smoothing_Right_TON.Q) AND Height < 5.0 THEN
-		Height := Height + 0.15; // Increase Height 
+	IF NOT Holding_Contact THEN
+		IF (Left_OSR.Q OR Smoothing_Left_TON.Q) AND Height >= -0.35 THEN 
+			Height :=  Height - 0.15; // Decrease Height 
+		ELSIF (Right_OSR.Q OR Smoothing_Right_TON.Q) AND Height < 5.0 THEN
+			Height := Height + 0.15; // Increase Height 
+		ELSE
+			Height := Height; // No change 
+		END_IF
 	ELSE
-		Height := Height; // No change 
+		Height := 2.0; // Height for anti slosh
 	END_IF
 
 	XPPosition.z		:= Height; // Passing in height to Exterenal setpoint generator
 	
-(*	IF bButton_B THEN
-		Holding_Contact := TRUE
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	Button_B_OSR(CLK := bButton_B, Q => ); // OSR for b button
+	
+	CASE nButton OF 
+	1:
+		// Set holding contact true
+		IF Button_B_OSR.Q THEN
+			Holding_Contact := TRUE;
+			Release_Contact := FALSE;			
+			nButton := 2;
+		END_IF
+		
+	2:	
+	
+		// Set release contact true
+		IF Button_B_OSR.Q AND Holding_Contact THEN
+			Release_Contact := TRUE;
+			nButton := 3;
+		END_IF
+	3:
+	
+		// Turn off holding contact
+		IF Release_Contact THEN
+			Holding_Contact := FALSE;
+			nButton := 1;
+		END_IF
+	END_CASE
+
+	
+
+	IF NOT Holding_Contact THEN	
+		//A tilt 
+		XpPosition.a	:= MotionParameters.tiltscailing * rStick_Y; // Normal a tilt function
+		
+		//B tilt 	
+		XPPosition.b   	:= MotionParameters.tiltscailing * rStick_X; // Normal b tilt function
+	ELSE
+		IF SumnedVelocity.y > (0.0001) OR SumnedVelocity.y < (-0.0001) THEN // set to 0 if beyond epsilon check 
+			XpPosition.a	:=  SumnedVelocity.y * 0.00159681; // a tilt proptional to velocity on y axis
+		ELSE
+			XpPosition.a	:=  0.0; 
+		END_IF
+		
+		IF SumnedVelocity.x > (0.0001) OR SumnedVelocity.x < (-0.0001) THEN // set to 0 if beyond epsilon check
+			XPPosition.b  	:= SumnedVelocity.x * 0.00159681; // b tilt proptional to velocity on x axis
+		ELSE
+			XpPosition.b 	:=  0.0;
+		END_IF
 	END_IF
-	*)
-	
-	//A tilt 
-	XpPosition.a	:= MotionParameters.tiltscailing * rStick_Y;
-	
-	//B tilt 	
-	XPPosition.b   	:= MotionParameters.tiltscailing * rStick_X; 
 
 END_IF]]></ST>
       </Implementation>
@@ -519,7 +582,6 @@ END_VAR
 	END_IF
 	
 
-	
 	// Move to Nearest Rotation point
 	// Go to nearest X point
 	IF bButton_A AND MoverPos.X < DestinationX THEN
@@ -682,14 +744,43 @@ END_IF
     </LineIds>
     <LineIds Name="XPlanarMover.Tilt_Height">
       <LineId Id="13" Count="1" />
-      <LineId Id="46" Count="35" />
+      <LineId Id="46" Count="27" />
+      <LineId Id="177" Count="0" />
+      <LineId Id="74" Count="6" />
+      <LineId Id="178" Count="2" />
+      <LineId Id="81" Count="0" />
       <LineId Id="25" Count="0" />
       <LineId Id="87" Count="0" />
-      <LineId Id="107" Count="0" />
-      <LineId Id="110" Count="1" />
-      <LineId Id="108" Count="1" />
+      <LineId Id="134" Count="18" />
+      <LineId Id="191" Count="0" />
+      <LineId Id="155" Count="1" />
+      <LineId Id="173" Count="0" />
+      <LineId Id="158" Count="0" />
+      <LineId Id="157" Count="0" />
+      <LineId Id="159" Count="2" />
+      <LineId Id="192" Count="0" />
+      <LineId Id="163" Count="2" />
+      <LineId Id="162" Count="0" />
+      <LineId Id="166" Count="1" />
+      <LineId Id="193" Count="0" />
+      <LineId Id="170" Count="2" />
+      <LineId Id="169" Count="0" />
+      <LineId Id="153" Count="0" />
+      <LineId Id="127" Count="0" />
+      <LineId Id="130" Count="0" />
+      <LineId Id="133" Count="0" />
+      <LineId Id="109" Count="0" />
       <LineId Id="90" Count="3" />
       <LineId Id="89" Count="0" />
+      <LineId Id="174" Count="0" />
+      <LineId Id="182" Count="0" />
+      <LineId Id="175" Count="0" />
+      <LineId Id="183" Count="2" />
+      <LineId Id="187" Count="0" />
+      <LineId Id="186" Count="0" />
+      <LineId Id="181" Count="0" />
+      <LineId Id="188" Count="2" />
+      <LineId Id="176" Count="0" />
       <LineId Id="23" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
@@ -720,7 +811,6 @@ END_IF
       <LineId Id="498" Count="3" />
       <LineId Id="497" Count="0" />
       <LineId Id="194" Count="0" />
-      <LineId Id="287" Count="0" />
       <LineId Id="286" Count="0" />
       <LineId Id="449" Count="0" />
       <LineId Id="461" Count="0" />

@@ -26,11 +26,20 @@ VAR_OUTPUT
      		rStick_Y	                :       LREAL; // Right Stick Y axis
      		rStick_X	                :       LREAL; // Right Stick X axis
 			
+			ZeroVector					:		MoverVector; // Zero Vector 
+			
 END_VAR
 VAR    
 	
-			Open_Controller_Service		:	NT_StartProcess;
-			RUN							:	BOOL := TRUE; 
+			Open_Controller_Service		:		NT_StartProcess; // Open ADS server for controller
+			RUN							:		BOOL := TRUE; // Run service 
+			
+			
+			//Take Screenshot vars
+			TakeScreenshot_OSR			: 		R_TRIG; // OSR to make sure a Dpad Down click is counted a one
+			ClearScreenshot_OSR			: 		R_TRIG; // OSR to make sure a Dpad Up click is counted a one
+			Captured_Positions			:		ARRAY [0..9] OF MoverVector; // Array of Positions
+			Position_index				:		INT; //Indexing through Positions array
 
 
 END_VAR
@@ -43,40 +52,28 @@ END_VAR
 ]]></ST>
     </Implementation>
     <Folder Name="Buttons" Id="{b765c0d2-a1fa-47de-a83a-214fd5ccdffc}" />
-    <Method Name="clearScreenshot" Id="{8d5afaf2-b99a-41f7-9c02-692c817339db}">
-      <Declaration><![CDATA[METHOD clearScreenshot : BOOL
+    <Method Name="clearScreenShot" Id="{a648c984-0e68-4780-8c3e-dc940ef8921f}">
+      <Declaration><![CDATA[METHOD clearScreenshot 
 VAR_INPUT
 	
-bDpad_U 					: BOOL; // Dpad Up on controller 
+			bDpad_U 					: 		BOOL; // Dpad Up on controller 
+			ClearPosition				:		MoverVector ; // Mover Vector 
 
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <CFC>
-          <XmlArchive>
-            <Data>
-              <o xml:space="preserve" t="CFCImplementationObject">
-                <o n="Items" t="CFCItemList">
-                  <l2 n="InnerList" />
-                </o>
-                <n n="ParameterInitializationMethodGenerator" />
-                <o n="RoutingPathTable" t="CFCRoutingPathTable">
-                  <d2 n="InnerDictionary" />
-                </o>
-                <v n="AutoSizeCanvas">true</v>
-                <v n="CanvasWidth">1</v>
-                <v n="CanvasHeight">1</v>
-              </o>
-            </Data>
-            <TypeList>
-              <Type n="Boolean">System.Boolean</Type>
-              <Type n="CFCImplementationObject">{32d3375e-c010-41e2-9e43-b2fbf4f2b374}</Type>
-              <Type n="CFCItemList">{cd57ba20-558b-4b98-96c1-73c6000c3087}</Type>
-              <Type n="CFCRoutingPathTable">{4b8bcc79-5980-4868-b49e-005a8148859b}</Type>
-              <Type n="Int32">System.Int32</Type>
-            </TypeList>
-          </XmlArchive>
-        </CFC>
+        <ST><![CDATA[ClearScreenshot_OSR(CLK := bDpad_U, Q => );
+
+IF ClearScreenshot_OSR.Q THEN
+	Captured_Positions[Position_index] := ClearPosition ;
+	Position_index := Position_index + 1;
+END_IF
+
+IF Position_index = 10 THEN
+	Position_index := 0;
+END_IF 
+
+]]></ST>
       </Implementation>
     </Method>
     <Action Name="Cyclic" Id="{808b5749-855d-42fa-8193-f16ca32a0879}">
@@ -145,40 +142,28 @@ rStick_Y			:= XboxController.P_Right_Joystick.fY;
 rStick_X			:= XboxController.P_Right_Joystick.fX;]]></ST>
       </Implementation>
     </Action>
-    <Method Name="takeScreenshot" Id="{f671d340-a431-47a9-bf30-27c82dc334e5}">
+    <Method Name="takeScreenshot" Id="{9a288e78-c47c-467c-8751-8ed3f66285e5}">
       <Declaration><![CDATA[METHOD takeScreenshot : BOOL
 VAR_INPUT
 	
-bDpad_D 				: BOOL ; // Dpad Down on controller
+		bDpad_D 					: 			BOOL ; // Dpad Down on controller
+		MoverPosition				:			MoverVector; // Mover Position
 
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <CFC>
-          <XmlArchive>
-            <Data>
-              <o xml:space="preserve" t="CFCImplementationObject">
-                <o n="Items" t="CFCItemList">
-                  <l2 n="InnerList" />
-                </o>
-                <n n="ParameterInitializationMethodGenerator" />
-                <o n="RoutingPathTable" t="CFCRoutingPathTable">
-                  <d2 n="InnerDictionary" />
-                </o>
-                <v n="AutoSizeCanvas">true</v>
-                <v n="CanvasWidth">1</v>
-                <v n="CanvasHeight">1</v>
-              </o>
-            </Data>
-            <TypeList>
-              <Type n="Boolean">System.Boolean</Type>
-              <Type n="CFCImplementationObject">{32d3375e-c010-41e2-9e43-b2fbf4f2b374}</Type>
-              <Type n="CFCItemList">{cd57ba20-558b-4b98-96c1-73c6000c3087}</Type>
-              <Type n="CFCRoutingPathTable">{4b8bcc79-5980-4868-b49e-005a8148859b}</Type>
-              <Type n="Int32">System.Int32</Type>
-            </TypeList>
-          </XmlArchive>
-        </CFC>
+        <ST><![CDATA[TakeScreenshot_OSR(CLK := bDpad_D, Q => );
+
+IF TakeScreenshot_OSR.Q THEN
+	Captured_Positions[Position_index] :=  MoverPosition;
+	Position_index := Position_index + 1;
+END_IF
+
+IF Position_index = 10 THEN
+	Position_index := 0;
+END_IF 
+
+]]></ST>
       </Implementation>
     </Method>
     <LineIds Name="XboxController">
@@ -186,6 +171,10 @@ END_VAR
       <LineId Id="58" Count="0" />
       <LineId Id="40" Count="0" />
       <LineId Id="39" Count="0" />
+    </LineIds>
+    <LineIds Name="XboxController.clearScreenShot">
+      <LineId Id="12" Count="10" />
+      <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="XboxController.Cyclic">
       <LineId Id="1" Count="0" />
@@ -213,6 +202,10 @@ END_VAR
       <LineId Id="23" Count="0" />
       <LineId Id="15" Count="0" />
       <LineId Id="24" Count="0" />
+    </LineIds>
+    <LineIds Name="XboxController.takeScreenshot">
+      <LineId Id="23" Count="10" />
+      <LineId Id="17" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

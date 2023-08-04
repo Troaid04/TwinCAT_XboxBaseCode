@@ -72,7 +72,15 @@ LTrigger := MyController.lTrigger,
 RTrigger := MyController.rTrigger
 );
 
+MyController.takeScreenshot(
+bDpad_D := Mycontroller.Dpad_D,
+MoverPosition := MyMover.Xplanar_Mover.MCTOPLC.ACT.ActPos
+);
 
+MyController.clearScreenshot(
+bDpad_U := MyController.Dpad_U,
+ClearPosition := MyController.ZeroVector
+);
 
 MyMover(); 
 MyController();
@@ -99,7 +107,16 @@ MyEnvironment();
     <LineIds Name="MAIN.Cyclic">
       <LineId Id="85" Count="14" />
       <LineId Id="125" Count="1" />
-      <LineId Id="100" Count="24" />
+      <LineId Id="100" Count="18" />
+      <LineId Id="127" Count="0" />
+      <LineId Id="119" Count="0" />
+      <LineId Id="128" Count="0" />
+      <LineId Id="130" Count="1" />
+      <LineId Id="133" Count="0" />
+      <LineId Id="132" Count="0" />
+      <LineId Id="134" Count="0" />
+      <LineId Id="136" Count="1" />
+      <LineId Id="121" Count="3" />
       <LineId Id="10" Count="0" />
     </LineIds>
   </POU>
