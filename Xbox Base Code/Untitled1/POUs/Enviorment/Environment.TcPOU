@@ -3,6 +3,10 @@
   <POU Name="Environment" Id="{bc804a70-ba27-434f-a722-0a692fdcb6d7}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK Environment
 VAR_INPUT
+
+			NumberOfXTiles				: 		INT; // Number of X tiles in a System
+			NumberOfYTiles				: 		INT; // Number of Y tiles in a System	
+
 END_VAR
 VAR_OUTPUT
 	
@@ -14,6 +18,10 @@ VAR_OUTPUT
 
 END_VAR
 VAR
+	
+			Buffer						: 		INT := 5; // Buffer space 
+			RotationDisplacement		:		LREAL; // Rotation displacemnt caused by mover   
+
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -23,26 +31,26 @@ END_VAR
       <Declaration><![CDATA[METHOD Boundry 
 VAR_INPUT
 	
-			NumberOfXTiles				: 		INT; // Number of X tiles in a System
-			NumberOfYTiles				: 		INT; // Number of Y tiles in a System
+
 			MoverTypeWidth 				: 		LREAL; // Movers Width/2
 		    MoverTypeLength				: 		LREAL; // Movers Length/2
 			
 END_VAR 
 
 VAR 
-			Buffer						: 		INT := 5; // Buffer space 
-			RotationDisplacement		:		LREAL; // Rotation displacemnt caused by mover   
+
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[MaxTableYTravel := (NumberOfYTiles * 240) - MoverTypeWidth  - Buffer - RotationDisplacement ; // Calculate Max Y travel of Mover
+        <ST><![CDATA[RotationDisplacement :=  (MoverTypeWidth) * SIN(0.1745); // Calculate Rotation displacemnt of Mover
+
+
+MaxTableYTravel := (NumberOfYTiles * 240) - MoverTypeWidth  - Buffer - RotationDisplacement ; // Calculate Max Y travel of Mover
 MaxTableXTravel := (NumberOfXTiles * 240) - MoverTypeLength - Buffer - RotationDisplacement; // Calculate Max X travel of Mover
 		
 MinTableYTravel :=  MoverTypeWidth   + Buffer + RotationDisplacement; // Calculate Min Y travel of Mover
 MinTableXTravel :=  MoverTypeLength  + Buffer + RotationDisplacement; // Calculate Min X travel of Mover
 
-RotationDisplacement :=  (MoverTypeWidth) * SIN(0.1745); // Calculate Rotation displacemnt of Mover
 
 
 ]]></ST>
@@ -61,9 +69,13 @@ END_VAR
       <LineId Id="9" Count="0" />
     </LineIds>
     <LineIds Name="Environment.Boundry">
+      <LineId Id="51" Count="0" />
+      <LineId Id="50" Count="0" />
+      <LineId Id="49" Count="0" />
       <LineId Id="13" Count="3" />
       <LineId Id="5" Count="0" />
-      <LineId Id="31" Count="3" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="33" Count="1" />
       <LineId Id="30" Count="0" />
     </LineIds>
     <LineIds Name="Environment.Forces">

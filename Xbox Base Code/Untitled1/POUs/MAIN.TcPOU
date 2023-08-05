@@ -4,12 +4,39 @@
     <Declaration><![CDATA[PROGRAM MAIN
 VAR
 	
-MyMover : XplanarMover; 
+MyMover : XplanarMover; // Xplanar Mover
 
-MyController : XboxController; 
+MyController : XboxController; // Xbox Controller
 
-MyEnvironment : Environment; 
+MyEnvironment : Environment; // Xplanar Environment
 
+END_VAR
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+VAR
+	bRumble : BOOL;  // Set rumble true for haptics based on conditions
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -17,25 +44,29 @@ END_VAR
 
 
 MyMover(
-	
-MoverType := 'AMP4220'
-
+// Part number of mover being controlled	
+MoverType := 'AMP4220',
+Space_Mode := TRUE //Fun time - need to reactivate if set
 ); 
 
+MyController(
+// Set true if you want haptics and false if you dont	
+HapticFeedback := TRUE
+);
 
-MyEnvironment.Boundry(
-
+MyEnvironment(
+// Input number of X and Y tiles youre table has
 NumberOfXTiles := 4, 
-NumberOfYTiles := 4	,
-MoverTypeWidth 				:= MyMover.TypeWidth, 
-MoverTypeLength				:= MyMover.TypeLength 
+NumberOfYTiles := 4	
 );
 
 ]]></ST>
     </Implementation>
     <Action Name="Cyclic" Id="{b613598b-d147-44e5-bf73-b51c64ea6006}">
       <Implementation>
-        <ST><![CDATA[//Initizalization
+        <ST><![CDATA[Haptics();
+
+//Initizalization
 MyMover.Init( 
 bStart := MyController.Start
 );
@@ -82,29 +113,84 @@ bDpad_U := MyController.Dpad_U,
 ClearPosition := MyController.ZeroVector
 );
 
+MyController.Haptics(
+Rumble := bRumble,
+BackTo0Rumble := MyMover.RotationRumble
+);
+
+MyEnvironment.Boundry(
+MoverTypeWidth 				:= MyMover.TypeWidth, 
+MoverTypeLength				:= MyMover.TypeLength 
+);
+
+
 MyMover(); 
 MyController();
 MyEnvironment();
 ]]></ST>
       </Implementation>
     </Action>
+    <Method Name="Haptics" Id="{55b02e9b-b235-405d-b0b5-a948154467e2}">
+      <Declaration><![CDATA[METHOD Haptics
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[//When found a rotation point or at a boundry 
+IF NOT MyMover.Space_mode THEN // IF space mode is on chnage the way table detection is done
+	IF (MyController.Button_A AND MyMover.RotationXPoint AND MyMover.RotationYPoint) 
+	OR (MyController.lBumper OR MyController.rBumper) 
+	OR ((MyEnvironment.MinTableXTravel + 1 > MyMover.PlanarMoverPos.X) 
+	OR (MyEnvironment.MinTableYTravel + 1 > MyMover.PlanarMoverPos.Y) 
+	OR (MyEnvironment.MaxTableYTravel - 1 < MyMover.PlanarMoverPos.Y) 
+	OR (MyEnvironment.MaxTableXTravel - 1 < MyMover.PlanarMoverPos.X))THEN
+		bRumble := TRUE;
+	ELSE
+		bRumble := FALSE;
+	END_IF
+ELSE
+	//Increase mover detection on boundry
+	IF (MyController.Button_A AND MyMover.RotationXPoint AND MyMover.RotationYPoint) 
+	OR (MyController.lBumper OR MyController.rBumper) 
+	OR ((MyEnvironment.MinTableXTravel + 3 > MyMover.PlanarMoverPos.X) 
+	OR (MyEnvironment.MinTableYTravel + 3 > MyMover.PlanarMoverPos.Y) 
+	OR (MyEnvironment.MaxTableYTravel - 3 < MyMover.PlanarMoverPos.Y) 
+	OR (MyEnvironment.MaxTableXTravel - 3 < MyMover.PlanarMoverPos.X))THEN
+		bRumble := TRUE;
+	ELSE
+		bRumble := FALSE;
+	END_IF
+END_IF
+
+]]></ST>
+      </Implementation>
+    </Method>
     <LineIds Name="MAIN">
       <LineId Id="22" Count="0" />
       <LineId Id="51" Count="1" />
-      <LineId Id="54" Count="3" />
+      <LineId Id="54" Count="2" />
+      <LineId Id="105" Count="0" />
       <LineId Id="53" Count="0" />
-      <LineId Id="37" Count="1" />
+      <LineId Id="68" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="72" Count="0" />
+      <LineId Id="69" Count="1" />
+      <LineId Id="38" Count="0" />
       <LineId Id="36" Count="0" />
       <LineId Id="42" Count="0" />
       <LineId Id="39" Count="0" />
       <LineId Id="43" Count="0" />
-      <LineId Id="50" Count="0" />
-      <LineId Id="41" Count="0" />
       <LineId Id="40" Count="0" />
       <LineId Id="45" Count="0" />
       <LineId Id="48" Count="0" />
     </LineIds>
     <LineIds Name="MAIN.Cyclic">
+      <LineId Id="154" Count="0" />
+      <LineId Id="153" Count="0" />
       <LineId Id="85" Count="14" />
       <LineId Id="125" Count="1" />
       <LineId Id="100" Count="18" />
@@ -116,8 +202,30 @@ MyEnvironment();
       <LineId Id="132" Count="0" />
       <LineId Id="134" Count="0" />
       <LineId Id="136" Count="1" />
+      <LineId Id="139" Count="0" />
+      <LineId Id="138" Count="0" />
+      <LineId Id="140" Count="0" />
+      <LineId Id="151" Count="0" />
+      <LineId Id="141" Count="1" />
+      <LineId Id="144" Count="0" />
+      <LineId Id="148" Count="2" />
+      <LineId Id="143" Count="0" />
       <LineId Id="121" Count="3" />
       <LineId Id="10" Count="0" />
+    </LineIds>
+    <LineIds Name="MAIN.Haptics">
+      <LineId Id="6" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="11" Count="4" />
+      <LineId Id="8" Count="2" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="48" Count="0" />
+      <LineId Id="39" Count="8" />
+      <LineId Id="37" Count="1" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="24" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

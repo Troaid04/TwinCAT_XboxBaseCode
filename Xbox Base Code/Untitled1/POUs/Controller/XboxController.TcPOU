@@ -3,6 +3,9 @@
   <POU Name="XboxController" Id="{90258775-ce06-40bc-98d6-66658f5c2f7b}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK XboxController
 VAR_INPUT
+	
+			HapticFeedback				:		BOOL; // Haptic feedback enable bit		
+
 END_VAR
 VAR_OUTPUT
 	
@@ -41,6 +44,9 @@ VAR
 			Captured_Positions			:		ARRAY [0..9] OF MoverVector; // Array of Positions
 			Position_index				:		INT; //Indexing through Positions array
 
+			
+			//Haptic Feed Back
+			HapticTimerMedium			:		TON; // Haptics feedback timer for longer duration
 
 END_VAR
 			
@@ -90,6 +96,44 @@ init(); // Call init of controller
 bIsConnected[1] := XboxController.P_Status.bConnected; // Is controller Connected]]></ST>
       </Implementation>
     </Action>
+    <Method Name="Haptics" Id="{30573ae0-a7c7-4f3d-9019-23142ed2072b}">
+      <Declaration><![CDATA[METHOD Haptics 
+VAR_INPUT
+	
+				Rumble 					:	 	BOOL; // Set Rumble 
+				BackTo0Rumble			:		BOOL; // Set rumble if mover hits 0
+			
+END_VAR
+VAR 
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[
+//Haptic Feedback Duration
+HapticTimerMedium(IN :=BackTo0Rumble, PT := T#0.5S);
+
+//Haptic FeedBack
+IF HapticfeedBack = TRUE THEN
+//When back to a C value that can be moduloed by 90 and = 0 
+	IF BackTo0Rumble THEN
+		IF (HapticTimerMedium.IN AND NOT HapticTimerMedium.Q) OR Rumble THEN
+			XboxController.SetRumble(0,100);
+		ELSE
+			XboxController.SetRumble(0,0);
+		END_IF
+	END_IF	
+END_IF
+			
+
+
+
+
+
+
+
+]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="Init" Id="{00fb4985-ae41-4cc3-9c5f-7e5a85b6bbf4}">
       <Declaration><![CDATA[METHOD Init
 VAR_INPUT
@@ -182,9 +226,19 @@ END_IF
       <LineId Id="5" Count="0" />
       <LineId Id="13" Count="0" />
       <LineId Id="7" Count="0" />
-      <LineId Id="9" Count="2" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="10" Count="1" />
       <LineId Id="8" Count="0" />
       <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="XboxController.Haptics">
+      <LineId Id="6" Count="2" />
+      <LineId Id="24" Count="4" />
+      <LineId Id="30" Count="4" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="48" Count="0" />
+      <LineId Id="16" Count="7" />
+      <LineId Id="9" Count="0" />
     </LineIds>
     <LineIds Name="XboxController.Init">
       <LineId Id="24" Count="0" />

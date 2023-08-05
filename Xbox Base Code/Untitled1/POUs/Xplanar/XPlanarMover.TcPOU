@@ -7,6 +7,8 @@ VAR_INPUT
 			MotionParameters			:		Motion_Parameters; // Min-max Motion parameters
 
 			MoverType					: 		STRING(7); //Input what mover is being controlled
+			
+			Space_mode					:		BOOL; // Space mode ???
 
 END_VAR
 VAR_OUTPUT
@@ -16,6 +18,13 @@ VAR_OUTPUT
 			
 			TypeWidth					: 		LREAL; //Mover Width  		
 			TypeLength					:		LREAL; //Mover Length
+			
+			PlanarMoverPos				:		MoverVector; // Haptic Handeling
+			
+			RotationXPoint				:		BOOL; // At rotation point for haptics
+			RotationYPoint				:		BOOL; // At rotation point for haptics
+			RotationRumble				:		BOOL; // At 0 output for haptics
+			
 END_VAR
 VAR
 	
@@ -83,7 +92,7 @@ VAR
 			UpperBound 					: 		LREAL; // Upper bound of Centering position
 			
 			
-			
+			Rotation0Rumble				:		BOOL; // Set rumble if rotation goes back to 0
 			
 END_VAR
 VAR_IN_OUT
@@ -104,6 +113,10 @@ Xplanar_Mover.Update();  // Updating Mopver FB
 cmdFB[1].Update(); // Updating Mover feedback
 moverState := Xplanar_Mover.MCTOPLC.STD.State; // passing in mover state 
 MoverPos := Xplanar_Mover.MCTOPLC.ACT.ActPos; // passing in mover act pos
+PlanarMoverPos := Moverpos;
+RotationXPoint := AtXPoint;
+RotationYPoint := AtYPoint;
+RotationRumble := Rotation0Rumble;
 typeAMP4220(); // update mover 4220 FB
 typeAMP4330(); // Update mover 4330 FB
 
@@ -273,9 +286,14 @@ END_CASE]]></ST>
       <Declaration><![CDATA[METHOD Rotation : BOOL
 VAR_INPUT
 	
-LTrigger 				: LREAL ; // Left trigger - left rotation
-RTrigger 				: LREAL ; // Right Trigger - right rotation 
+			LTrigger 					: 		LREAL ; // Left trigger - left rotation
+			RTrigger 					: 		LREAL ; // Right Trigger - right rotation 
 
+END_VAR
+
+VAR_OUTPUT
+			Rumble 						: 		BOOL; // Set Rumble 
+			
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -379,7 +397,7 @@ END_VAR
 				IF LTrigger = 0 AND RTrigger = 0 THEN
 		  			(* If both triggers are inactive, move towards 0 (center) gradually *)
 		  			IF MoverPos.c > (UpperBound) OR MoverPos.c < (lowerBound) THEN
-		  				XpPosition.c := XpPosition.c + (MotionParameters.CenteringFactor * Centering_Direction);
+		  				XpPosition.c := XpPosition.c + (MotionParameters.CenteringFactor * Centering_Direction); 
 		  			END_IF
 				ELSE
 		  			(* If any trigger is active, update the rotation value accordingly *)
@@ -389,6 +407,17 @@ END_VAR
 		END_IF
 	
 
+		IF LTrigger = 0 AND RTrigger = 0  THEN
+			IF MoverPos.c > (UpperBound+ 0.3) OR MoverPos.c < (lowerBound -0.3) THEN
+				Rotation0Rumble := FALSE; // Set Rumble 
+			ELSE
+				Rotation0Rumble := TRUE; // Set Rumble 
+		  	END_IF
+		END_IF
+		
+
+		
+		
 END_IF]]></ST>
       </Implementation>
     </Method>
@@ -405,6 +434,8 @@ bButton_B 				: BOOL;  // Button B on controller - anti slosh
 LBumper					: 	BOOL;
 RBumper					:	BOOL;
 
+END_VAR
+VAR_IN_OUT
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -544,19 +575,40 @@ END_VAR
       <Implementation>
         <ST><![CDATA[IF Done THEN 
 
+	//Imitate driving in space with thrusters
+	IF Space_Mode THEN
+		EnvironmentParameters.Friction_coefficient := 0.35; // Turn down coeffeint to match space like conditions
+		
+		//Setting up elastic boundry
+		IF XpPosition.x = MinXtravel OR XpPosition.x = MaxXtravel THEN
+			SumnedVelocity.X := -1 * SumnedVelocity.X  ;
+		END_IF
+		
+		IF XpPosition.y = MinYtravel OR XpPosition.Y = MaxYtravel THEN
+			SumnedVelocity.y := -1 * SumnedVelocity.y  ;
+		END_IF
+		
+		//Change mover acceleration to better adapt to space like conditions 
+		Mover_acceleration.x := lStick_X * MotionParameters.maxAcceleration / 500.0;
+   		Mover_acceleration.y := lStick_Y * MotionParameters.maxAcceleration / 500.0;	
+		
+	ELSE
+		
+		// Normal moving conditions
+		// Read the analog stick inputs (x and y) and scale them to control acceleration
+    	// Input values are assumed to be in the range [-200, 200] for both x and y axes
+    	// Scale them to the range [-max_acceleration, max_acceleration] for acceleration
+		Mover_acceleration.x := lStick_X * MotionParameters.maxAcceleration / 200.0;
+   		Mover_acceleration.y := lStick_Y * MotionParameters.maxAcceleration / 200.0;
+	
+	END_IF
+
 	// Is intention to stop moving based on dead zone
 	IF (lStick_X < 15 AND lStick_X > -15 ) AND (lStick_Y < 15 AND lStick_Y > -15)THEN
 		isintent := TRUE;
 	ELSE 
 		isintent := FALSE;;
 	END_IF
-
-
-	// Read the analog stick inputs (x and y) and scale them to control acceleration
-    // Input values are assumed to be in the range [-200, 200] for both x and y axes
-    // Scale them to the range [-max_acceleration, max_acceleration] for acceleration
-	Mover_acceleration.x := lStick_X * MotionParameters.maxAcceleration / 200.0;
-   	Mover_acceleration.y := lStick_Y * MotionParameters.maxAcceleration / 200.0;
 
 
     // If there is no acceleration command, apply friction to reduce velocity
@@ -648,6 +700,7 @@ END_IF
       <LineId Id="16" Count="0" />
       <LineId Id="4" Count="1" />
       <LineId Id="1" Count="0" />
+      <LineId Id="30" Count="3" />
       <LineId Id="21" Count="0" />
       <LineId Id="29" Count="0" />
       <LineId Id="25" Count="0" />
@@ -739,7 +792,12 @@ END_IF
       <LineId Id="378" Count="0" />
       <LineId Id="488" Count="0" />
       <LineId Id="500" Count="0" />
+      <LineId Id="584" Count="0" />
       <LineId Id="437" Count="0" />
+      <LineId Id="603" Count="0" />
+      <LineId Id="605" Count="2" />
+      <LineId Id="601" Count="1" />
+      <LineId Id="585" Count="3" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="XPlanarMover.Tilt_Height">
@@ -786,15 +844,30 @@ END_IF
     </LineIds>
     <LineIds Name="XPlanarMover.XYMovement">
       <LineId Id="15" Count="0" />
+      <LineId Id="555" Count="0" />
+      <LineId Id="514" Count="2" />
+      <LineId Id="518" Count="0" />
+      <LineId Id="556" Count="0" />
+      <LineId Id="519" Count="0" />
+      <LineId Id="521" Count="1" />
+      <LineId Id="520" Count="0" />
+      <LineId Id="526" Count="1" />
+      <LineId Id="523" Count="0" />
+      <LineId Id="531" Count="0" />
+      <LineId Id="557" Count="0" />
+      <LineId Id="532" Count="0" />
+      <LineId Id="534" Count="0" />
+      <LineId Id="533" Count="0" />
+      <LineId Id="528" Count="0" />
+      <LineId Id="558" Count="1" />
+      <LineId Id="561" Count="2" />
+      <LineId Id="529" Count="1" />
+      <LineId Id="566" Count="0" />
+      <LineId Id="565" Count="0" />
       <LineId Id="470" Count="0" />
       <LineId Id="462" Count="0" />
       <LineId Id="466" Count="3" />
-      <LineId Id="463" Count="1" />
-      <LineId Id="134" Count="0" />
-      <LineId Id="93" Count="1" />
-      <LineId Id="16" Count="0" />
-      <LineId Id="84" Count="0" />
-      <LineId Id="58" Count="0" />
+      <LineId Id="463" Count="0" />
       <LineId Id="70" Count="0" />
       <LineId Id="77" Count="0" />
       <LineId Id="424" Count="1" />
