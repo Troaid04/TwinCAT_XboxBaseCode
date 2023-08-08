@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FourByThree" Id="{9e001fe6-243c-4d18-a4b2-cfb0864a8b41}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FourByThree
+VAR_INPUT
+	
+	START 			: BOOL; 
+	STOP			: BOOL;
+
+END_VAR
+VAR_OUTPUT
+	
+	Running			: BOOL; 	
+
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <LineIds Name="FourByThree">
+      <LineId Id="9" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

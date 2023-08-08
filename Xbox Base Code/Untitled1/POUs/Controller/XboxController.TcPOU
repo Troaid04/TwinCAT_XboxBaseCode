@@ -20,6 +20,8 @@ VAR_OUTPUT
 			Button_Y                    :       BOOL; // Button Y
 			Dpad_U	                    :       BOOL; // Dpad UP
 			Dpad_D	                    :       BOOL; // Dpad Down
+			Dpad_R	                    :       BOOL; // Dpad UP
+			Dpad_L	                    :       BOOL; // Dpad Down
 			lBumper	                    :       BOOL; // Left Bumper
 			rBumper	                    :       BOOL; // Right Bumper
 			lTrigger                    :       LREAL; // Left Trigger
@@ -176,6 +178,8 @@ Button_X 			:= XboxController.P_Buttons.bX_Button;
 Button_Y 			:= XboxController.P_Buttons.bY_Button;
 Dpad_U	 			:= XboxController.P_Buttons.DPad.bUp;
 Dpad_D	 			:= XboxController.P_Buttons.DPad.bDown;
+Dpad_R	 			:= XboxController.P_Buttons.DPad.bRight;
+Dpad_L	 			:= XboxController.P_Buttons.DPad.bLeft;
 lBumper	 			:= XboxController.P_Buttons.bLeft_Shoulder;
 rBumper	 			:= XboxController.P_Buttons.bRight_Shoulder;
 lTrigger			:= XboxController.P_Left_Trigger;
@@ -251,7 +255,10 @@ END_IF
       <LineId Id="17" Count="4" />
       <LineId Id="25" Count="0" />
       <LineId Id="1" Count="5" />
-      <LineId Id="9" Count="5" />
+      <LineId Id="9" Count="1" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="11" Count="3" />
       <LineId Id="16" Count="0" />
       <LineId Id="23" Count="0" />
       <LineId Id="15" Count="0" />

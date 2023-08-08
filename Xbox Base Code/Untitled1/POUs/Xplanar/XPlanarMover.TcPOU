@@ -9,6 +9,8 @@ VAR_INPUT
 			MoverType					: 		STRING(7); //Input what mover is being controlled
 			
 			Space_mode					:		BOOL; // Space mode ???
+			
+			StartDemo					:		BOOL; // Change to Demo
 
 END_VAR
 VAR_OUTPUT
@@ -24,6 +26,9 @@ VAR_OUTPUT
 			RotationXPoint				:		BOOL; // At rotation point for haptics
 			RotationYPoint				:		BOOL; // At rotation point for haptics
 			RotationRumble				:		BOOL; // At 0 output for haptics
+			
+			DemoReady					:		BOOL; // Handshake to start demo
+			ResetDemo					:		BOOL; // Hnadshake to stop end demo
 			
 END_VAR
 VAR
@@ -90,9 +95,10 @@ VAR
 			Centering_Direction			:		SINT; // Check to see which direction mover needs to center in
 			LowerBound 					: 		LREAL; // Lower bound of Centering position
 			UpperBound 					: 		LREAL; // Upper bound of Centering position
-			
-			
 			Rotation0Rumble				:		BOOL; // Set rumble if rotation goes back to 0
+			
+			//End Vars
+			nEnd						:		SINT := 0; // Start End Procces
 			
 END_VAR
 VAR_IN_OUT
@@ -119,7 +125,7 @@ RotationYPoint := AtYPoint;
 RotationRumble := Rotation0Rumble;
 typeAMP4220(); // update mover 4220 FB
 typeAMP4330(); // Update mover 4330 FB
-
+EndMover();
 
 
 //Choose varibles to pass based on which mover is called
@@ -135,11 +141,80 @@ END_IF
 ]]></ST>
       </Implementation>
     </Action>
+    <Method Name="EndMover" Id="{dfca08e4-ddad-4e94-95e1-636822eff297}">
+      <Declaration><![CDATA[METHOD EndMover
+VAR_INPUT
+END_VAR
+
+VAR
+	
+MoveC_Dyn			:		DynamicConstraint_PathXY;
+	
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[
+MoveC_Dyn.SetValuesVADJ(500,5000,5000,20000);
+
+
+IF StartDemo THEN 
+	CASE nEnd OF
+	
+	0:
+		IF Reinit THEN 
+			DemoReady := FALSE;
+		END_IF
+		//Idle
+		IF NOT DemoReady THEN
+			nEnd := nEnd + 1;	
+		END_IF
+	
+	1:
+		
+		//Set function block done bit to false to halt all moves
+		Done := FALSE;
+		nEnd := nEnd + 1;
+		
+	2:
+	
+		IF NOT Done THEN
+			nEnd := nEnd + 1;
+		ELSE 
+			nEnd := 1;
+		END_IF
+	3:
+		
+		// Stop the external setpoint generator 
+		Xplanar_Mover.StopExternalSetpointGeneration(cmdfb[1]);
+		nEnd := nEnd + 1;
+		
+		
+	4:
+		
+		//Snap mover to 0
+		IF MoverPos.c <> 0 THEN
+			Xplanar_Mover.MoveC(cmdfb[1],LREAL_TO_INT(Closest90),MoveC_Dyn,0);
+			nEnd := nEnd + 1;
+		END_IF
+		
+	5:
+	
+		//Set demo ready bit 
+		DemoReady := TRUE; 
+		nEnd := 0;
+	
+	
+		
+	END_CASE
+END_IF]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="Init" Id="{def29215-c1db-47bd-a987-c8cae1603651}">
       <Declaration><![CDATA[METHOD Init
 VAR_INPUT
 	
 	bStart 						: 		BOOL; // Start button on controller
+	Reinit						:		BOOL; // Start mover after demo
 
 END_VAR
 VAR
@@ -147,11 +222,13 @@ VAR
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[
+
+
 IF bStart THEN
 	Run := TRUE;
 END_IF
 
-IF (Run OR bRecover) AND NOT (init_counter = 3) THEN
+IF (Run OR bRecover OR Reinit) AND NOT (init_counter = 3) THEN
 	CASE nCase OF
 	1: 
 	
@@ -233,6 +310,7 @@ IF (Run OR bRecover) AND NOT (init_counter = 3) THEN
 		Run := FALSE; // Dont call init over again
 		bRecover := FALSE; // Dont recover if enabled and ready
 		init_counter := 0; // Reset init try's counter
+		ResetDemo := TRUE;
 	END_IF
 		
 	END_CASE
@@ -714,7 +792,44 @@ END_IF
       <LineId Id="23" Count="1" />
       <LineId Id="15" Count="0" />
     </LineIds>
+    <LineIds Name="XPlanarMover.EndMover">
+      <LineId Id="45" Count="3" />
+      <LineId Id="5" Count="1" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="70" Count="0" />
+      <LineId Id="68" Count="0" />
+      <LineId Id="92" Count="1" />
+      <LineId Id="69" Count="0" />
+      <LineId Id="72" Count="2" />
+      <LineId Id="71" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="86" Count="0" />
+      <LineId Id="13" Count="6" />
+      <LineId Id="21" Count="1" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="85" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="91" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="34" Count="2" />
+      <LineId Id="84" Count="0" />
+      <LineId Id="37" Count="1" />
+      <LineId Id="51" Count="0" />
+      <LineId Id="49" Count="0" />
+      <LineId Id="62" Count="2" />
+      <LineId Id="87" Count="0" />
+      <LineId Id="65" Count="0" />
+      <LineId Id="67" Count="0" />
+      <LineId Id="57" Count="0" />
+      <LineId Id="52" Count="1" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="7" Count="0" />
+    </LineIds>
     <LineIds Name="XPlanarMover.Init">
+      <LineId Id="164" Count="1" />
       <LineId Id="108" Count="0" />
       <LineId Id="124" Count="1" />
       <LineId Id="115" Count="0" />
@@ -747,6 +862,7 @@ END_IF
       <LineId Id="112" Count="0" />
       <LineId Id="134" Count="0" />
       <LineId Id="136" Count="0" />
+      <LineId Id="168" Count="0" />
       <LineId Id="98" Count="1" />
       <LineId Id="5" Count="0" />
       <LineId Id="113" Count="0" />

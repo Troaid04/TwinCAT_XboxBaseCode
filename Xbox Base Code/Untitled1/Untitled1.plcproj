@@ -30,6 +30,15 @@
     <Compile Include="POUs\Controller\XboxController.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="POUs\Demo\Demo.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\Demo\Tables\FourByThree.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\Demo\Tables\TwoByOne.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="POUs\Enviorment\Environment.TcPOU">
       <SubType>Code</SubType>
     </Compile>
@@ -50,7 +59,9 @@
     <Folder Include="DUTs" />
     <Folder Include="GVLs" />
     <Folder Include="POUs\Controller" />
+    <Folder Include="POUs\Demo\Tables" />
     <Folder Include="POUs\Enviorment" />
+    <Folder Include="POUs\Demo" />
     <Folder Include="POUs\Xplanar" />
     <Folder Include="POUs\Xplanar\Mover Type" />
     <Folder Include="VISUs" />

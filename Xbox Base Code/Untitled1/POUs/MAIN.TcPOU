@@ -10,6 +10,8 @@ MyController : XboxController; // Xbox Controller
 
 MyEnvironment : Environment; // Xplanar Environment
 
+MyDemo : Demo; // Xplanar Demo 
+
 END_VAR
 
 
@@ -46,7 +48,7 @@ END_VAR
 MyMover(
 // Part number of mover being controlled	
 MoverType := 'AMP4220',
-Space_Mode := TRUE //Fun time - need to reactivate if set
+Space_Mode := FALSE //Fun time - need to reactivate if set true or false 
 ); 
 
 MyController(
@@ -68,7 +70,8 @@ NumberOfYTiles := 4
 
 //Initizalization
 MyMover.Init( 
-bStart := MyController.Start
+bStart := MyController.Start,
+Reinit := MyDemo.StartUserControl
 );
 
 //Recover 
@@ -123,10 +126,28 @@ MoverTypeWidth 				:= MyMover.TypeWidth,
 MoverTypeLength				:= MyMover.TypeLength 
 );
 
+MyMover(
+StartDemo := MyDemo.RequestDemo
+); 
+
+
+MyDemo(
+ReadyForDemo := MyMover.DemoReady,
+bDpad_R := MyController.Dpad_R,
+bDpad_L := MyController.Dpad_L,
+StopEndFunction := MyMover.ResetDemo
+);
+
+
+
+
+
+
 
 MyMover(); 
 MyController();
 MyEnvironment();
+MyDemo();
 ]]></ST>
       </Implementation>
     </Action>
@@ -156,10 +177,10 @@ ELSE
 	//Increase mover detection on boundry
 	IF (MyController.Button_A AND MyMover.RotationXPoint AND MyMover.RotationYPoint) 
 	OR (MyController.lBumper OR MyController.rBumper) 
-	OR ((MyEnvironment.MinTableXTravel + 3 > MyMover.PlanarMoverPos.X) 
-	OR (MyEnvironment.MinTableYTravel + 3 > MyMover.PlanarMoverPos.Y) 
-	OR (MyEnvironment.MaxTableYTravel - 3 < MyMover.PlanarMoverPos.Y) 
-	OR (MyEnvironment.MaxTableXTravel - 3 < MyMover.PlanarMoverPos.X))THEN
+	OR (((MyEnvironment.MinTableXTravel + 15) > MyMover.PlanarMoverPos.X) 
+	OR ((MyEnvironment.MinTableYTravel + 15) > MyMover.PlanarMoverPos.Y) 
+	OR ((MyEnvironment.MaxTableYTravel - 15) < MyMover.PlanarMoverPos.Y) 
+	OR ((MyEnvironment.MaxTableXTravel - 15) < MyMover.PlanarMoverPos.X))THEN
 		bRumble := TRUE;
 	ELSE
 		bRumble := FALSE;
@@ -191,7 +212,9 @@ END_IF
     <LineIds Name="MAIN.Cyclic">
       <LineId Id="154" Count="0" />
       <LineId Id="153" Count="0" />
-      <LineId Id="85" Count="14" />
+      <LineId Id="85" Count="2" />
+      <LineId Id="174" Count="0" />
+      <LineId Id="88" Count="11" />
       <LineId Id="125" Count="1" />
       <LineId Id="100" Count="18" />
       <LineId Id="127" Count="0" />
@@ -209,8 +232,19 @@ END_IF
       <LineId Id="141" Count="1" />
       <LineId Id="144" Count="0" />
       <LineId Id="148" Count="2" />
+      <LineId Id="156" Count="0" />
+      <LineId Id="155" Count="0" />
+      <LineId Id="158" Count="0" />
+      <LineId Id="160" Count="0" />
       <LineId Id="143" Count="0" />
+      <LineId Id="161" Count="1" />
+      <LineId Id="170" Count="0" />
+      <LineId Id="173" Count="0" />
+      <LineId Id="177" Count="1" />
+      <LineId Id="171" Count="0" />
+      <LineId Id="163" Count="5" />
       <LineId Id="121" Count="3" />
+      <LineId Id="159" Count="0" />
       <LineId Id="10" Count="0" />
     </LineIds>
     <LineIds Name="MAIN.Haptics">
