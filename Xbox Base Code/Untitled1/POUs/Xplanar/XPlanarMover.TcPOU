@@ -456,8 +456,7 @@ END_VAR
 			PastRot10 := FALSE; 
 		END_IF
 		
-	
-		//Kind of Working, needs to be exactly a value that can be modulod by 90 = 0 to leave endless rotation point		
+		
 		//Endless Rotation 
 		IF (AtXPoint AND AtYPoint) AND isintent THEN // If mover is at X and y rotation point and the rotation is intentenal and A button is not pressed
 			IF (RTrigger >= 5 AND LTrigger <= 5) THEN // 
@@ -898,7 +897,8 @@ END_IF
       <LineId Id="553" Count="21" />
       <LineId Id="551" Count="0" />
       <LineId Id="305" Count="0" />
-      <LineId Id="351" Count="6" />
+      <LineId Id="620" Count="0" />
+      <LineId Id="353" Count="4" />
       <LineId Id="362" Count="2" />
       <LineId Id="369" Count="5" />
       <LineId Id="506" Count="1" />
