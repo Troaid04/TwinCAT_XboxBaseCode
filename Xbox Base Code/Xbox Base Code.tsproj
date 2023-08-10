@@ -3210,52 +3210,34 @@
 	</ImageDatas>
 	<Project ProjectGUID="{893DED4F-94DE-405E-B342-BD5831DA37B9}" Target64Bit="true" AutoPrioManagement="true" ShowHideConfigurations="#x106">
 		<System>
-			<Settings MaxCpus="16" NonWinCpus="6">
+			<Settings MaxCpus="8" NonWinCpus="6">
 				<Cpu/>
-				<Cpu CpuId="1"/>
-				<Cpu CpuId="2"/>
-				<Cpu CpuId="3"/>
-				<Cpu CpuId="4"/>
-				<Cpu CpuId="5"/>
-				<Cpu CpuId="6"/>
-				<Cpu CpuId="7"/>
-				<Cpu CpuId="8"/>
-				<Cpu CpuId="9" RtLimit="90" BaseTime="2500"/>
-				<Cpu CpuId="10" BaseTime="2500"/>
-				<Cpu CpuId="11" BaseTime="2500"/>
-				<Cpu CpuId="12" BaseTime="2500"/>
-				<Cpu CpuId="13" BaseTime="2500"/>
-				<Cpu CpuId="14" BaseTime="2500"/>
-				<Cpu CpuId="15" BaseTime="2500"/>
-				<IoIdleTask Priority="18" Affinity="#x00000001"/>
+				<Cpu CpuId="2" BaseTime="2500"/>
+				<Cpu CpuId="3" BaseTime="2500"/>
+				<Cpu CpuId="4" BaseTime="2500"/>
+				<Cpu CpuId="5" BaseTime="2500"/>
+				<Cpu CpuId="6" BaseTime="2500"/>
+				<Cpu CpuId="7" BaseTime="2500"/>
+				<IoIdleTask Priority="12" Affinity="#x00000040"/>
 			</Settings>
 			<Tasks>
-				<Task Id="8" Priority="21" Affinity="#x00000004" AdtTasks="true" JobTask="true">
+				<Task Id="8" Priority="13" Affinity="#x00000020" AdtTasks="true" JobTask="true">
 					<Name>Job Task</Name>
 					<ImageId>327</ImageId>
 				</Task>
-				<Task Id="3" Priority="4" CycleTime="2500" AmsPort="350" Affinity="#x00000400" AdtTasks="true">
+				<Task Id="3" Priority="10" CycleTime="2500" AmsPort="350" Affinity="#x00000080" AdtTasks="true">
 					<Name>PlcTask</Name>
 				</Task>
-				<Task Id="4" Priority="6" CycleTime="2500" AmsPort="351" Affinity="#x00000800" AdtTasks="true">
-					<Name>XPlanar Task11</Name>
+				<Task Id="4" Priority="4" CycleTime="2500" AmsPort="351" Affinity="#x00000008" AdtTasks="true">
+					<Name>XPlanar Task3</Name>
 				</Task>
-				<Task Id="5" Priority="8" CycleTime="2500" AmsPort="352" Affinity="#x00001000" AdtTasks="true">
-					<Name>XPlanar Task12</Name>
+				<Task Id="5" Priority="6" CycleTime="2500" AmsPort="352" Affinity="#x00000010" AdtTasks="true">
+					<Name>XPlanar Task4</Name>
 				</Task>
-				<Task Id="6" Priority="10" CycleTime="2500" AmsPort="353" Affinity="#x00002000" AdtTasks="true">
-					<Name>XPlanar Task13</Name>
-				</Task>
-				<Task Id="7" Priority="12" CycleTime="2500" AmsPort="354" Affinity="#x00004000" AdtTasks="true">
-					<Name>XPlanar Task14</Name>
-				</Task>
-				<Task Id="9" Priority="14" CycleTime="2500" AmsPort="355" Affinity="#x00008000" AdtTasks="true">
-					<Name>XPlanar Task15</Name>
-				</Task>
-				<Task Id="10" Priority="16" CycleTime="2500" AmsPort="356" Affinity="#x00000400" AdtTasks="true">
+				<Task Id="6" Priority="8" CycleTime="2500" AmsPort="353" Affinity="#x00000004" AdtTasks="true">
 					<Name>MC-Task (MET)</Name>
 				</Task>
-				<Task Id="11" Priority="20" CycleTime="100000" AmsPort="357" Affinity="#x00000400" AdtTasks="true">
+				<Task Id="7" Priority="14" CycleTime="100000" AmsPort="354" Affinity="#x00000004" AdtTasks="true">
 					<Name>MC-Task (MPT)</Name>
 				</Task>
 			</Tasks>
@@ -3966,7 +3948,7 @@
 									<Context>
 										<Id>1</Id>
 										<ManualConfig>
-											<OTCID>#x02010040</OTCID>
+											<OTCID>#x02010050</OTCID>
 										</ManualConfig>
 										<Priority>6</Priority>
 										<CycleTime>250000</CycleTime>
@@ -4230,11 +4212,11 @@
 								<ParameterValues>
 									<Value>
 										<Name>TaskOID</Name>
-										<Value>33620032</Value>
+										<Value>33620048</Value>
 									</Value>
 									<Value>
 										<Name>BTN</Name>
-										<String>00000000</String>
+										<String>0000ae5b</String>
 									</Value>
 									<Value>
 										<Name>TilePositionOnPart.x</Name>
@@ -4246,7 +4228,7 @@
 									</Value>
 									<Value>
 										<Name>DriveOID</Name>
-										<Value>0</Value>
+										<Value>50462737</Value>
 									</Value>
 									<Value>
 										<Name>FeedbackOID</Name>
@@ -4296,7 +4278,7 @@
 										<ManualConfig>
 											<OTCID>#x02010050</OTCID>
 										</ManualConfig>
-										<Priority>8</Priority>
+										<Priority>6</Priority>
 										<CycleTime>250000</CycleTime>
 									</Context>
 								</Contexts>
@@ -4562,7 +4544,7 @@
 									</Value>
 									<Value>
 										<Name>BTN</Name>
-										<String>00000000</String>
+										<String>0000advt</String>
 									</Value>
 									<Value>
 										<Name>TilePositionOnPart.x</Name>
@@ -4574,7 +4556,7 @@
 									</Value>
 									<Value>
 										<Name>DriveOID</Name>
-										<Value>0</Value>
+										<Value>50462741</Value>
 									</Value>
 									<Value>
 										<Name>FeedbackOID</Name>
@@ -4622,9 +4604,9 @@
 									<Context>
 										<Id>1</Id>
 										<ManualConfig>
-											<OTCID>#x02010060</OTCID>
+											<OTCID>#x02010050</OTCID>
 										</ManualConfig>
-										<Priority>10</Priority>
+										<Priority>6</Priority>
 										<CycleTime>250000</CycleTime>
 									</Context>
 								</Contexts>
@@ -4886,11 +4868,11 @@
 								<ParameterValues>
 									<Value>
 										<Name>TaskOID</Name>
-										<Value>33620064</Value>
+										<Value>33620048</Value>
 									</Value>
 									<Value>
 										<Name>BTN</Name>
-										<String>00000000</String>
+										<String>0000ae5a</String>
 									</Value>
 									<Value>
 										<Name>TilePositionOnPart.x</Name>
@@ -4902,7 +4884,7 @@
 									</Value>
 									<Value>
 										<Name>DriveOID</Name>
-										<Value>0</Value>
+										<Value>50462745</Value>
 									</Value>
 									<Value>
 										<Name>FeedbackOID</Name>
@@ -4940,7 +4922,7 @@
 							</TmcDesc>
 						</Module>
 						<Module Id="#x01010060" KeepUnrestoredLinks="2">
-							<Name>Tile13</Name>
+							<Name>Tile10</Name>
 							<ImageId>1002</ImageId>
 							<TmcDesc GUID="{DF6BD2B5-4CCE-44EA-A2D9-134A2BF36860}">
 								<Name>APS4322</Name>
@@ -4950,9 +4932,9 @@
 									<Context>
 										<Id>1</Id>
 										<ManualConfig>
-											<OTCID>#x02010070</OTCID>
+											<OTCID>#x02010050</OTCID>
 										</ManualConfig>
-										<Priority>12</Priority>
+										<Priority>6</Priority>
 										<CycleTime>250000</CycleTime>
 									</Context>
 								</Contexts>
@@ -5214,23 +5196,23 @@
 								<ParameterValues>
 									<Value>
 										<Name>TaskOID</Name>
-										<Value>33620080</Value>
+										<Value>33620048</Value>
 									</Value>
 									<Value>
 										<Name>BTN</Name>
-										<String>00000000</String>
+										<String>0000ae5d</String>
 									</Value>
 									<Value>
 										<Name>TilePositionOnPart.x</Name>
-										<Value>0</Value>
+										<Value>240</Value>
 									</Value>
 									<Value>
 										<Name>TilePositionOnPart.y</Name>
-										<Value>720</Value>
+										<Value>480</Value>
 									</Value>
 									<Value>
 										<Name>DriveOID</Name>
-										<Value>0</Value>
+										<Value>50462747</Value>
 									</Value>
 									<Value>
 										<Name>FeedbackOID</Name>
@@ -5268,7 +5250,7 @@
 							</TmcDesc>
 						</Module>
 						<Module Id="#x01010070" KeepUnrestoredLinks="2">
-							<Name>Tile14</Name>
+							<Name>Tile6</Name>
 							<ImageId>1002</ImageId>
 							<TmcDesc GUID="{DF6BD2B5-4CCE-44EA-A2D9-134A2BF36860}">
 								<Name>APS4322</Name>
@@ -5278,9 +5260,9 @@
 									<Context>
 										<Id>1</Id>
 										<ManualConfig>
-											<OTCID>#x02010090</OTCID>
+											<OTCID>#x02010050</OTCID>
 										</ManualConfig>
-										<Priority>14</Priority>
+										<Priority>6</Priority>
 										<CycleTime>250000</CycleTime>
 									</Context>
 								</Contexts>
@@ -5542,11 +5524,11 @@
 								<ParameterValues>
 									<Value>
 										<Name>TaskOID</Name>
-										<Value>33620112</Value>
+										<Value>33620048</Value>
 									</Value>
 									<Value>
 										<Name>BTN</Name>
-										<String>00000000</String>
+										<String>0000advr</String>
 									</Value>
 									<Value>
 										<Name>TilePositionOnPart.x</Name>
@@ -5554,11 +5536,11 @@
 									</Value>
 									<Value>
 										<Name>TilePositionOnPart.y</Name>
-										<Value>720</Value>
+										<Value>240</Value>
 									</Value>
 									<Value>
 										<Name>DriveOID</Name>
-										<Value>0</Value>
+										<Value>50462743</Value>
 									</Value>
 									<Value>
 										<Name>FeedbackOID</Name>
@@ -5596,7 +5578,7 @@
 							</TmcDesc>
 						</Module>
 						<Module Id="#x01010080" KeepUnrestoredLinks="2">
-							<Name>Tile10</Name>
+							<Name>Tile3</Name>
 							<ImageId>1002</ImageId>
 							<TmcDesc GUID="{DF6BD2B5-4CCE-44EA-A2D9-134A2BF36860}">
 								<Name>APS4322</Name>
@@ -5608,7 +5590,7 @@
 										<ManualConfig>
 											<OTCID>#x02010040</OTCID>
 										</ManualConfig>
-										<Priority>6</Priority>
+										<Priority>4</Priority>
 										<CycleTime>250000</CycleTime>
 									</Context>
 								</Contexts>
@@ -5874,19 +5856,19 @@
 									</Value>
 									<Value>
 										<Name>BTN</Name>
-										<String>00000000</String>
+										<String>0000advq</String>
 									</Value>
 									<Value>
 										<Name>TilePositionOnPart.x</Name>
-										<Value>240</Value>
-									</Value>
-									<Value>
-										<Name>TilePositionOnPart.y</Name>
 										<Value>480</Value>
 									</Value>
 									<Value>
-										<Name>DriveOID</Name>
+										<Name>TilePositionOnPart.y</Name>
 										<Value>0</Value>
+									</Value>
+									<Value>
+										<Name>DriveOID</Name>
+										<Value>50462725</Value>
 									</Value>
 									<Value>
 										<Name>FeedbackOID</Name>
@@ -5924,7 +5906,7 @@
 							</TmcDesc>
 						</Module>
 						<Module Id="#x01010090" KeepUnrestoredLinks="2">
-							<Name>Tile6</Name>
+							<Name>Tile2</Name>
 							<ImageId>1002</ImageId>
 							<TmcDesc GUID="{DF6BD2B5-4CCE-44EA-A2D9-134A2BF36860}">
 								<Name>APS4322</Name>
@@ -5936,7 +5918,7 @@
 										<ManualConfig>
 											<OTCID>#x02010050</OTCID>
 										</ManualConfig>
-										<Priority>8</Priority>
+										<Priority>6</Priority>
 										<CycleTime>250000</CycleTime>
 									</Context>
 								</Contexts>
@@ -6202,7 +6184,7 @@
 									</Value>
 									<Value>
 										<Name>BTN</Name>
-										<String>00000000</String>
+										<String>0000ae5j</String>
 									</Value>
 									<Value>
 										<Name>TilePositionOnPart.x</Name>
@@ -6210,11 +6192,11 @@
 									</Value>
 									<Value>
 										<Name>TilePositionOnPart.y</Name>
-										<Value>240</Value>
+										<Value>0</Value>
 									</Value>
 									<Value>
 										<Name>DriveOID</Name>
-										<Value>0</Value>
+										<Value>50462739</Value>
 									</Value>
 									<Value>
 										<Name>FeedbackOID</Name>
@@ -6252,7 +6234,7 @@
 							</TmcDesc>
 						</Module>
 						<Module Id="#x010100a0" KeepUnrestoredLinks="2">
-							<Name>Tile2</Name>
+							<Name>Tile7</Name>
 							<ImageId>1002</ImageId>
 							<TmcDesc GUID="{DF6BD2B5-4CCE-44EA-A2D9-134A2BF36860}">
 								<Name>APS4322</Name>
@@ -6262,9 +6244,9 @@
 									<Context>
 										<Id>1</Id>
 										<ManualConfig>
-											<OTCID>#x02010060</OTCID>
+											<OTCID>#x02010040</OTCID>
 										</ManualConfig>
-										<Priority>10</Priority>
+										<Priority>4</Priority>
 										<CycleTime>250000</CycleTime>
 									</Context>
 								</Contexts>
@@ -6526,23 +6508,23 @@
 								<ParameterValues>
 									<Value>
 										<Name>TaskOID</Name>
-										<Value>33620064</Value>
+										<Value>33620032</Value>
 									</Value>
 									<Value>
 										<Name>BTN</Name>
-										<String>00000000</String>
+										<String>0000adw2</String>
 									</Value>
 									<Value>
 										<Name>TilePositionOnPart.x</Name>
-										<Value>240</Value>
+										<Value>480</Value>
 									</Value>
 									<Value>
 										<Name>TilePositionOnPart.y</Name>
-										<Value>0</Value>
+										<Value>240</Value>
 									</Value>
 									<Value>
 										<Name>DriveOID</Name>
-										<Value>0</Value>
+										<Value>50462729</Value>
 									</Value>
 									<Value>
 										<Name>FeedbackOID</Name>
@@ -6580,7 +6562,7 @@
 							</TmcDesc>
 						</Module>
 						<Module Id="#x010100b0" KeepUnrestoredLinks="2">
-							<Name>Tile3</Name>
+							<Name>Tile11</Name>
 							<ImageId>1002</ImageId>
 							<TmcDesc GUID="{DF6BD2B5-4CCE-44EA-A2D9-134A2BF36860}">
 								<Name>APS4322</Name>
@@ -6590,9 +6572,9 @@
 									<Context>
 										<Id>1</Id>
 										<ManualConfig>
-											<OTCID>#x02010070</OTCID>
+											<OTCID>#x02010040</OTCID>
 										</ManualConfig>
-										<Priority>12</Priority>
+										<Priority>4</Priority>
 										<CycleTime>250000</CycleTime>
 									</Context>
 								</Contexts>
@@ -6854,11 +6836,11 @@
 								<ParameterValues>
 									<Value>
 										<Name>TaskOID</Name>
-										<Value>33620080</Value>
+										<Value>33620032</Value>
 									</Value>
 									<Value>
 										<Name>BTN</Name>
-										<String>00000000</String>
+										<String>0000ae5c</String>
 									</Value>
 									<Value>
 										<Name>TilePositionOnPart.x</Name>
@@ -6866,11 +6848,11 @@
 									</Value>
 									<Value>
 										<Name>TilePositionOnPart.y</Name>
-										<Value>0</Value>
+										<Value>480</Value>
 									</Value>
 									<Value>
 										<Name>DriveOID</Name>
-										<Value>0</Value>
+										<Value>50462733</Value>
 									</Value>
 									<Value>
 										<Name>FeedbackOID</Name>
@@ -6908,7 +6890,7 @@
 							</TmcDesc>
 						</Module>
 						<Module Id="#x010100c0" KeepUnrestoredLinks="2">
-							<Name>Tile7</Name>
+							<Name>Tile12</Name>
 							<ImageId>1002</ImageId>
 							<TmcDesc GUID="{DF6BD2B5-4CCE-44EA-A2D9-134A2BF36860}">
 								<Name>APS4322</Name>
@@ -6918,9 +6900,9 @@
 									<Context>
 										<Id>1</Id>
 										<ManualConfig>
-											<OTCID>#x02010090</OTCID>
+											<OTCID>#x02010040</OTCID>
 										</ManualConfig>
-										<Priority>14</Priority>
+										<Priority>4</Priority>
 										<CycleTime>250000</CycleTime>
 									</Context>
 								</Contexts>
@@ -7182,23 +7164,23 @@
 								<ParameterValues>
 									<Value>
 										<Name>TaskOID</Name>
-										<Value>33620112</Value>
+										<Value>33620032</Value>
 									</Value>
 									<Value>
 										<Name>BTN</Name>
-										<String>00000000</String>
+										<String>0000ae5k</String>
 									</Value>
 									<Value>
 										<Name>TilePositionOnPart.x</Name>
-										<Value>480</Value>
+										<Value>720</Value>
 									</Value>
 									<Value>
 										<Name>TilePositionOnPart.y</Name>
-										<Value>240</Value>
+										<Value>480</Value>
 									</Value>
 									<Value>
 										<Name>DriveOID</Name>
-										<Value>0</Value>
+										<Value>50462735</Value>
 									</Value>
 									<Value>
 										<Name>FeedbackOID</Name>
@@ -7236,7 +7218,7 @@
 							</TmcDesc>
 						</Module>
 						<Module Id="#x010100d0" KeepUnrestoredLinks="2">
-							<Name>Tile11</Name>
+							<Name>Tile8</Name>
 							<ImageId>1002</ImageId>
 							<TmcDesc GUID="{DF6BD2B5-4CCE-44EA-A2D9-134A2BF36860}">
 								<Name>APS4322</Name>
@@ -7248,7 +7230,7 @@
 										<ManualConfig>
 											<OTCID>#x02010040</OTCID>
 										</ManualConfig>
-										<Priority>6</Priority>
+										<Priority>4</Priority>
 										<CycleTime>250000</CycleTime>
 									</Context>
 								</Contexts>
@@ -7514,19 +7496,19 @@
 									</Value>
 									<Value>
 										<Name>BTN</Name>
-										<String>00000000</String>
+										<String>0000adw3</String>
 									</Value>
 									<Value>
 										<Name>TilePositionOnPart.x</Name>
-										<Value>480</Value>
+										<Value>720</Value>
 									</Value>
 									<Value>
 										<Name>TilePositionOnPart.y</Name>
-										<Value>480</Value>
+										<Value>240</Value>
 									</Value>
 									<Value>
 										<Name>DriveOID</Name>
-										<Value>0</Value>
+										<Value>50462731</Value>
 									</Value>
 									<Value>
 										<Name>FeedbackOID</Name>
@@ -7564,1318 +7546,6 @@
 							</TmcDesc>
 						</Module>
 						<Module Id="#x010100e0" KeepUnrestoredLinks="2">
-							<Name>Tile15</Name>
-							<ImageId>1002</ImageId>
-							<TmcDesc GUID="{DF6BD2B5-4CCE-44EA-A2D9-134A2BF36860}">
-								<Name>APS4322</Name>
-								<CLSID ClassFactory="TcIoXPlanar">{DF6BD2B5-4CCE-44EA-A2D9-134A2BF36860}</CLSID>
-								<InitSequence>PSO</InitSequence>
-								<Contexts>
-									<Context>
-										<Id>1</Id>
-										<ManualConfig>
-											<OTCID>#x02010050</OTCID>
-										</ManualConfig>
-										<Priority>8</Priority>
-										<CycleTime>250000</CycleTime>
-									</Context>
-								</Contexts>
-								<Interfaces>
-									<Interface DisableCodeGeneration="true">
-										<Type GUID="{00000012-0000-0000-E000-000000000064}">ITComObject</Type>
-									</Interface>
-									<Interface DisableCodeGeneration="true">
-										<Type GUID="{03000012-0000-0000-E000-000000000064}">ITcADI</Type>
-									</Interface>
-									<Interface DisableCodeGeneration="true">
-										<Type GUID="{03000018-0000-0000-E000-000000000064}">ITcWatchSource</Type>
-									</Interface>
-								</Interfaces>
-								<Parameters>
-									<Group><![CDATA[General]]></Group>
-									<Parameter HideParameter="true" DisableCodeGeneration="true" Group="General">
-										<Name>TaskOID</Name>
-										<Comment><![CDATA[The task has to be set in the Context tab.]]></Comment>
-										<BitSize>32</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-00000000000F}">OTCID</BaseType>
-										<PTCID>#x03002060</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter DisableCodeGeneration="true" Group="General">
-										<Name>BTN</Name>
-										<Comment><![CDATA[8 digit alphanumerical number. Has to be unique for each tile. Has to match with a reference in the corresponding TileCalibration bml file.]]></Comment>
-										<BitSize>112</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-00010000000D}">STRING(13)</BaseType>
-										<PTCID>#x03176007</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter DisableCodeGeneration="true" Group="General">
-										<Name>TilePositionOnPart</Name>
-										<Comment><![CDATA[Position of the tile origin in its part.]]></Comment>
-										<BitSize>64</BitSize>
-										<BaseType GUID="{9CB8D52D-842F-49C2-8EAE-C0400750816C}">Position2D_DINT</BaseType>
-										<PTCID>#x03176018</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="General">
-										<Name>DriveOID</Name>
-										<Comment><![CDATA[OID of the linked hardware I/O XPlanar tile (drive part).]]></Comment>
-										<BitSize>32</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-00000000000F}">OTCID</BaseType>
-										<PTCID>#x03176009</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="General">
-										<Name>FeedbackOID</Name>
-										<Comment><![CDATA[OID of the linked hardware I/O XPlanar tile (feedback part).]]></Comment>
-										<BitSize>32</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-00000000000F}">OTCID</BaseType>
-										<PTCID>#x03176023</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="General">
-										<Name>AmsNetID</Name>
-										<Comment><![CDATA[AMS Net ID of the EtherCAT master.]]></Comment>
-										<BitSize>48</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-000000000041}">AMSNETID</BaseType>
-										<PTCID>#x03176010</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="General">
-										<Name>EtherCATSlaveAddress</Name>
-										<Comment><![CDATA[EtherCAT slave address of the linked hardware I/O XPlanar tile (drive part).]]></Comment>
-										<BitSize>16</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-000000000005}">UINT</BaseType>
-										<PTCID>#x03176011</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="General">
-										<Name>DriveStatusWord</Name>
-										<Comment><![CDATA[Status word of linked hardware I/O XPlanar tile (drive part).]]></Comment>
-										<BitSize>16</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-000000000005}">UINT</BaseType>
-										<PTCID>#x03176019</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="General">
-										<Name>PowerLimit</Name>
-										<Comment><![CDATA[DC link power limit. This power can be provided by the tile for a longer time.]]></Comment>
-										<BitSize>64</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
-										<Unit><![CDATA[W]]></Unit>
-										<PTCID>#x03176024</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="General">
-										<Name>ObservedTilePower</Name>
-										<Comment><![CDATA[Actual power generated by the tile.]]></Comment>
-										<BitSize>64</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
-										<Unit><![CDATA[W]]></Unit>
-										<PTCID>#x03176020</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="General">
-										<Name>CoeTimeToShutDown</Name>
-										<Comment><![CDATA[Lowers if the tile generates too much power. If = 0, the tile will transit into a hardware error.]]></Comment>
-										<BitSize>32</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-000000000008}">UDINT</BaseType>
-										<Unit><![CDATA[s]]></Unit>
-										<PTCID>#x03176021</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="General">
-										<Name>PowerOverLimitFactor</Name>
-										<Comment><![CDATA[Factor PowerLimit/ObservedTilePower. If no power is generated this factor is default at 100.]]></Comment>
-										<BitSize>64</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
-										<PTCID>#x03176022</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-								</Parameters>
-								<DataAreas>
-									<DataArea>
-										<AreaNo AreaType="Internal" CreateSymbols="true">1</AreaNo>
-										<Name>ScopeData</Name>
-										<ContextId>1</ContextId>
-										<ByteSize>20</ByteSize>
-										<Symbol>
-											<Name>ObservedPower</Name>
-											<BitSize>64</BitSize>
-											<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
-											<BitOffs>0</BitOffs>
-										</Symbol>
-										<Symbol>
-											<Name>AvailablePowerFactor</Name>
-											<BitSize>64</BitSize>
-											<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
-											<BitOffs>64</BitOffs>
-										</Symbol>
-										<Symbol>
-											<Name>TimeToShutDown</Name>
-											<BitSize>32</BitSize>
-											<BaseType GUID="{18071995-0000-0000-0000-000000000008}">UDINT</BaseType>
-											<BitOffs>128</BitOffs>
-										</Symbol>
-									</DataArea>
-								</DataAreas>
-								<DataPointers>
-									<DataPointer>
-										<PTCID>#x03176000</PTCID>
-										<Name>PowerUnitStatusWord</Name>
-										<Type>UINT</Type>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176001</PTCID>
-										<Name>PowerUnitControlWord</Name>
-										<Type>UINT</Type>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176002</PTCID>
-										<Name>DCurrentSetPoints</Name>
-										<Type>INT</Type>
-										<ArrayInfo>
-											<LBound>0</LBound>
-											<Elements>24</Elements>
-										</ArrayInfo>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176003</PTCID>
-										<Name>QCurrentSetPoints</Name>
-										<Type>INT</Type>
-										<ArrayInfo>
-											<LBound>0</LBound>
-											<Elements>24</Elements>
-										</ArrayInfo>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176004</PTCID>
-										<Name>PhiSetPoints</Name>
-										<Type>UINT</Type>
-										<ArrayInfo>
-											<LBound>0</LBound>
-											<Elements>24</Elements>
-										</ArrayInfo>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176012</PTCID>
-										<Name>DcLinkVoltage</Name>
-										<Type>UINT</Type>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176013</PTCID>
-										<Name>PowerSupplyCurrent</Name>
-										<Type>INT</Type>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176014</PTCID>
-										<Name>MoverCommStatusWord</Name>
-										<Type>UINT</Type>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176015</PTCID>
-										<Name>MoverCommDataIn</Name>
-										<Type>UINT</Type>
-										<ArrayInfo>
-											<LBound>0</LBound>
-											<Elements>4</Elements>
-										</ArrayInfo>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176016</PTCID>
-										<Name>MoverCommControlWord</Name>
-										<Type>UINT</Type>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176017</PTCID>
-										<Name>MoverCommDataOut</Name>
-										<Type>UINT</Type>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176005</PTCID>
-										<Name>FeedbackStatus</Name>
-										<Type>LWORD</Type>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176006</PTCID>
-										<Name>HallSensorFieldsXYZ</Name>
-										<Type>INT</Type>
-										<ArrayInfo>
-											<LBound>0</LBound>
-											<Elements>150</Elements>
-										</ArrayInfo>
-										<ContextId>1</ContextId>
-									</DataPointer>
-								</DataPointers>
-								<EventClasses>
-									<EventClass>
-										<Type GUID="{C10BD6CA-8851-45E9-BA85-9FA6B7EB2841}">XPlanarEvents</Type>
-									</EventClass>
-								</EventClasses>
-								<Properties>
-									<Property>
-										<Name>Category</Name>
-										<Value>Part</Value>
-									</Property>
-									<Property>
-										<Name>ChildCategory</Name>
-										<Value>Tile</Value>
-									</Property>
-								</Properties>
-								<ParentOTCID>#x01010020</ParentOTCID>
-								<ParameterValues>
-									<Value>
-										<Name>TaskOID</Name>
-										<Value>33620048</Value>
-									</Value>
-									<Value>
-										<Name>BTN</Name>
-										<String>00000000</String>
-									</Value>
-									<Value>
-										<Name>TilePositionOnPart.x</Name>
-										<Value>480</Value>
-									</Value>
-									<Value>
-										<Name>TilePositionOnPart.y</Name>
-										<Value>720</Value>
-									</Value>
-									<Value>
-										<Name>DriveOID</Name>
-										<Value>0</Value>
-									</Value>
-									<Value>
-										<Name>FeedbackOID</Name>
-										<Value>0</Value>
-									</Value>
-									<Value>
-										<Name>AmsNetID</Name>
-										<Data>000000000000</Data>
-									</Value>
-									<Value>
-										<Name>EtherCATSlaveAddress</Name>
-										<Value>0</Value>
-									</Value>
-									<Value>
-										<Name>DriveStatusWord</Name>
-										<Value>0</Value>
-									</Value>
-									<Value>
-										<Name>PowerLimit</Name>
-										<Value>0</Value>
-									</Value>
-									<Value>
-										<Name>ObservedTilePower</Name>
-										<Value>0</Value>
-									</Value>
-									<Value>
-										<Name>CoeTimeToShutDown</Name>
-										<Value>0</Value>
-									</Value>
-									<Value>
-										<Name>PowerOverLimitFactor</Name>
-										<Value>0</Value>
-									</Value>
-								</ParameterValues>
-							</TmcDesc>
-						</Module>
-						<Module Id="#x010100f0" KeepUnrestoredLinks="2">
-							<Name>Tile16</Name>
-							<ImageId>1002</ImageId>
-							<TmcDesc GUID="{DF6BD2B5-4CCE-44EA-A2D9-134A2BF36860}">
-								<Name>APS4322</Name>
-								<CLSID ClassFactory="TcIoXPlanar">{DF6BD2B5-4CCE-44EA-A2D9-134A2BF36860}</CLSID>
-								<InitSequence>PSO</InitSequence>
-								<Contexts>
-									<Context>
-										<Id>1</Id>
-										<ManualConfig>
-											<OTCID>#x02010060</OTCID>
-										</ManualConfig>
-										<Priority>10</Priority>
-										<CycleTime>250000</CycleTime>
-									</Context>
-								</Contexts>
-								<Interfaces>
-									<Interface DisableCodeGeneration="true">
-										<Type GUID="{00000012-0000-0000-E000-000000000064}">ITComObject</Type>
-									</Interface>
-									<Interface DisableCodeGeneration="true">
-										<Type GUID="{03000012-0000-0000-E000-000000000064}">ITcADI</Type>
-									</Interface>
-									<Interface DisableCodeGeneration="true">
-										<Type GUID="{03000018-0000-0000-E000-000000000064}">ITcWatchSource</Type>
-									</Interface>
-								</Interfaces>
-								<Parameters>
-									<Group><![CDATA[General]]></Group>
-									<Parameter HideParameter="true" DisableCodeGeneration="true" Group="General">
-										<Name>TaskOID</Name>
-										<Comment><![CDATA[The task has to be set in the Context tab.]]></Comment>
-										<BitSize>32</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-00000000000F}">OTCID</BaseType>
-										<PTCID>#x03002060</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter DisableCodeGeneration="true" Group="General">
-										<Name>BTN</Name>
-										<Comment><![CDATA[8 digit alphanumerical number. Has to be unique for each tile. Has to match with a reference in the corresponding TileCalibration bml file.]]></Comment>
-										<BitSize>112</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-00010000000D}">STRING(13)</BaseType>
-										<PTCID>#x03176007</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter DisableCodeGeneration="true" Group="General">
-										<Name>TilePositionOnPart</Name>
-										<Comment><![CDATA[Position of the tile origin in its part.]]></Comment>
-										<BitSize>64</BitSize>
-										<BaseType GUID="{9CB8D52D-842F-49C2-8EAE-C0400750816C}">Position2D_DINT</BaseType>
-										<PTCID>#x03176018</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="General">
-										<Name>DriveOID</Name>
-										<Comment><![CDATA[OID of the linked hardware I/O XPlanar tile (drive part).]]></Comment>
-										<BitSize>32</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-00000000000F}">OTCID</BaseType>
-										<PTCID>#x03176009</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="General">
-										<Name>FeedbackOID</Name>
-										<Comment><![CDATA[OID of the linked hardware I/O XPlanar tile (feedback part).]]></Comment>
-										<BitSize>32</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-00000000000F}">OTCID</BaseType>
-										<PTCID>#x03176023</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="General">
-										<Name>AmsNetID</Name>
-										<Comment><![CDATA[AMS Net ID of the EtherCAT master.]]></Comment>
-										<BitSize>48</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-000000000041}">AMSNETID</BaseType>
-										<PTCID>#x03176010</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="General">
-										<Name>EtherCATSlaveAddress</Name>
-										<Comment><![CDATA[EtherCAT slave address of the linked hardware I/O XPlanar tile (drive part).]]></Comment>
-										<BitSize>16</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-000000000005}">UINT</BaseType>
-										<PTCID>#x03176011</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="General">
-										<Name>DriveStatusWord</Name>
-										<Comment><![CDATA[Status word of linked hardware I/O XPlanar tile (drive part).]]></Comment>
-										<BitSize>16</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-000000000005}">UINT</BaseType>
-										<PTCID>#x03176019</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="General">
-										<Name>PowerLimit</Name>
-										<Comment><![CDATA[DC link power limit. This power can be provided by the tile for a longer time.]]></Comment>
-										<BitSize>64</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
-										<Unit><![CDATA[W]]></Unit>
-										<PTCID>#x03176024</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="General">
-										<Name>ObservedTilePower</Name>
-										<Comment><![CDATA[Actual power generated by the tile.]]></Comment>
-										<BitSize>64</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
-										<Unit><![CDATA[W]]></Unit>
-										<PTCID>#x03176020</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="General">
-										<Name>CoeTimeToShutDown</Name>
-										<Comment><![CDATA[Lowers if the tile generates too much power. If = 0, the tile will transit into a hardware error.]]></Comment>
-										<BitSize>32</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-000000000008}">UDINT</BaseType>
-										<Unit><![CDATA[s]]></Unit>
-										<PTCID>#x03176021</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="General">
-										<Name>PowerOverLimitFactor</Name>
-										<Comment><![CDATA[Factor PowerLimit/ObservedTilePower. If no power is generated this factor is default at 100.]]></Comment>
-										<BitSize>64</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
-										<PTCID>#x03176022</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-								</Parameters>
-								<DataAreas>
-									<DataArea>
-										<AreaNo AreaType="Internal" CreateSymbols="true">1</AreaNo>
-										<Name>ScopeData</Name>
-										<ContextId>1</ContextId>
-										<ByteSize>20</ByteSize>
-										<Symbol>
-											<Name>ObservedPower</Name>
-											<BitSize>64</BitSize>
-											<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
-											<BitOffs>0</BitOffs>
-										</Symbol>
-										<Symbol>
-											<Name>AvailablePowerFactor</Name>
-											<BitSize>64</BitSize>
-											<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
-											<BitOffs>64</BitOffs>
-										</Symbol>
-										<Symbol>
-											<Name>TimeToShutDown</Name>
-											<BitSize>32</BitSize>
-											<BaseType GUID="{18071995-0000-0000-0000-000000000008}">UDINT</BaseType>
-											<BitOffs>128</BitOffs>
-										</Symbol>
-									</DataArea>
-								</DataAreas>
-								<DataPointers>
-									<DataPointer>
-										<PTCID>#x03176000</PTCID>
-										<Name>PowerUnitStatusWord</Name>
-										<Type>UINT</Type>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176001</PTCID>
-										<Name>PowerUnitControlWord</Name>
-										<Type>UINT</Type>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176002</PTCID>
-										<Name>DCurrentSetPoints</Name>
-										<Type>INT</Type>
-										<ArrayInfo>
-											<LBound>0</LBound>
-											<Elements>24</Elements>
-										</ArrayInfo>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176003</PTCID>
-										<Name>QCurrentSetPoints</Name>
-										<Type>INT</Type>
-										<ArrayInfo>
-											<LBound>0</LBound>
-											<Elements>24</Elements>
-										</ArrayInfo>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176004</PTCID>
-										<Name>PhiSetPoints</Name>
-										<Type>UINT</Type>
-										<ArrayInfo>
-											<LBound>0</LBound>
-											<Elements>24</Elements>
-										</ArrayInfo>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176012</PTCID>
-										<Name>DcLinkVoltage</Name>
-										<Type>UINT</Type>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176013</PTCID>
-										<Name>PowerSupplyCurrent</Name>
-										<Type>INT</Type>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176014</PTCID>
-										<Name>MoverCommStatusWord</Name>
-										<Type>UINT</Type>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176015</PTCID>
-										<Name>MoverCommDataIn</Name>
-										<Type>UINT</Type>
-										<ArrayInfo>
-											<LBound>0</LBound>
-											<Elements>4</Elements>
-										</ArrayInfo>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176016</PTCID>
-										<Name>MoverCommControlWord</Name>
-										<Type>UINT</Type>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176017</PTCID>
-										<Name>MoverCommDataOut</Name>
-										<Type>UINT</Type>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176005</PTCID>
-										<Name>FeedbackStatus</Name>
-										<Type>LWORD</Type>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176006</PTCID>
-										<Name>HallSensorFieldsXYZ</Name>
-										<Type>INT</Type>
-										<ArrayInfo>
-											<LBound>0</LBound>
-											<Elements>150</Elements>
-										</ArrayInfo>
-										<ContextId>1</ContextId>
-									</DataPointer>
-								</DataPointers>
-								<EventClasses>
-									<EventClass>
-										<Type GUID="{C10BD6CA-8851-45E9-BA85-9FA6B7EB2841}">XPlanarEvents</Type>
-									</EventClass>
-								</EventClasses>
-								<Properties>
-									<Property>
-										<Name>Category</Name>
-										<Value>Part</Value>
-									</Property>
-									<Property>
-										<Name>ChildCategory</Name>
-										<Value>Tile</Value>
-									</Property>
-								</Properties>
-								<ParentOTCID>#x01010020</ParentOTCID>
-								<ParameterValues>
-									<Value>
-										<Name>TaskOID</Name>
-										<Value>33620064</Value>
-									</Value>
-									<Value>
-										<Name>BTN</Name>
-										<String>00000000</String>
-									</Value>
-									<Value>
-										<Name>TilePositionOnPart.x</Name>
-										<Value>720</Value>
-									</Value>
-									<Value>
-										<Name>TilePositionOnPart.y</Name>
-										<Value>720</Value>
-									</Value>
-									<Value>
-										<Name>DriveOID</Name>
-										<Value>0</Value>
-									</Value>
-									<Value>
-										<Name>FeedbackOID</Name>
-										<Value>0</Value>
-									</Value>
-									<Value>
-										<Name>AmsNetID</Name>
-										<Data>000000000000</Data>
-									</Value>
-									<Value>
-										<Name>EtherCATSlaveAddress</Name>
-										<Value>0</Value>
-									</Value>
-									<Value>
-										<Name>DriveStatusWord</Name>
-										<Value>0</Value>
-									</Value>
-									<Value>
-										<Name>PowerLimit</Name>
-										<Value>0</Value>
-									</Value>
-									<Value>
-										<Name>ObservedTilePower</Name>
-										<Value>0</Value>
-									</Value>
-									<Value>
-										<Name>CoeTimeToShutDown</Name>
-										<Value>0</Value>
-									</Value>
-									<Value>
-										<Name>PowerOverLimitFactor</Name>
-										<Value>0</Value>
-									</Value>
-								</ParameterValues>
-							</TmcDesc>
-						</Module>
-						<Module Id="#x01010100" KeepUnrestoredLinks="2">
-							<Name>Tile8</Name>
-							<ImageId>1002</ImageId>
-							<TmcDesc GUID="{DF6BD2B5-4CCE-44EA-A2D9-134A2BF36860}">
-								<Name>APS4322</Name>
-								<CLSID ClassFactory="TcIoXPlanar">{DF6BD2B5-4CCE-44EA-A2D9-134A2BF36860}</CLSID>
-								<InitSequence>PSO</InitSequence>
-								<Contexts>
-									<Context>
-										<Id>1</Id>
-										<ManualConfig>
-											<OTCID>#x02010070</OTCID>
-										</ManualConfig>
-										<Priority>12</Priority>
-										<CycleTime>250000</CycleTime>
-									</Context>
-								</Contexts>
-								<Interfaces>
-									<Interface DisableCodeGeneration="true">
-										<Type GUID="{00000012-0000-0000-E000-000000000064}">ITComObject</Type>
-									</Interface>
-									<Interface DisableCodeGeneration="true">
-										<Type GUID="{03000012-0000-0000-E000-000000000064}">ITcADI</Type>
-									</Interface>
-									<Interface DisableCodeGeneration="true">
-										<Type GUID="{03000018-0000-0000-E000-000000000064}">ITcWatchSource</Type>
-									</Interface>
-								</Interfaces>
-								<Parameters>
-									<Group><![CDATA[General]]></Group>
-									<Parameter HideParameter="true" DisableCodeGeneration="true" Group="General">
-										<Name>TaskOID</Name>
-										<Comment><![CDATA[The task has to be set in the Context tab.]]></Comment>
-										<BitSize>32</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-00000000000F}">OTCID</BaseType>
-										<PTCID>#x03002060</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter DisableCodeGeneration="true" Group="General">
-										<Name>BTN</Name>
-										<Comment><![CDATA[8 digit alphanumerical number. Has to be unique for each tile. Has to match with a reference in the corresponding TileCalibration bml file.]]></Comment>
-										<BitSize>112</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-00010000000D}">STRING(13)</BaseType>
-										<PTCID>#x03176007</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter DisableCodeGeneration="true" Group="General">
-										<Name>TilePositionOnPart</Name>
-										<Comment><![CDATA[Position of the tile origin in its part.]]></Comment>
-										<BitSize>64</BitSize>
-										<BaseType GUID="{9CB8D52D-842F-49C2-8EAE-C0400750816C}">Position2D_DINT</BaseType>
-										<PTCID>#x03176018</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="General">
-										<Name>DriveOID</Name>
-										<Comment><![CDATA[OID of the linked hardware I/O XPlanar tile (drive part).]]></Comment>
-										<BitSize>32</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-00000000000F}">OTCID</BaseType>
-										<PTCID>#x03176009</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="General">
-										<Name>FeedbackOID</Name>
-										<Comment><![CDATA[OID of the linked hardware I/O XPlanar tile (feedback part).]]></Comment>
-										<BitSize>32</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-00000000000F}">OTCID</BaseType>
-										<PTCID>#x03176023</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="General">
-										<Name>AmsNetID</Name>
-										<Comment><![CDATA[AMS Net ID of the EtherCAT master.]]></Comment>
-										<BitSize>48</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-000000000041}">AMSNETID</BaseType>
-										<PTCID>#x03176010</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="General">
-										<Name>EtherCATSlaveAddress</Name>
-										<Comment><![CDATA[EtherCAT slave address of the linked hardware I/O XPlanar tile (drive part).]]></Comment>
-										<BitSize>16</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-000000000005}">UINT</BaseType>
-										<PTCID>#x03176011</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="General">
-										<Name>DriveStatusWord</Name>
-										<Comment><![CDATA[Status word of linked hardware I/O XPlanar tile (drive part).]]></Comment>
-										<BitSize>16</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-000000000005}">UINT</BaseType>
-										<PTCID>#x03176019</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="General">
-										<Name>PowerLimit</Name>
-										<Comment><![CDATA[DC link power limit. This power can be provided by the tile for a longer time.]]></Comment>
-										<BitSize>64</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
-										<Unit><![CDATA[W]]></Unit>
-										<PTCID>#x03176024</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="General">
-										<Name>ObservedTilePower</Name>
-										<Comment><![CDATA[Actual power generated by the tile.]]></Comment>
-										<BitSize>64</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
-										<Unit><![CDATA[W]]></Unit>
-										<PTCID>#x03176020</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="General">
-										<Name>CoeTimeToShutDown</Name>
-										<Comment><![CDATA[Lowers if the tile generates too much power. If = 0, the tile will transit into a hardware error.]]></Comment>
-										<BitSize>32</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-000000000008}">UDINT</BaseType>
-										<Unit><![CDATA[s]]></Unit>
-										<PTCID>#x03176021</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="General">
-										<Name>PowerOverLimitFactor</Name>
-										<Comment><![CDATA[Factor PowerLimit/ObservedTilePower. If no power is generated this factor is default at 100.]]></Comment>
-										<BitSize>64</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
-										<PTCID>#x03176022</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-								</Parameters>
-								<DataAreas>
-									<DataArea>
-										<AreaNo AreaType="Internal" CreateSymbols="true">1</AreaNo>
-										<Name>ScopeData</Name>
-										<ContextId>1</ContextId>
-										<ByteSize>20</ByteSize>
-										<Symbol>
-											<Name>ObservedPower</Name>
-											<BitSize>64</BitSize>
-											<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
-											<BitOffs>0</BitOffs>
-										</Symbol>
-										<Symbol>
-											<Name>AvailablePowerFactor</Name>
-											<BitSize>64</BitSize>
-											<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
-											<BitOffs>64</BitOffs>
-										</Symbol>
-										<Symbol>
-											<Name>TimeToShutDown</Name>
-											<BitSize>32</BitSize>
-											<BaseType GUID="{18071995-0000-0000-0000-000000000008}">UDINT</BaseType>
-											<BitOffs>128</BitOffs>
-										</Symbol>
-									</DataArea>
-								</DataAreas>
-								<DataPointers>
-									<DataPointer>
-										<PTCID>#x03176000</PTCID>
-										<Name>PowerUnitStatusWord</Name>
-										<Type>UINT</Type>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176001</PTCID>
-										<Name>PowerUnitControlWord</Name>
-										<Type>UINT</Type>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176002</PTCID>
-										<Name>DCurrentSetPoints</Name>
-										<Type>INT</Type>
-										<ArrayInfo>
-											<LBound>0</LBound>
-											<Elements>24</Elements>
-										</ArrayInfo>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176003</PTCID>
-										<Name>QCurrentSetPoints</Name>
-										<Type>INT</Type>
-										<ArrayInfo>
-											<LBound>0</LBound>
-											<Elements>24</Elements>
-										</ArrayInfo>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176004</PTCID>
-										<Name>PhiSetPoints</Name>
-										<Type>UINT</Type>
-										<ArrayInfo>
-											<LBound>0</LBound>
-											<Elements>24</Elements>
-										</ArrayInfo>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176012</PTCID>
-										<Name>DcLinkVoltage</Name>
-										<Type>UINT</Type>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176013</PTCID>
-										<Name>PowerSupplyCurrent</Name>
-										<Type>INT</Type>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176014</PTCID>
-										<Name>MoverCommStatusWord</Name>
-										<Type>UINT</Type>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176015</PTCID>
-										<Name>MoverCommDataIn</Name>
-										<Type>UINT</Type>
-										<ArrayInfo>
-											<LBound>0</LBound>
-											<Elements>4</Elements>
-										</ArrayInfo>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176016</PTCID>
-										<Name>MoverCommControlWord</Name>
-										<Type>UINT</Type>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176017</PTCID>
-										<Name>MoverCommDataOut</Name>
-										<Type>UINT</Type>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176005</PTCID>
-										<Name>FeedbackStatus</Name>
-										<Type>LWORD</Type>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176006</PTCID>
-										<Name>HallSensorFieldsXYZ</Name>
-										<Type>INT</Type>
-										<ArrayInfo>
-											<LBound>0</LBound>
-											<Elements>150</Elements>
-										</ArrayInfo>
-										<ContextId>1</ContextId>
-									</DataPointer>
-								</DataPointers>
-								<EventClasses>
-									<EventClass>
-										<Type GUID="{C10BD6CA-8851-45E9-BA85-9FA6B7EB2841}">XPlanarEvents</Type>
-									</EventClass>
-								</EventClasses>
-								<Properties>
-									<Property>
-										<Name>Category</Name>
-										<Value>Part</Value>
-									</Property>
-									<Property>
-										<Name>ChildCategory</Name>
-										<Value>Tile</Value>
-									</Property>
-								</Properties>
-								<ParentOTCID>#x01010020</ParentOTCID>
-								<ParameterValues>
-									<Value>
-										<Name>TaskOID</Name>
-										<Value>33620080</Value>
-									</Value>
-									<Value>
-										<Name>BTN</Name>
-										<String>00000000</String>
-									</Value>
-									<Value>
-										<Name>TilePositionOnPart.x</Name>
-										<Value>720</Value>
-									</Value>
-									<Value>
-										<Name>TilePositionOnPart.y</Name>
-										<Value>240</Value>
-									</Value>
-									<Value>
-										<Name>DriveOID</Name>
-										<Value>0</Value>
-									</Value>
-									<Value>
-										<Name>FeedbackOID</Name>
-										<Value>0</Value>
-									</Value>
-									<Value>
-										<Name>AmsNetID</Name>
-										<Data>000000000000</Data>
-									</Value>
-									<Value>
-										<Name>EtherCATSlaveAddress</Name>
-										<Value>0</Value>
-									</Value>
-									<Value>
-										<Name>DriveStatusWord</Name>
-										<Value>0</Value>
-									</Value>
-									<Value>
-										<Name>PowerLimit</Name>
-										<Value>0</Value>
-									</Value>
-									<Value>
-										<Name>ObservedTilePower</Name>
-										<Value>0</Value>
-									</Value>
-									<Value>
-										<Name>CoeTimeToShutDown</Name>
-										<Value>0</Value>
-									</Value>
-									<Value>
-										<Name>PowerOverLimitFactor</Name>
-										<Value>0</Value>
-									</Value>
-								</ParameterValues>
-							</TmcDesc>
-						</Module>
-						<Module Id="#x01010110" KeepUnrestoredLinks="2">
-							<Name>Tile12</Name>
-							<ImageId>1002</ImageId>
-							<TmcDesc GUID="{DF6BD2B5-4CCE-44EA-A2D9-134A2BF36860}">
-								<Name>APS4322</Name>
-								<CLSID ClassFactory="TcIoXPlanar">{DF6BD2B5-4CCE-44EA-A2D9-134A2BF36860}</CLSID>
-								<InitSequence>PSO</InitSequence>
-								<Contexts>
-									<Context>
-										<Id>1</Id>
-										<ManualConfig>
-											<OTCID>#x02010090</OTCID>
-										</ManualConfig>
-										<Priority>14</Priority>
-										<CycleTime>250000</CycleTime>
-									</Context>
-								</Contexts>
-								<Interfaces>
-									<Interface DisableCodeGeneration="true">
-										<Type GUID="{00000012-0000-0000-E000-000000000064}">ITComObject</Type>
-									</Interface>
-									<Interface DisableCodeGeneration="true">
-										<Type GUID="{03000012-0000-0000-E000-000000000064}">ITcADI</Type>
-									</Interface>
-									<Interface DisableCodeGeneration="true">
-										<Type GUID="{03000018-0000-0000-E000-000000000064}">ITcWatchSource</Type>
-									</Interface>
-								</Interfaces>
-								<Parameters>
-									<Group><![CDATA[General]]></Group>
-									<Parameter HideParameter="true" DisableCodeGeneration="true" Group="General">
-										<Name>TaskOID</Name>
-										<Comment><![CDATA[The task has to be set in the Context tab.]]></Comment>
-										<BitSize>32</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-00000000000F}">OTCID</BaseType>
-										<PTCID>#x03002060</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter DisableCodeGeneration="true" Group="General">
-										<Name>BTN</Name>
-										<Comment><![CDATA[8 digit alphanumerical number. Has to be unique for each tile. Has to match with a reference in the corresponding TileCalibration bml file.]]></Comment>
-										<BitSize>112</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-00010000000D}">STRING(13)</BaseType>
-										<PTCID>#x03176007</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter DisableCodeGeneration="true" Group="General">
-										<Name>TilePositionOnPart</Name>
-										<Comment><![CDATA[Position of the tile origin in its part.]]></Comment>
-										<BitSize>64</BitSize>
-										<BaseType GUID="{9CB8D52D-842F-49C2-8EAE-C0400750816C}">Position2D_DINT</BaseType>
-										<PTCID>#x03176018</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="General">
-										<Name>DriveOID</Name>
-										<Comment><![CDATA[OID of the linked hardware I/O XPlanar tile (drive part).]]></Comment>
-										<BitSize>32</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-00000000000F}">OTCID</BaseType>
-										<PTCID>#x03176009</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="General">
-										<Name>FeedbackOID</Name>
-										<Comment><![CDATA[OID of the linked hardware I/O XPlanar tile (feedback part).]]></Comment>
-										<BitSize>32</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-00000000000F}">OTCID</BaseType>
-										<PTCID>#x03176023</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="General">
-										<Name>AmsNetID</Name>
-										<Comment><![CDATA[AMS Net ID of the EtherCAT master.]]></Comment>
-										<BitSize>48</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-000000000041}">AMSNETID</BaseType>
-										<PTCID>#x03176010</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="General">
-										<Name>EtherCATSlaveAddress</Name>
-										<Comment><![CDATA[EtherCAT slave address of the linked hardware I/O XPlanar tile (drive part).]]></Comment>
-										<BitSize>16</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-000000000005}">UINT</BaseType>
-										<PTCID>#x03176011</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="General">
-										<Name>DriveStatusWord</Name>
-										<Comment><![CDATA[Status word of linked hardware I/O XPlanar tile (drive part).]]></Comment>
-										<BitSize>16</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-000000000005}">UINT</BaseType>
-										<PTCID>#x03176019</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="General">
-										<Name>PowerLimit</Name>
-										<Comment><![CDATA[DC link power limit. This power can be provided by the tile for a longer time.]]></Comment>
-										<BitSize>64</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
-										<Unit><![CDATA[W]]></Unit>
-										<PTCID>#x03176024</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="General">
-										<Name>ObservedTilePower</Name>
-										<Comment><![CDATA[Actual power generated by the tile.]]></Comment>
-										<BitSize>64</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
-										<Unit><![CDATA[W]]></Unit>
-										<PTCID>#x03176020</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="General">
-										<Name>CoeTimeToShutDown</Name>
-										<Comment><![CDATA[Lowers if the tile generates too much power. If = 0, the tile will transit into a hardware error.]]></Comment>
-										<BitSize>32</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-000000000008}">UDINT</BaseType>
-										<Unit><![CDATA[s]]></Unit>
-										<PTCID>#x03176021</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-									<Parameter OnlineParameter="true" DisableCodeGeneration="true" ReadOnly="true" Group="General">
-										<Name>PowerOverLimitFactor</Name>
-										<Comment><![CDATA[Factor PowerLimit/ObservedTilePower. If no power is generated this factor is default at 100.]]></Comment>
-										<BitSize>64</BitSize>
-										<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
-										<PTCID>#x03176022</PTCID>
-										<ContextId>1</ContextId>
-									</Parameter>
-								</Parameters>
-								<DataAreas>
-									<DataArea>
-										<AreaNo AreaType="Internal" CreateSymbols="true">1</AreaNo>
-										<Name>ScopeData</Name>
-										<ContextId>1</ContextId>
-										<ByteSize>20</ByteSize>
-										<Symbol>
-											<Name>ObservedPower</Name>
-											<BitSize>64</BitSize>
-											<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
-											<BitOffs>0</BitOffs>
-										</Symbol>
-										<Symbol>
-											<Name>AvailablePowerFactor</Name>
-											<BitSize>64</BitSize>
-											<BaseType GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</BaseType>
-											<BitOffs>64</BitOffs>
-										</Symbol>
-										<Symbol>
-											<Name>TimeToShutDown</Name>
-											<BitSize>32</BitSize>
-											<BaseType GUID="{18071995-0000-0000-0000-000000000008}">UDINT</BaseType>
-											<BitOffs>128</BitOffs>
-										</Symbol>
-									</DataArea>
-								</DataAreas>
-								<DataPointers>
-									<DataPointer>
-										<PTCID>#x03176000</PTCID>
-										<Name>PowerUnitStatusWord</Name>
-										<Type>UINT</Type>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176001</PTCID>
-										<Name>PowerUnitControlWord</Name>
-										<Type>UINT</Type>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176002</PTCID>
-										<Name>DCurrentSetPoints</Name>
-										<Type>INT</Type>
-										<ArrayInfo>
-											<LBound>0</LBound>
-											<Elements>24</Elements>
-										</ArrayInfo>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176003</PTCID>
-										<Name>QCurrentSetPoints</Name>
-										<Type>INT</Type>
-										<ArrayInfo>
-											<LBound>0</LBound>
-											<Elements>24</Elements>
-										</ArrayInfo>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176004</PTCID>
-										<Name>PhiSetPoints</Name>
-										<Type>UINT</Type>
-										<ArrayInfo>
-											<LBound>0</LBound>
-											<Elements>24</Elements>
-										</ArrayInfo>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176012</PTCID>
-										<Name>DcLinkVoltage</Name>
-										<Type>UINT</Type>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176013</PTCID>
-										<Name>PowerSupplyCurrent</Name>
-										<Type>INT</Type>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176014</PTCID>
-										<Name>MoverCommStatusWord</Name>
-										<Type>UINT</Type>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176015</PTCID>
-										<Name>MoverCommDataIn</Name>
-										<Type>UINT</Type>
-										<ArrayInfo>
-											<LBound>0</LBound>
-											<Elements>4</Elements>
-										</ArrayInfo>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176016</PTCID>
-										<Name>MoverCommControlWord</Name>
-										<Type>UINT</Type>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176017</PTCID>
-										<Name>MoverCommDataOut</Name>
-										<Type>UINT</Type>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176005</PTCID>
-										<Name>FeedbackStatus</Name>
-										<Type>LWORD</Type>
-										<ContextId>1</ContextId>
-									</DataPointer>
-									<DataPointer>
-										<PTCID>#x03176006</PTCID>
-										<Name>HallSensorFieldsXYZ</Name>
-										<Type>INT</Type>
-										<ArrayInfo>
-											<LBound>0</LBound>
-											<Elements>150</Elements>
-										</ArrayInfo>
-										<ContextId>1</ContextId>
-									</DataPointer>
-								</DataPointers>
-								<EventClasses>
-									<EventClass>
-										<Type GUID="{C10BD6CA-8851-45E9-BA85-9FA6B7EB2841}">XPlanarEvents</Type>
-									</EventClass>
-								</EventClasses>
-								<Properties>
-									<Property>
-										<Name>Category</Name>
-										<Value>Part</Value>
-									</Property>
-									<Property>
-										<Name>ChildCategory</Name>
-										<Value>Tile</Value>
-									</Property>
-								</Properties>
-								<ParentOTCID>#x01010020</ParentOTCID>
-								<ParameterValues>
-									<Value>
-										<Name>TaskOID</Name>
-										<Value>33620112</Value>
-									</Value>
-									<Value>
-										<Name>BTN</Name>
-										<String>00000000</String>
-									</Value>
-									<Value>
-										<Name>TilePositionOnPart.x</Name>
-										<Value>720</Value>
-									</Value>
-									<Value>
-										<Name>TilePositionOnPart.y</Name>
-										<Value>480</Value>
-									</Value>
-									<Value>
-										<Name>DriveOID</Name>
-										<Value>0</Value>
-									</Value>
-									<Value>
-										<Name>FeedbackOID</Name>
-										<Value>0</Value>
-									</Value>
-									<Value>
-										<Name>AmsNetID</Name>
-										<Data>000000000000</Data>
-									</Value>
-									<Value>
-										<Name>EtherCATSlaveAddress</Name>
-										<Value>0</Value>
-									</Value>
-									<Value>
-										<Name>DriveStatusWord</Name>
-										<Value>0</Value>
-									</Value>
-									<Value>
-										<Name>PowerLimit</Name>
-										<Value>0</Value>
-									</Value>
-									<Value>
-										<Name>ObservedTilePower</Name>
-										<Value>0</Value>
-									</Value>
-									<Value>
-										<Name>CoeTimeToShutDown</Name>
-										<Value>0</Value>
-									</Value>
-									<Value>
-										<Name>PowerOverLimitFactor</Name>
-										<Value>0</Value>
-									</Value>
-								</ParameterValues>
-							</TmcDesc>
-						</Module>
-						<Module Id="#x01010120" KeepUnrestoredLinks="2">
 							<Name>Tile4</Name>
 							<ImageId>1002</ImageId>
 							<TmcDesc GUID="{DF6BD2B5-4CCE-44EA-A2D9-134A2BF36860}">
@@ -8888,7 +7558,7 @@
 										<ManualConfig>
 											<OTCID>#x02010040</OTCID>
 										</ManualConfig>
-										<Priority>6</Priority>
+										<Priority>4</Priority>
 										<CycleTime>250000</CycleTime>
 									</Context>
 								</Contexts>
@@ -9154,7 +7824,7 @@
 									</Value>
 									<Value>
 										<Name>BTN</Name>
-										<String>00000000</String>
+										<String>0000advz</String>
 									</Value>
 									<Value>
 										<Name>TilePositionOnPart.x</Name>
@@ -9166,7 +7836,7 @@
 									</Value>
 									<Value>
 										<Name>DriveOID</Name>
-										<Value>0</Value>
+										<Value>50462727</Value>
 									</Value>
 									<Value>
 										<Name>FeedbackOID</Name>
@@ -9204,7 +7874,7 @@
 							</TmcDesc>
 						</Module>
 					</Module>
-					<Module Id="#x01010130" KeepUnrestoredLinks="2">
+					<Module Id="#x010100f0" KeepUnrestoredLinks="2">
 						<Name>Area1</Name>
 						<ImageId>1003</ImageId>
 						<TmcDesc GUID="{2B0159BB-FDDD-4000-8A74-761E3D95EF57}">
@@ -9345,7 +8015,7 @@
 							</ParameterValues>
 						</TmcDesc>
 					</Module>
-					<Module Id="#x01010140" KeepUnrestoredLinks="2">
+					<Module Id="#x01010100" KeepUnrestoredLinks="2">
 						<Name>Mover4220_1</Name>
 						<ImageId>1004</ImageId>
 						<TmcDesc GUID="{BEC45175-C8A2-4DC9-AA5E-C6CB75FBB741}">
@@ -9358,7 +8028,7 @@
 									<ManualConfig>
 										<OTCID>#x02010040</OTCID>
 									</ManualConfig>
-									<Priority>6</Priority>
+									<Priority>4</Priority>
 									<CycleTime>250000</CycleTime>
 								</Context>
 							</Contexts>
@@ -9967,19 +8637,19 @@
 								</Value>
 								<Value>
 									<Name>BTN</Name>
-									<String>0000m001</String>
+									<String>0000hs3k</String>
 								</Value>
 								<Value>
 									<Name>SimulationModeStartPosition.X</Name>
-									<Value>483.096252441406</Value>
+									<Value>485.872528076172</Value>
 								</Value>
 								<Value>
 									<Name>SimulationModeStartPosition.Y</Name>
-									<Value>460.598083496094</Value>
+									<Value>357.161071777344</Value>
 								</Value>
 								<Value>
 									<Name>SimulationModeStartPosition.MovementArea</Name>
-									<Value>16843056</Value>
+									<Value>16842992</Value>
 								</Value>
 								<Value>
 									<Name>SimulationGravityDirection.x</Name>
@@ -10598,8 +9268,8 @@
 		<Motion>
 			<MC Id="#x051f0010">
 				<Name>XPlanar MC Project</Name>
-				<MET OTCID="#x020100a0"/>
-				<MPT OTCID="#x020100b0"/>
+				<MET OTCID="#x02010060"/>
+				<MPT OTCID="#x02010070"/>
 				<MJT OTCID="#x02010080"/>
 				<Axis Id="#x05110010" ShareTmcDesc="true">
 					<Name>Mover4220_1</Name>
@@ -10612,9 +9282,9 @@
 								<Id>0</Id>
 								<Name>MET</Name>
 								<ManualConfig>
-									<OTCID>#x020100a0</OTCID>
+									<OTCID>#x02010060</OTCID>
 								</ManualConfig>
-								<Priority>16</Priority>
+								<Priority>8</Priority>
 								<CycleTime>250000</CycleTime>
 								<DependOn>ParentObject</DependOn>
 							</Context>
@@ -10622,9 +9292,9 @@
 								<Id>1</Id>
 								<Name>MPT</Name>
 								<ManualConfig>
-									<OTCID>#x020100b0</OTCID>
+									<OTCID>#x02010070</OTCID>
 								</ManualConfig>
-								<Priority>20</Priority>
+								<Priority>14</Priority>
 								<CycleTime>10000000</CycleTime>
 								<DependOn>ParentObject</DependOn>
 							</Context>
@@ -10641,11 +9311,11 @@
 							</Value>
 							<Value>
 								<Name>Initial position.x</Name>
-								<Value>483.096252441406</Value>
+								<Value>485.872528076172</Value>
 							</Value>
 							<Value>
 								<Name>Initial position.y</Name>
-								<Value>460.598083496094</Value>
+								<Value>357.161071777344</Value>
 							</Value>
 							<Value>
 								<Name>Minimal position.x</Name>
@@ -10918,9 +9588,9 @@
 								<Id>0</Id>
 								<Name>MET</Name>
 								<ManualConfig>
-									<OTCID>#x020100a0</OTCID>
+									<OTCID>#x02010060</OTCID>
 								</ManualConfig>
-								<Priority>16</Priority>
+								<Priority>8</Priority>
 								<CycleTime>250000</CycleTime>
 								<DependOn>ParentObject</DependOn>
 							</Context>
@@ -10928,9 +9598,9 @@
 								<Id>1</Id>
 								<Name>MPT</Name>
 								<ManualConfig>
-									<OTCID>#x020100b0</OTCID>
+									<OTCID>#x02010070</OTCID>
 								</ManualConfig>
-								<Priority>20</Priority>
+								<Priority>14</Priority>
 								<CycleTime>10000000</CycleTime>
 								<DependOn>ParentObject</DependOn>
 							</Context>
@@ -10999,7 +9669,7 @@
 							</Value>
 							<Value>
 								<Name>Ctx_TaskOid</Name>
-								<Value>33620128</Value>
+								<Value>33620064</Value>
 							</Value>
 							<Value>
 								<Name>Group object count</Name>
@@ -11024,9 +9694,9 @@
 								<Id>0</Id>
 								<Name>MET</Name>
 								<ManualConfig>
-									<OTCID>#x020100a0</OTCID>
+									<OTCID>#x02010060</OTCID>
 								</ManualConfig>
-								<Priority>16</Priority>
+								<Priority>8</Priority>
 								<CycleTime>250000</CycleTime>
 								<DependOn>ParentObject</DependOn>
 							</Context>
@@ -11034,9 +9704,9 @@
 								<Id>1</Id>
 								<Name>MPT</Name>
 								<ManualConfig>
-									<OTCID>#x020100b0</OTCID>
+									<OTCID>#x02010070</OTCID>
 								</ManualConfig>
-								<Priority>20</Priority>
+								<Priority>14</Priority>
 								<CycleTime>10000000</CycleTime>
 								<DependOn>ParentObject</DependOn>
 							</Context>
@@ -11120,7 +9790,7 @@
 							</Value>
 							<Value>
 								<Name>Ctx_TaskOid</Name>
-								<Value>33620128</Value>
+								<Value>33620064</Value>
 							</Value>
 							<Value>
 								<Name>XPlanar processing unit OID</Name>
@@ -11145,7 +9815,7 @@
 		</Motion>
 		<Plc>
 			<Project GUID="{AB93C029-67A5-4685-8C9C-13D55F0D692C}" Name="Untitled1" PrjFilePath="Untitled1\Untitled1.plcproj" TmcFilePath="Untitled1\Untitled1.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Untitled1\Untitled1.tmc" TmcHash="{94E315D4-7307-75E9-6C22-DFA774920B0A}">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Untitled1\Untitled1.tmc" TmcHash="{9BE0613E-47B9-4818-0EDF-D95691DBBB4B}">
 					<Name>Untitled1 Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Vars VarGrpType="1">
@@ -11171,22 +9841,22 @@
 							<ManualConfig>
 								<OTCID>#x02010030</OTCID>
 							</ManualConfig>
-							<Priority>4</Priority>
+							<Priority>10</Priority>
 							<CycleTime>250000</CycleTime>
 						</Context>
 					</Contexts>
 					<TaskPouOids>
-						<TaskPouOid Prio="4" OTCID="#x08502001"/>
+						<TaskPouOid Prio="10" OTCID="#x08502003"/>
 					</TaskPouOids>
 				</Instance>
 			</Project>
-			<PlcAuxTask Affinity="#x00000400"/>
+			<PlcAuxTask Affinity="#x00000080"/>
 		</Plc>
 		<Io/>
 	</Project>
 	<Mappings>
-		<MappingInfo Identifier="{08502001-00A0-0201-0020-500810001005}" Id="#x02030010" Watchdog="04000000040000000400000004000000"/>
-		<MappingInfo Identifier="{02010040-00A0-0201-4001-010110001105}" Id="#x02030020" Watchdog="04000000040000000400000004000000"/>
+		<MappingInfo Identifier="{02010040-0060-0201-0001-010110001105}" Id="#x02030010" Watchdog="04000000040000000400000004000000"/>
+		<MappingInfo Identifier="{02010060-2003-0850-1000-100500205008}" Id="#x02030020" Watchdog="04000000040000000400000004000000"/>
 		<OwnerA Name="TINC^XPlanar MC Project^Axes^Mover4220_1">
 			<OwnerB Name="TIRC^TcCOM Objects^XPlanar^Mover4220_1">
 				<Link VarA="McToIo^STD" VarB="InputsFromNC3^NC3ToHW" Size="1408"/>

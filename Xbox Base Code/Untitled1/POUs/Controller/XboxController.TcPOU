@@ -67,6 +67,7 @@ VAR_INPUT
 			bDpad_U 					: 		BOOL; // Dpad Up on controller 
 			ClearPosition				:		MoverVector ; // Mover Vector 
 
+
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -141,24 +142,28 @@ END_IF
 VAR_INPUT
 END_VAR
 VAR
-	Busy				:	BOOL;
-	ERR					:	BOOL;
-	ErrID				:	UDINT;
+			Busy						:		BOOL;
+			ERR							:		BOOL;
+			ErrID						:		UDINT;
+			nRecover					:		SINT := 1; // Case of Recover
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[//Open Ads Controller Service on start up
-IF RUN = TRUE THEN 
-Open_Controller_Service(
-	NETID:='' , 
-	PATHSTR:='C:\Program Files\Beckhoff Community\TwinCAT Xbox Controller Service\ADS-Controller-Server.exe' , 
-	DIRNAME:= 'C:\Program Files\Beckhoff Community\TwinCAT Xbox Controller Service', 
-	COMNDLINE:='start ADS-Controller-Server.exe', 
-	START:= TRUE , 
-	TMOUT:= T#5S , 
-	BUSY=> BUSY , 
-	ERR=> ERR , 
-	ERRID=> ERRID );
+
+IF NOT bIsConnected[1] THEN
+	IF RUN = TRUE THEN 
+	Open_Controller_Service(
+		NETID:='' , 
+		PATHSTR:='C:\Program Files\Beckhoff Community\TwinCAT Xbox Controller Service\ADS-Controller-Server.exe' , 
+		DIRNAME:= 'C:\Program Files\Beckhoff Community\TwinCAT Xbox Controller Service', 
+		COMNDLINE:='start ADS-Controller-Server.exe', 
+		START:= TRUE , 
+		TMOUT:= T#5S , 
+		BUSY=> BUSY , 
+		ERR=> ERR , 
+		ERRID=> ERRID );
+	END_IF
 END_IF]]></ST>
       </Implementation>
     </Method>
@@ -194,8 +199,8 @@ rStick_X			:= XboxController.P_Right_Joystick.fX;]]></ST>
       <Declaration><![CDATA[METHOD takeScreenshot : BOOL
 VAR_INPUT
 	
-		bDpad_D 					: 			BOOL ; // Dpad Down on controller
-		MoverPosition				:			MoverVector; // Mover Position
+			bDpad_D 					: 			BOOL ; // Dpad Down on controller
+			MoverPosition				:			MoverVector; // Mover Position
 
 END_VAR
 ]]></Declaration>
@@ -246,10 +251,12 @@ END_IF
     </LineIds>
     <LineIds Name="XboxController.Init">
       <LineId Id="24" Count="0" />
+      <LineId Id="34" Count="1" />
       <LineId Id="5" Count="0" />
       <LineId Id="10" Count="8" />
       <LineId Id="6" Count="0" />
       <LineId Id="25" Count="0" />
+      <LineId Id="36" Count="0" />
     </LineIds>
     <LineIds Name="XboxController.Mapping">
       <LineId Id="17" Count="4" />

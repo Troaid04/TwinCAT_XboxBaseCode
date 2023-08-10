@@ -1,6 +1,194 @@
 <?xml version="1.0"?>
 <TcEventSources Version="2">
 	<Source>
+		<GUID>{28111931-0002-0000-293C-C477581B1100}</GUID>
+		<Name LcId="1031">APS4322-7000 Drive</Name>
+		<Name LcId="1033">APS4322-7000 Drive</Name>
+		<Event>
+			<Id>16641</Id>
+			<Message LcId="1031">Modul-Übertemperatur</Message>
+			<Message LcId="1033">module overtemperature</Message>
+		</Event>
+		<Event>
+			<Id>16643</Id>
+			<Message LcId="1031">Unterspannung Us/Us nicht angeschlossen</Message>
+			<Message LcId="1033">Undervoltage Us/Us not connected</Message>
+		</Event>
+		<Event>
+			<Id>16650</Id>
+			<Message LcId="1031">Lüfter defekt/Kein Lüfter angeschlossen</Message>
+			<Message LcId="1033">fan not spinning/fan not connected</Message>
+		</Event>
+		<Event>
+			<Id>17425</Id>
+			<Message LcId="1031">Unterspannung DC-Zwischenkreis</Message>
+			<Message LcId="1033">Undervoltage DC-Link</Message>
+		</Event>
+		<Event>
+			<Id>17426</Id>
+			<Message LcId="1031">Überspannung DC-Zwischenkreis</Message>
+			<Message LcId="1033">Overvoltage DC-Link</Message>
+		</Event>
+		<Event>
+			<Id>17439</Id>
+			<Message LcId="1031">Übertemperatur IT-Modell Netzteil</Message>
+			<Message LcId="1033">Overtemperature IT-modell powersupply</Message>
+		</Event>
+		<Event>
+			<Id>33028</Id>
+			<Message LcId="1031">Modul-Übertemperatur</Message>
+			<Message LcId="1033">module overtemperature</Message>
+		</Event>
+		<Event>
+			<Id>33029</Id>
+			<Message LcId="1031">PD-Watchdog</Message>
+			<Message LcId="1033">PD-Watchdog</Message>
+		</Event>
+		<Event>
+			<Id>33151</Id>
+			<Message LcId="1031">Interner Fehler</Message>
+			<Message LcId="1033">Internal error</Message>
+		</Event>
+		<Event>
+			<Id>33795</Id>
+			<Message LcId="1031">Adc-Fehler</Message>
+			<Message LcId="1033">Adc error</Message>
+		</Event>
+		<Event>
+			<Id>33796</Id>
+			<Message LcId="1031">Überstromfehler</Message>
+			<Message LcId="1033">Overcurrent error</Message>
+		</Event>
+		<Event>
+			<Id>33798</Id>
+			<Message LcId="1031">Unterspannung DC-Zwischenkreis</Message>
+			<Message LcId="1033">Undervoltage DC-Link</Message>
+		</Event>
+		<Event>
+			<Id>33799</Id>
+			<Message LcId="1031">Überspannung DC-Zwischenkreis</Message>
+			<Message LcId="1033">Overvoltage DC-Link</Message>
+		</Event>
+		<Event>
+			<Id>33860</Id>
+			<Message LcId="1031">Übertemperatur IT-modell Netzteil</Message>
+			<Message LcId="1033">Overtemperature IT-modell powersupply</Message>
+		</Event>
+		<Property>
+			<Name>DisplayTxtId</Name>
+			<Value>true</Value>
+		</Property>
+	</Source>
+	<Source>
+		<GUID>{28111931-0002-0000-293C-C477581B1200}</GUID>
+		<Name LcId="1031">APS4322-7000 Drive</Name>
+		<Name LcId="1033">APS4322-7000 Drive</Name>
+		<Event>
+			<Id>5122</Id>
+			<Message LcId="1031"><![CDATA[Übertemperatur-Warnung an Sensor '{0}', Temperatur: {1} °C]]></Message>
+			<Message LcId="1033"><![CDATA[Overtemperature warning at sensor '{0}', temperature: {1} °C]]></Message>
+		</Event>
+		<Event>
+			<Id>5123</Id>
+			<Message LcId="1031"><![CDATA[Übertemperatur-Fehler an Sensor '{0}', Temperatur: {1} °C]]></Message>
+			<Message LcId="1033"><![CDATA[Overtemperature error at sensor '{0}', temperature: {1} °C]]></Message>
+		</Event>
+		<Event>
+			<Id>5124</Id>
+			<Message LcId="1031"><![CDATA[Überstromfehler an Sensor '{0}']]></Message>
+			<Message LcId="1033"><![CDATA[Overcurrent error at sensor '{0}']]></Message>
+		</Event>
+		<Event>
+			<Id>5125</Id>
+			<Message LcId="1031">Überstromfehler-Werte (raw) {0}, {1}, {2}</Message>
+			<Message LcId="1033">Overcurrent error values (raw) {0}, {1}, {2}</Message>
+		</Event>
+		<Event>
+			<Id>5126</Id>
+			<Message LcId="1031">Überstromfehler-Werte {0}, {1}, {2}</Message>
+			<Message LcId="1033">Overcurrent error values {0}, {1}, {2}</Message>
+		</Event>
+		<Event>
+			<Id>5127</Id>
+			<Message LcId="1031">Überstromfehler-Setpoints {0}, {1}, {2}</Message>
+			<Message LcId="1033">Overcurrent error setpoint values {0}, {1}, {2}</Message>
+		</Event>
+		<Event>
+			<Id>16641</Id>
+			<Message LcId="1031">Modul-Übertemperatur</Message>
+			<Message LcId="1033">module overtemperature</Message>
+		</Event>
+		<Event>
+			<Id>16643</Id>
+			<Message LcId="1031">Unterspannung Us/Us nicht angeschlossen</Message>
+			<Message LcId="1033">Undervoltage Us/Us not connected</Message>
+		</Event>
+		<Event>
+			<Id>16650</Id>
+			<Message LcId="1031">Lüfter defekt/Kein Lüfter angeschlossen</Message>
+			<Message LcId="1033">fan not spinning/fan not connected</Message>
+		</Event>
+		<Event>
+			<Id>17425</Id>
+			<Message LcId="1031">Unterspannung DC-Zwischenkreis</Message>
+			<Message LcId="1033">Undervoltage DC-Link</Message>
+		</Event>
+		<Event>
+			<Id>17426</Id>
+			<Message LcId="1031">Überspannung DC-Zwischenkreis</Message>
+			<Message LcId="1033">Overvoltage DC-Link</Message>
+		</Event>
+		<Event>
+			<Id>17439</Id>
+			<Message LcId="1031">Übertemperatur IT-Modell Netzteil</Message>
+			<Message LcId="1033">Overtemperature IT-modell powersupply</Message>
+		</Event>
+		<Event>
+			<Id>33028</Id>
+			<Message LcId="1031">Modul-Übertemperatur</Message>
+			<Message LcId="1033">module overtemperature</Message>
+		</Event>
+		<Event>
+			<Id>33029</Id>
+			<Message LcId="1031">PD-Watchdog</Message>
+			<Message LcId="1033">PD-Watchdog</Message>
+		</Event>
+		<Event>
+			<Id>33151</Id>
+			<Message LcId="1031">Interner Fehler</Message>
+			<Message LcId="1033">Internal error</Message>
+		</Event>
+		<Event>
+			<Id>33795</Id>
+			<Message LcId="1031">Adc-Fehler</Message>
+			<Message LcId="1033">Adc error</Message>
+		</Event>
+		<Event>
+			<Id>33796</Id>
+			<Message LcId="1031">Überstromfehler</Message>
+			<Message LcId="1033">Overcurrent error</Message>
+		</Event>
+		<Event>
+			<Id>33798</Id>
+			<Message LcId="1031">Unterspannung DC-Zwischenkreis</Message>
+			<Message LcId="1033">Undervoltage DC-Link</Message>
+		</Event>
+		<Event>
+			<Id>33799</Id>
+			<Message LcId="1031">Überspannung DC-Zwischenkreis</Message>
+			<Message LcId="1033">Overvoltage DC-Link</Message>
+		</Event>
+		<Event>
+			<Id>33860</Id>
+			<Message LcId="1031">Übertemperatur IT-modell Netzteil</Message>
+			<Message LcId="1033">Overtemperature IT-modell powersupply</Message>
+		</Event>
+		<Property>
+			<Name>DisplayTxtId</Name>
+			<Value>true</Value>
+		</Property>
+	</Source>
+	<Source>
 		<GUID>{C10BD6CA-8851-45E9-BA85-9FA6B7EB2841}</GUID>
 		<Name LcId="1033">XPlanarEvents</Name>
 		<Event>

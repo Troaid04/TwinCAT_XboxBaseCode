@@ -59,7 +59,7 @@ HapticFeedback := TRUE
 MyEnvironment(
 // Input number of X and Y tiles youre table has
 NumberOfXTiles := 4, 
-NumberOfYTiles := 4	
+NumberOfYTiles := 3	
 );
 
 ]]></ST>
@@ -99,6 +99,7 @@ maxXTravel := MyEnvironment.MaxTableXTravel,
 minXTravel := MyEnvironment.MinTableXTravel,
 maxYTravel := MyEnvironment.MaxTableYTravel,
 minYTravel := MyEnvironment.MinTableYTravel,
+
 );
 
 MyMover.Rotation(
@@ -127,7 +128,8 @@ MoverTypeLength				:= MyMover.TypeLength
 );
 
 MyMover(
-StartDemo := MyDemo.RequestDemo
+StartDemo := MyDemo.RequestDemo,
+DemoNotReady :=  MyDemo.StartUserControl
 ); 
 
 
@@ -135,11 +137,21 @@ MyDemo(
 ReadyForDemo := MyMover.DemoReady,
 bDpad_R := MyController.Dpad_R,
 bDpad_L := MyController.Dpad_L,
-StopEndFunction := MyMover.ResetDemo
+StopEndFunction := MyMover.ResetDemo,
+DemoTable := MyEnvironment.TableType,
+//Running := MyMover.FourByThree.Running OR MyMover.TwoByOne.Running,
+//Done := MyMover.FourByThree.Done OR MyMover.TwoByOne.Done
 );
 
+MyMover.FourByThree(
+Start:= MyDemo.StartFourByThree,
+Stop := MyDemo.StopFourByThree
+);
 
-
+MyMover.TwoByOne(
+Start:= MyDemo.StartTwoByOne,
+Stop := MyDemo.StopTwoByOne
+);
 
 
 
@@ -216,7 +228,9 @@ END_IF
       <LineId Id="174" Count="0" />
       <LineId Id="88" Count="11" />
       <LineId Id="125" Count="1" />
-      <LineId Id="100" Count="18" />
+      <LineId Id="100" Count="12" />
+      <LineId Id="196" Count="0" />
+      <LineId Id="113" Count="5" />
       <LineId Id="127" Count="0" />
       <LineId Id="119" Count="0" />
       <LineId Id="128" Count="0" />
@@ -235,14 +249,23 @@ END_IF
       <LineId Id="156" Count="0" />
       <LineId Id="155" Count="0" />
       <LineId Id="158" Count="0" />
+      <LineId Id="182" Count="0" />
       <LineId Id="160" Count="0" />
-      <LineId Id="143" Count="0" />
+      <LineId Id="181" Count="0" />
       <LineId Id="161" Count="1" />
       <LineId Id="170" Count="0" />
       <LineId Id="173" Count="0" />
       <LineId Id="177" Count="1" />
+      <LineId Id="184" Count="0" />
+      <LineId Id="190" Count="0" />
+      <LineId Id="189" Count="0" />
       <LineId Id="171" Count="0" />
-      <LineId Id="163" Count="5" />
+      <LineId Id="185" Count="0" />
+      <LineId Id="163" Count="0" />
+      <LineId Id="186" Count="2" />
+      <LineId Id="164" Count="0" />
+      <LineId Id="192" Count="2" />
+      <LineId Id="165" Count="3" />
       <LineId Id="121" Count="3" />
       <LineId Id="159" Count="0" />
       <LineId Id="10" Count="0" />

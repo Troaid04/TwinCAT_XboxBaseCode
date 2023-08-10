@@ -11,6 +11,7 @@ VAR_INPUT
 			Space_mode					:		BOOL; // Space mode ???
 			
 			StartDemo					:		BOOL; // Change to Demo
+			DemoNotReady 				: 		BOOL; //Handeling for end process
 
 END_VAR
 VAR_OUTPUT
@@ -100,6 +101,8 @@ VAR
 			//End Vars
 			nEnd						:		SINT := 0; // Start End Procces
 			
+			//Demo Vars
+			
 END_VAR
 VAR_IN_OUT
 END_VAR]]></Declaration>
@@ -112,6 +115,9 @@ END_VAR]]></Declaration>
 
 ]]></ST>
     </Implementation>
+    <Folder Name="Movement Types" Id="{bb493af2-3b78-4c78-bbb5-279338fb59b4}" />
+    <Folder Name="Tables" Id="{64f7235b-7f6c-48ea-a169-5b53202891f3}" />
+    <Folder Name="Transitions" Id="{3fa4ca4c-08bb-40fb-96b5-15ae0f3499ff}" />
     <Action Name="Cyclic" Id="{82484dc3-e441-4c06-856d-d2ed15a41028}">
       <Implementation>
         <ST><![CDATA[//Mover 1 updates
@@ -127,7 +133,6 @@ typeAMP4220(); // update mover 4220 FB
 typeAMP4330(); // Update mover 4330 FB
 EndMover();
 
-
 //Choose varibles to pass based on which mover is called
 IF MoverType = 'AMP4220' THEN
 	TypeWidth := typeAMP4220.MoverTypeWidth;
@@ -141,9 +146,12 @@ END_IF
 ]]></ST>
       </Implementation>
     </Action>
-    <Method Name="EndMover" Id="{dfca08e4-ddad-4e94-95e1-636822eff297}">
+    <Method Name="EndMover" Id="{dfca08e4-ddad-4e94-95e1-636822eff297}" FolderPath="Transitions\">
       <Declaration><![CDATA[METHOD EndMover
 VAR_INPUT
+	
+
+
 END_VAR
 
 VAR
@@ -156,14 +164,15 @@ END_VAR
         <ST><![CDATA[
 MoveC_Dyn.SetValuesVADJ(500,5000,5000,20000);
 
+IF NOT StartDemo THEN 
+	DemoReady := FALSE;
+END_IF
+
 
 IF StartDemo THEN 
 	CASE nEnd OF
 	
 	0:
-		IF Reinit THEN 
-			DemoReady := FALSE;
-		END_IF
 		//Idle
 		IF NOT DemoReady THEN
 			nEnd := nEnd + 1;	
@@ -201,6 +210,8 @@ IF StartDemo THEN
 	
 		//Set demo ready bit 
 		DemoReady := TRUE; 
+		ResetDemo := FALSE;
+		nCase := 1;
 		nEnd := 0;
 	
 	
@@ -209,7 +220,29 @@ IF StartDemo THEN
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Init" Id="{def29215-c1db-47bd-a987-c8cae1603651}">
+    <Method Name="FourByThree" Id="{2a1e51d5-06b9-482b-9c28-697c4dc27f6d}" FolderPath="Tables\">
+      <Declaration><![CDATA[METHOD FourByThree 
+VAR_INPUT
+	
+	Start				:			BOOL;
+	Stop				:			BOOL;
+
+END_VAR
+VAR_OUTPUT
+	
+			Running				:			BOOL; 
+			Done				:			BOOL;
+			nRecover					:		SINT := 1; // Case of Recover
+	
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF Start THEN
+//	
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Init" Id="{def29215-c1db-47bd-a987-c8cae1603651}" FolderPath="Transitions\">
       <Declaration><![CDATA[METHOD Init
 VAR_INPUT
 	
@@ -224,11 +257,11 @@ END_VAR]]></Declaration>
         <ST><![CDATA[
 
 
-IF bStart THEN
+IF bStart AND NOT StartDemo THEN
 	Run := TRUE;
 END_IF
 
-IF (Run OR bRecover OR Reinit) AND NOT (init_counter = 3) THEN
+IF (Run OR bRecover OR Reinit) AND NOT (init_counter = 3)   THEN
 	CASE nCase OF
 	1: 
 	
@@ -317,7 +350,7 @@ IF (Run OR bRecover OR Reinit) AND NOT (init_counter = 3) THEN
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Recover" Id="{e6a63d81-483f-4a71-99d2-c7f5840dab5a}">
+    <Method Name="Recover" Id="{e6a63d81-483f-4a71-99d2-c7f5840dab5a}" FolderPath="Transitions\">
       <Declaration><![CDATA[METHOD Recover
 VAR_INPUT
 	
@@ -328,6 +361,7 @@ END_VAR
       <Implementation>
         <ST><![CDATA[CASE nRecover OF 
 	1:
+	
 		IF Done OR (init_Counter = 3) THEN
 			nRecover := nRecover + 1;
 		END_IF
@@ -340,8 +374,10 @@ END_VAR
 		END_IF
 		
 	3:
+	
 		//Mapped as reset of mover
 		IF bBack = TRUE THEN
+			Xplanar_Mover.StopExternalSetpointGeneration(cmdfb[1]);
 			nRecover := nRecover + 1; 
 		END_IF
 		
@@ -356,11 +392,10 @@ END_VAR
 	
 		nRecover := 1;
 
-		
 END_CASE]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Rotation" Id="{93c77cf9-6e7f-471c-a695-31105a4ae36b}">
+    <Method Name="Rotation" Id="{93c77cf9-6e7f-471c-a695-31105a4ae36b}" FolderPath="Movement Types\">
       <Declaration><![CDATA[METHOD Rotation : BOOL
 VAR_INPUT
 	
@@ -498,7 +533,7 @@ END_VAR
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Tilt_Height" Id="{c7f673dd-bde8-4bb0-a48c-edd491df8f0b}">
+    <Method Name="Tilt_Height" Id="{c7f673dd-bde8-4bb0-a48c-edd491df8f0b}" FolderPath="Movement Types\">
       <Declaration><![CDATA[METHOD Tilt_Height
 VAR_INPUT
 
@@ -627,21 +662,41 @@ END_VAR
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="XYMovement" Id="{baec03b5-3e08-481e-807f-3454b9c413ba}">
+    <Method Name="TwoByOne" Id="{2466153d-f3cb-42f5-acd9-17d27d6dfded}" FolderPath="Tables\">
+      <Declaration><![CDATA[METHOD TwoByOne
+VAR_INPUT
+	
+	Start				:			BOOL;
+	Stop				:			BOOL;
+
+END_VAR
+VAR_OUTPUT
+	
+	Running				:			BOOL; 
+	Done				:			BOOL;
+	
+END_VAR
+
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="XYMovement" Id="{baec03b5-3e08-481e-807f-3454b9c413ba}" FolderPath="Movement Types\">
       <Declaration><![CDATA[METHOD XYMovement
 VAR_INPUT
 	
-lStick_X 				: LREAL; // Left stick X axis - X movement of mover
-lStick_Y				: LREAL; // LEft stick Y axis - Y movement of mover
-
-bButton_A 				: BOOL;  // Button A on controller - homing to rotation position
-bButton_X 				: BOOL;  // Button X on controller - locking into X movement 
-bButton_Y 				: BOOL;	 // Button Y on controller - locking into Y movement
- 
-maxXtravel              : LREAL; // Max X travel on table
-minXTravel              : LREAL; // Min X travel on table
-maxYTravel              : LREAL; // Max Y travel on table
-minYTravel				: LREAL; // Min Y travel on table
+			lStick_X 					: 		LREAL; // Left stick X axis - X movement of mover
+			lStick_Y					: 		LREAL; // LEft stick Y axis - Y movement of mover
+			                    	      		
+			bButton_A 					: 		BOOL;  // Button A on controller - homing to rotation position
+			bButton_X 					: 		BOOL;  // Button X on controller - locking into X movement 
+			bButton_Y 					: 		BOOL;	 // Button Y on controller - locking into Y movement
+			                    	      		
+			maxXtravel          	    : 		LREAL; // Max X travel on table
+			minXTravel          	    : 		LREAL; // Min X travel on table
+			maxYTravel          	    : 		LREAL; // Max Y travel on table
+			minYTravel					: 		LREAL; // Min Y travel on table
 
 END_VAR
 VAR
@@ -699,6 +754,7 @@ END_VAR
 
 	// Update the object's velocity based on the acceleration (INTEGRATING)
 	IF NOT bButton_Y THEN // Dont allow for X movement 
+		IF 
 		SumnedVelocity.x := LIMIT(MotionParameters.minVelocity, SumnedVelocity.x, MotionParameters.maxVelocity) + (SumnedForce_X * EnvironmentParameters.deltaT);
 	ELSE
 		SumnedVelocity.x := 0;
@@ -780,7 +836,6 @@ END_IF
       <LineId Id="30" Count="3" />
       <LineId Id="21" Count="0" />
       <LineId Id="29" Count="0" />
-      <LineId Id="25" Count="0" />
       <LineId Id="22" Count="0" />
       <LineId Id="20" Count="0" />
       <LineId Id="7" Count="1" />
@@ -792,12 +847,14 @@ END_IF
       <LineId Id="15" Count="0" />
     </LineIds>
     <LineIds Name="XPlanarMover.EndMover">
-      <LineId Id="45" Count="3" />
+      <LineId Id="45" Count="1" />
+      <LineId Id="97" Count="0" />
+      <LineId Id="99" Count="1" />
+      <LineId Id="98" Count="0" />
+      <LineId Id="47" Count="1" />
       <LineId Id="5" Count="1" />
       <LineId Id="8" Count="0" />
       <LineId Id="70" Count="0" />
-      <LineId Id="68" Count="0" />
-      <LineId Id="92" Count="1" />
       <LineId Id="69" Count="0" />
       <LineId Id="72" Count="2" />
       <LineId Id="71" Count="0" />
@@ -821,11 +878,17 @@ END_IF
       <LineId Id="62" Count="2" />
       <LineId Id="87" Count="0" />
       <LineId Id="65" Count="0" />
+      <LineId Id="114" Count="0" />
+      <LineId Id="113" Count="0" />
       <LineId Id="67" Count="0" />
       <LineId Id="57" Count="0" />
       <LineId Id="52" Count="1" />
       <LineId Id="9" Count="0" />
       <LineId Id="7" Count="0" />
+    </LineIds>
+    <LineIds Name="XPlanarMover.FourByThree">
+      <LineId Id="5" Count="0" />
+      <LineId Id="17" Count="1" />
     </LineIds>
     <LineIds Name="XPlanarMover.Init">
       <LineId Id="164" Count="1" />
@@ -869,9 +932,13 @@ END_IF
     <LineIds Name="XPlanarMover.Recover">
       <LineId Id="5" Count="0" />
       <LineId Id="12" Count="0" />
+      <LineId Id="81" Count="0" />
       <LineId Id="14" Count="6" />
       <LineId Id="55" Count="0" />
-      <LineId Id="21" Count="5" />
+      <LineId Id="21" Count="3" />
+      <LineId Id="80" Count="0" />
+      <LineId Id="25" Count="1" />
+      <LineId Id="82" Count="0" />
       <LineId Id="33" Count="2" />
       <LineId Id="43" Count="1" />
       <LineId Id="62" Count="0" />
@@ -879,7 +946,6 @@ END_IF
       <LineId Id="53" Count="0" />
       <LineId Id="73" Count="0" />
       <LineId Id="69" Count="3" />
-      <LineId Id="54" Count="0" />
       <LineId Id="52" Count="0" />
       <LineId Id="13" Count="0" />
     </LineIds>
@@ -958,6 +1024,9 @@ END_IF
       <LineId Id="23" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
+    <LineIds Name="XPlanarMover.TwoByOne">
+      <LineId Id="5" Count="0" />
+    </LineIds>
     <LineIds Name="XPlanarMover.XYMovement">
       <LineId Id="15" Count="0" />
       <LineId Id="555" Count="0" />
@@ -995,6 +1064,7 @@ END_IF
       <LineId Id="190" Count="0" />
       <LineId Id="192" Count="0" />
       <LineId Id="492" Count="0" />
+      <LineId Id="587" Count="0" />
       <LineId Id="193" Count="0" />
       <LineId Id="493" Count="3" />
       <LineId Id="498" Count="3" />
