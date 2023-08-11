@@ -731,7 +731,7 @@ END_VAR
 	IF (lStick_X < 15 AND lStick_X > -15 ) AND (lStick_Y < 15 AND lStick_Y > -15)THEN
 		isintent := TRUE;
 	ELSE 
-		isintent := FALSE;;
+		isintent := FALSE;
 	END_IF
 
 	
@@ -767,17 +767,21 @@ END_VAR
 	SumnedForce_X := Mover_acceleration.x + friction_force.x;
 	SumnedForce_Y := Mover_acceleration.y + friction_force.y;
 
-	// Update the object's velocity based on the acceleration (INTEGRATING)
-	IF NOT bButton_Y THEN // Dont allow for X movement 
+
+	// Dont allow for X movement when pressing Y-button
+	// only kicks in when x-velocity is close enough to zero
+	IF bButton_Y AND (SumnedVelocity.x < 2.0 AND SumnedVelocity.x > -2.0) THEN
+		SumnedVelocity.x := 0.0;
+	ELSE
+		// Update the object's velocity based on the acceleration (INTEGRATING)
 		SumnedVelocity.x := LIMIT(MotionParameters.minVelocity, SumnedVelocity.x, MotionParameters.maxVelocity) + (SumnedForce_X * EnvironmentParameters.deltaT);
-	ELSE
-		SumnedVelocity.x := 0;
 	END_IF
-	
-	IF NOT bButton_X THEN // Dont allow for Y movement 
-		SumnedVelocity.y := LIMIT(MotionParameters.minVelocity, SumnedVelocity.y, MotionParameters.maxVelocity) + (SumnedForce_Y * EnvironmentParameters.deltaT);
+	//same but for other direction
+	IF bButton_X AND (SumnedVelocity.y < 2.0 AND SumnedVelocity.y > -2.0) THEN // Dont allow for Y movement 
+		SumnedVelocity.y := 0.0;
 	ELSE
-		SumnedVelocity.Y := 0;
+		// Update the object's velocity based on the acceleration (INTEGRATING)
+		SumnedVelocity.y := LIMIT(MotionParameters.minVelocity, SumnedVelocity.y, MotionParameters.maxVelocity) + (SumnedForce_Y * EnvironmentParameters.deltaT);
 	END_IF
 	
 
@@ -1095,9 +1099,16 @@ END_IF
       <LineId Id="190" Count="0" />
       <LineId Id="192" Count="0" />
       <LineId Id="492" Count="0" />
-      <LineId Id="193" Count="0" />
-      <LineId Id="493" Count="3" />
-      <LineId Id="498" Count="3" />
+      <LineId Id="672" Count="0" />
+      <LineId Id="669" Count="0" />
+      <LineId Id="494" Count="0" />
+      <LineId Id="670" Count="0" />
+      <LineId Id="673" Count="0" />
+      <LineId Id="671" Count="0" />
+      <LineId Id="495" Count="1" />
+      <LineId Id="498" Count="2" />
+      <LineId Id="674" Count="0" />
+      <LineId Id="501" Count="0" />
       <LineId Id="497" Count="0" />
       <LineId Id="194" Count="0" />
       <LineId Id="286" Count="0" />
