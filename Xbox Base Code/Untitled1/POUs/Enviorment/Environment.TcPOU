@@ -3,17 +3,27 @@
   <POU Name="Environment" Id="{bc804a70-ba27-434f-a722-0a692fdcb6d7}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK Environment
 VAR_INPUT
+
+			NumberOfXTiles				: 		INT; // Number of X tiles in a System
+			NumberOfYTiles				: 		INT; // Number of Y tiles in a System	
+
 END_VAR
 VAR_OUTPUT
 	
-MaxTableYTravel 		: LREAL ; 
-MaxTableXTravel 		: LREAL ;
+			MaxTableYTravel 			: 		LREAL ; // Max Y travel of mover
+			MaxTableXTravel 			: 		LREAL ; // Max X travel of mover
 		             
-MinTableYTravel 		: LREAL ; 
-MinTableXTravel 		: LREAL ; 
+			MinTableYTravel 			: 		LREAL ; // Min Y travel of mover
+			MinTableXTravel 			:		LREAL ; // Min X travel of mover
+			
+			TableType					:		STRING(3); // Table Demo Type 
 
 END_VAR
 VAR
+	
+			Buffer						: 		INT := 5; // Buffer space 
+			RotationDisplacement		:		LREAL; // Rotation displacemnt caused by mover   
+
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -23,23 +33,35 @@ END_VAR
       <Declaration><![CDATA[METHOD Boundry 
 VAR_INPUT
 	
-			NumberOfXTiles				: INT;
-			NumberOfYTiles				: INT; 
-			MoverTypeWidth 				: LREAL;
-		    MoverTypeLength				: LREAL;
-			
+			MoverTypeWidth 				: 		LREAL; // Movers Width/2
+		    MoverTypeLength				: 		LREAL; // Movers Length/2
+	
 END_VAR 
-
 VAR 
-			Buffer						: INT := 5; 
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[MaxTableYTravel := (NumberOfYTiles * 240) - MoverTypeWidth  - Buffer;
-MaxTableXTravel := (NumberOfXTiles * 240) - MoverTypeLength - Buffer;
+        <ST><![CDATA[RotationDisplacement :=  (MoverTypeWidth) * SIN(0.1745); // Calculate Rotation displacemnt of Mover
+
+
+MaxTableYTravel := (NumberOfYTiles * 240) - MoverTypeWidth   - RotationDisplacement ; // Calculate Max Y travel of Mover
+MaxTableXTravel := (NumberOfXTiles * 240) - MoverTypeLength  - RotationDisplacement; // Calculate Max X travel of Mover
 		
-MinTableYTravel :=  MoverTypeWidth   + Buffer;
-MinTableXTravel :=  MoverTypeLength  + Buffer;]]></ST>
+MinTableYTravel :=  MoverTypeWidth  + RotationDisplacement; // Calculate Min Y travel of Mover
+MinTableXTravel :=  MoverTypeLength + RotationDisplacement; // Calculate Min X travel of Mover
+
+
+IF NumberOfXTiles = 2 AND NumberOfYTiles = 1 THEN
+	TableType := '2x1'; // 2x1 demo table
+ELSIF NumberOfXTiles = 4 AND NumberOfYTiles = 3 THEN
+	TableType := '4x3'; // 4x3 demo table 
+ELSE
+	TableType := 'NaN'; // Not a demo table supported 
+END_IF
+
+
+
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="Forces" Id="{97bf2863-1c46-48a8-8c41-067ed868cafd}">
@@ -55,8 +77,19 @@ END_VAR
       <LineId Id="9" Count="0" />
     </LineIds>
     <LineIds Name="Environment.Boundry">
+      <LineId Id="51" Count="0" />
+      <LineId Id="50" Count="0" />
+      <LineId Id="49" Count="0" />
       <LineId Id="13" Count="3" />
       <LineId Id="5" Count="0" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="64" Count="1" />
+      <LineId Id="67" Count="1" />
+      <LineId Id="70" Count="2" />
+      <LineId Id="69" Count="0" />
+      <LineId Id="66" Count="0" />
+      <LineId Id="33" Count="1" />
+      <LineId Id="30" Count="0" />
     </LineIds>
     <LineIds Name="Environment.Forces">
       <LineId Id="5" Count="0" />

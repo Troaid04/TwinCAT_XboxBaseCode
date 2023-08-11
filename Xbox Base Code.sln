@@ -5,8 +5,6 @@ VisualStudioVersion = 15.0.33403.129
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{B1E792BE-AA5F-4E3C-8C82-674BF9C0715B}") = "Xbox Base Code", "Xbox Base Code\Xbox Base Code.tsproj", "{893DED4F-94DE-405E-B342-BD5831DA37B9}"
 EndProject
-Project("{FD9F1D59-E000-42F3-8744-88DE1BE93C06}") = "TwinCAT Measurement Project1", "TwinCAT Measurement Project1\TwinCAT Measurement Project1.tcmproj", "{B3DA72B2-19AC-4186-BB34-BEF2DB488D0E}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|TwinCAT CE7 (ARMV7) = Debug|TwinCAT CE7 (ARMV7)
@@ -35,14 +33,6 @@ Global
 		{893DED4F-94DE-405E-B342-BD5831DA37B9}.Release|TwinCAT RT (x64).Build.0 = Release|TwinCAT RT (x64)
 		{893DED4F-94DE-405E-B342-BD5831DA37B9}.Release|TwinCAT RT (x86).ActiveCfg = Release|TwinCAT RT (x86)
 		{893DED4F-94DE-405E-B342-BD5831DA37B9}.Release|TwinCAT RT (x86).Build.0 = Release|TwinCAT RT (x86)
-		{B3DA72B2-19AC-4186-BB34-BEF2DB488D0E}.Debug|TwinCAT CE7 (ARMV7).ActiveCfg = Debug|TwinCAT CE7 (ARMV7)
-		{B3DA72B2-19AC-4186-BB34-BEF2DB488D0E}.Debug|TwinCAT OS (ARMT2).ActiveCfg = Debug|TwinCAT OS (ARMT2)
-		{B3DA72B2-19AC-4186-BB34-BEF2DB488D0E}.Debug|TwinCAT RT (x64).ActiveCfg = Debug|TwinCAT RT (x64)
-		{B3DA72B2-19AC-4186-BB34-BEF2DB488D0E}.Debug|TwinCAT RT (x86).ActiveCfg = Debug|TwinCAT RT (x86)
-		{B3DA72B2-19AC-4186-BB34-BEF2DB488D0E}.Release|TwinCAT CE7 (ARMV7).ActiveCfg = Release|TwinCAT CE7 (ARMV7)
-		{B3DA72B2-19AC-4186-BB34-BEF2DB488D0E}.Release|TwinCAT OS (ARMT2).ActiveCfg = Release|TwinCAT OS (ARMT2)
-		{B3DA72B2-19AC-4186-BB34-BEF2DB488D0E}.Release|TwinCAT RT (x64).ActiveCfg = Release|TwinCAT RT (x64)
-		{B3DA72B2-19AC-4186-BB34-BEF2DB488D0E}.Release|TwinCAT RT (x86).ActiveCfg = Release|TwinCAT RT (x86)
 		{AB93C029-67A5-4685-8C9C-13D55F0D692C}.Debug|TwinCAT CE7 (ARMV7).ActiveCfg = Debug|TwinCAT CE7 (ARMV7)
 		{AB93C029-67A5-4685-8C9C-13D55F0D692C}.Debug|TwinCAT CE7 (ARMV7).Build.0 = Debug|TwinCAT CE7 (ARMV7)
 		{AB93C029-67A5-4685-8C9C-13D55F0D692C}.Debug|TwinCAT OS (ARMT2).ActiveCfg = Debug|TwinCAT OS (ARMT2)

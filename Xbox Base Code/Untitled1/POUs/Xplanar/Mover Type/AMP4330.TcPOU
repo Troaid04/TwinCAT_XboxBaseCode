@@ -5,6 +5,10 @@
 VAR_INPUT
 END_VAR
 VAR_OUTPUT
+	
+			MoverTypeWidth 				: 		LREAL := 77.5; // Mover Width/2 in mm
+			MoverTypeLength				: 		LREAL := 77.5; // Mover Length/2 in mm 
+
 END_VAR
 VAR
 END_VAR

@@ -3,31 +3,53 @@
   <POU Name="XboxController" Id="{90258775-ce06-40bc-98d6-66658f5c2f7b}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK XboxController
 VAR_INPUT
+	
+			HapticFeedback				:		BOOL; // Haptic feedback enable bit		
+
 END_VAR
 VAR_OUTPUT
 	
-			XboxController				: 		FB_Xbox_Controller(NetID := '', iControllerNumber := 1);
-			bIsConnected   				:  		ARRAY [1..2] OF BOOL;
+			XboxController				: 		FB_Xbox_Controller(NetID := '', iControllerNumber := 1); // Xbox Controller Decleration 
+			bIsConnected   				:  		ARRAY [1..2] OF BOOL; // Controller conection validated 
 
-			Start 						:       BOOL; 
-			Reset 						:       BOOL;
-			Button_A            		:       BOOL;
-			Button_B                 	:       BOOL;
-			Button_X             		:       BOOL;
-			Button_Y                    :       BOOL;
-			Dpad_U	                    :       BOOL;
-			Dpad_D	                    :       BOOL;
-			lBumper	                    :       BOOL;
-			rBumper	                    :       BOOL;
-			lTrigger                    :       LREAL;
-			rTrigger                    :       LREAL;
-			lStick_Y	                :       LREAL;
-			lStick_X	                :       LREAL;
-     		rStick_Y	                :       LREAL;
-     		rStick_X	                :       LREAL;
+			Start 						:       BOOL; // Start Buttom
+			Reset 						:       BOOL; // Reset Button
+			Button_A            		:       BOOL; // Button A
+			Button_B                 	:       BOOL; // Button B
+			Button_X             		:       BOOL; // Button X
+			Button_Y                    :       BOOL; // Button Y
+			Dpad_U	                    :       BOOL; // Dpad UP
+			Dpad_D	                    :       BOOL; // Dpad Down
+			Dpad_R	                    :       BOOL; // Dpad UP
+			Dpad_L	                    :       BOOL; // Dpad Down
+			lBumper	                    :       BOOL; // Left Bumper
+			rBumper	                    :       BOOL; // Right Bumper
+			lTrigger                    :       LREAL; // Left Trigger
+			rTrigger                    :       LREAL; // Right Trigger
+			lStick_Y	                :       LREAL; // Left Stick Y axis
+			lStick_X	                :       LREAL; // Left Stick X axis
+     		rStick_Y	                :       LREAL; // Right Stick Y axis
+     		rStick_X	                :       LREAL; // Right Stick X axis
+			
+			ZeroVector					:		MoverVector; // Zero Vector 
 			
 END_VAR
 VAR    
+	
+			Open_Controller_Service		:		NT_StartProcess; // Open ADS server for controller
+			RUN							:		BOOL := TRUE; // Run service 
+			
+			
+			//Take Screenshot vars
+			TakeScreenshot_OSR			: 		R_TRIG; // OSR to make sure a Dpad Down click is counted a one
+			ClearScreenshot_OSR			: 		R_TRIG; // OSR to make sure a Dpad Up click is counted a one
+			Captured_Positions			:		ARRAY [0..9] OF MoverVector; // Array of Positions
+			Position_index				:		INT; //Indexing through Positions array
+
+			
+			//Haptic Feed Back
+			HapticTimerMedium			:		TON; // Haptics feedback timer for longer duration
+
 END_VAR
 			
 ]]></Declaration>
@@ -38,58 +60,111 @@ END_VAR
 ]]></ST>
     </Implementation>
     <Folder Name="Buttons" Id="{b765c0d2-a1fa-47de-a83a-214fd5ccdffc}" />
-    <Method Name="clearScreenshot" Id="{8d5afaf2-b99a-41f7-9c02-692c817339db}">
-      <Declaration><![CDATA[METHOD clearScreenshot : BOOL
+    <Method Name="clearScreenShot" Id="{a648c984-0e68-4780-8c3e-dc940ef8921f}">
+      <Declaration><![CDATA[METHOD clearScreenshot 
 VAR_INPUT
 	
-bDpad_U 					: BOOL; 
+			bDpad_U 					: 		BOOL; // Dpad Up on controller 
+			ClearPosition				:		MoverVector ; // Mover Vector 
+
 
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <CFC>
-          <XmlArchive>
-            <Data>
-              <o xml:space="preserve" t="CFCImplementationObject">
-                <o n="Items" t="CFCItemList">
-                  <l2 n="InnerList" />
-                </o>
-                <n n="ParameterInitializationMethodGenerator" />
-                <o n="RoutingPathTable" t="CFCRoutingPathTable">
-                  <d2 n="InnerDictionary" />
-                </o>
-                <v n="AutoSizeCanvas">true</v>
-                <v n="CanvasWidth">1</v>
-                <v n="CanvasHeight">1</v>
-              </o>
-            </Data>
-            <TypeList>
-              <Type n="Boolean">System.Boolean</Type>
-              <Type n="CFCImplementationObject">{32d3375e-c010-41e2-9e43-b2fbf4f2b374}</Type>
-              <Type n="CFCItemList">{cd57ba20-558b-4b98-96c1-73c6000c3087}</Type>
-              <Type n="CFCRoutingPathTable">{4b8bcc79-5980-4868-b49e-005a8148859b}</Type>
-              <Type n="Int32">System.Int32</Type>
-            </TypeList>
-          </XmlArchive>
-        </CFC>
+        <ST><![CDATA[ClearScreenshot_OSR(CLK := bDpad_U, Q => );
+
+IF ClearScreenshot_OSR.Q THEN
+	Captured_Positions[Position_index] := ClearPosition ;
+	Position_index := Position_index + 1;
+END_IF
+
+IF Position_index = 10 THEN
+	Position_index := 0;
+END_IF 
+
+]]></ST>
       </Implementation>
     </Method>
     <Action Name="Cyclic" Id="{808b5749-855d-42fa-8193-f16ca32a0879}">
       <Implementation>
-        <ST><![CDATA[XboxController.Cycle();
-mapping(); 
-init();
-bIsConnected[1] := XboxController.P_Status.bConnected; ]]></ST>
+        <ST><![CDATA[XboxController.Cycle(); // Xbox Controller FB cycle 
+
+mapping(); // Call mapping of Controller
+
+init(); // Call init of controller
+
+
+
+
+bIsConnected[1] := XboxController.P_Status.bConnected; // Is controller Connected]]></ST>
       </Implementation>
     </Action>
-    <Method Name="Init" Id="{00fb4985-ae41-4cc3-9c5f-7e5a85b6bbf4}">
-      <Declaration><![CDATA[METHOD Init
+    <Method Name="Haptics" Id="{30573ae0-a7c7-4f3d-9019-23142ed2072b}">
+      <Declaration><![CDATA[METHOD Haptics 
 VAR_INPUT
+	
+				Rumble 					:	 	BOOL; // Set Rumble 
+				BackTo0Rumble			:		BOOL; // Set rumble if mover hits 0
+			
+END_VAR
+VAR 
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[
+//Haptic Feedback Duration
+HapticTimerMedium(IN :=BackTo0Rumble, PT := T#0.5S);
+
+//Haptic FeedBack
+IF HapticfeedBack = TRUE THEN
+//When back to a C value that can be moduloed by 90 and = 0 
+	IF BackTo0Rumble THEN
+		IF (HapticTimerMedium.IN AND NOT HapticTimerMedium.Q) OR Rumble THEN
+			XboxController.SetRumble(0,100);
+		ELSE
+			XboxController.SetRumble(0,0);
+		END_IF
+	END_IF	
+END_IF
+			
+
+
+
+
+
+
+
 ]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Init" Id="{00fb4985-ae41-4cc3-9c5f-7e5a85b6bbf4}">
+      <Declaration><![CDATA[METHOD Init
+VAR_INPUT
+END_VAR
+VAR
+			Busy						:		BOOL;
+			ERR							:		BOOL;
+			ErrID						:		UDINT;
+			nRecover					:		SINT := 1; // Case of Recover
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[//Open Ads Controller Service on start up
+
+IF NOT bIsConnected[1] THEN
+	IF RUN = TRUE THEN 
+	Open_Controller_Service(
+		NETID:='' , 
+		PATHSTR:='C:\Program Files\Beckhoff Community\TwinCAT Xbox Controller Service\ADS-Controller-Server.exe' , 
+		DIRNAME:= 'C:\Program Files\Beckhoff Community\TwinCAT Xbox Controller Service', 
+		COMNDLINE:='start ADS-Controller-Server.exe', 
+		START:= TRUE , 
+		TMOUT:= T#5S , 
+		BUSY=> BUSY , 
+		ERR=> ERR , 
+		ERRID=> ERRID );
+	END_IF
+END_IF]]></ST>
       </Implementation>
     </Method>
     <Action Name="Mapping" Id="{f5652c4a-9af9-40f9-9303-5deeb2d277c6}" FolderPath="Buttons\">
@@ -99,7 +174,8 @@ END_VAR
 
 
 // Button Mapping
-Start 				:= XboxController.P_Buttons.bStart;
+//Mapping from Controller instance to PLC vars
+Start 				:= XboxController.P_Buttons.bStart; 
 Reset 				:= XboxController.P_Buttons.bBack;
 Button_A 			:= XboxController.P_Buttons.bA_Button;
 Button_B 			:= XboxController.P_Buttons.bB_Button;
@@ -107,6 +183,8 @@ Button_X 			:= XboxController.P_Buttons.bX_Button;
 Button_Y 			:= XboxController.P_Buttons.bY_Button;
 Dpad_U	 			:= XboxController.P_Buttons.DPad.bUp;
 Dpad_D	 			:= XboxController.P_Buttons.DPad.bDown;
+Dpad_R	 			:= XboxController.P_Buttons.DPad.bRight;
+Dpad_L	 			:= XboxController.P_Buttons.DPad.bLeft;
 lBumper	 			:= XboxController.P_Buttons.bLeft_Shoulder;
 rBumper	 			:= XboxController.P_Buttons.bRight_Shoulder;
 lTrigger			:= XboxController.P_Left_Trigger;
@@ -117,40 +195,28 @@ rStick_Y			:= XboxController.P_Right_Joystick.fY;
 rStick_X			:= XboxController.P_Right_Joystick.fX;]]></ST>
       </Implementation>
     </Action>
-    <Method Name="takeScreenshot" Id="{f671d340-a431-47a9-bf30-27c82dc334e5}">
+    <Method Name="takeScreenshot" Id="{9a288e78-c47c-467c-8751-8ed3f66285e5}">
       <Declaration><![CDATA[METHOD takeScreenshot : BOOL
 VAR_INPUT
 	
-bDpad_D 				: BOOL ;
+			bDpad_D 					: 			BOOL ; // Dpad Down on controller
+			MoverPosition				:			MoverVector; // Mover Position
 
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <CFC>
-          <XmlArchive>
-            <Data>
-              <o xml:space="preserve" t="CFCImplementationObject">
-                <o n="Items" t="CFCItemList">
-                  <l2 n="InnerList" />
-                </o>
-                <n n="ParameterInitializationMethodGenerator" />
-                <o n="RoutingPathTable" t="CFCRoutingPathTable">
-                  <d2 n="InnerDictionary" />
-                </o>
-                <v n="AutoSizeCanvas">true</v>
-                <v n="CanvasWidth">1</v>
-                <v n="CanvasHeight">1</v>
-              </o>
-            </Data>
-            <TypeList>
-              <Type n="Boolean">System.Boolean</Type>
-              <Type n="CFCImplementationObject">{32d3375e-c010-41e2-9e43-b2fbf4f2b374}</Type>
-              <Type n="CFCItemList">{cd57ba20-558b-4b98-96c1-73c6000c3087}</Type>
-              <Type n="CFCRoutingPathTable">{4b8bcc79-5980-4868-b49e-005a8148859b}</Type>
-              <Type n="Int32">System.Int32</Type>
-            </TypeList>
-          </XmlArchive>
-        </CFC>
+        <ST><![CDATA[TakeScreenshot_OSR(CLK := bDpad_D, Q => );
+
+IF TakeScreenshot_OSR.Q THEN
+	Captured_Positions[Position_index] :=  MoverPosition;
+	Position_index := Position_index + 1;
+END_IF
+
+IF Position_index = 10 THEN
+	Position_index := 0;
+END_IF 
+
+]]></ST>
       </Implementation>
     </Method>
     <LineIds Name="XboxController">
@@ -159,23 +225,55 @@ END_VAR
       <LineId Id="40" Count="0" />
       <LineId Id="39" Count="0" />
     </LineIds>
+    <LineIds Name="XboxController.clearScreenShot">
+      <LineId Id="12" Count="10" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
     <LineIds Name="XboxController.Cyclic">
       <LineId Id="1" Count="0" />
+      <LineId Id="12" Count="0" />
       <LineId Id="5" Count="0" />
+      <LineId Id="13" Count="0" />
       <LineId Id="7" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="10" Count="1" />
+      <LineId Id="8" Count="0" />
       <LineId Id="2" Count="0" />
     </LineIds>
+    <LineIds Name="XboxController.Haptics">
+      <LineId Id="6" Count="2" />
+      <LineId Id="24" Count="4" />
+      <LineId Id="30" Count="4" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="48" Count="0" />
+      <LineId Id="16" Count="7" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
     <LineIds Name="XboxController.Init">
-      <LineId Id="5" Count="1" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="34" Count="1" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="10" Count="8" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="36" Count="0" />
     </LineIds>
     <LineIds Name="XboxController.Mapping">
       <LineId Id="17" Count="4" />
+      <LineId Id="25" Count="0" />
       <LineId Id="1" Count="5" />
-      <LineId Id="9" Count="5" />
+      <LineId Id="9" Count="1" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="11" Count="3" />
       <LineId Id="16" Count="0" />
       <LineId Id="23" Count="0" />
       <LineId Id="15" Count="0" />
       <LineId Id="24" Count="0" />
+    </LineIds>
+    <LineIds Name="XboxController.takeScreenshot">
+      <LineId Id="23" Count="10" />
+      <LineId Id="17" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>
