@@ -44,11 +44,11 @@ END_VAR
         <ST><![CDATA[RotationDisplacement :=  (MoverTypeWidth) * SIN(0.1745); // Calculate Rotation displacemnt of Mover
 
 
-MaxTableYTravel := (NumberOfYTiles * 240) - MoverTypeWidth  - Buffer - RotationDisplacement ; // Calculate Max Y travel of Mover
-MaxTableXTravel := (NumberOfXTiles * 240) - MoverTypeLength - Buffer - RotationDisplacement; // Calculate Max X travel of Mover
+MaxTableYTravel := (NumberOfYTiles * 240) - MoverTypeWidth   - RotationDisplacement ; // Calculate Max Y travel of Mover
+MaxTableXTravel := (NumberOfXTiles * 240) - MoverTypeLength  - RotationDisplacement; // Calculate Max X travel of Mover
 		
-MinTableYTravel :=  MoverTypeWidth   + Buffer + RotationDisplacement; // Calculate Min Y travel of Mover
-MinTableXTravel :=  MoverTypeLength  + Buffer + RotationDisplacement; // Calculate Min X travel of Mover
+MinTableYTravel :=  MoverTypeWidth  + RotationDisplacement; // Calculate Min Y travel of Mover
+MinTableXTravel :=  MoverTypeLength + RotationDisplacement; // Calculate Min X travel of Mover
 
 
 IF NumberOfXTiles = 2 AND NumberOfYTiles = 1 THEN

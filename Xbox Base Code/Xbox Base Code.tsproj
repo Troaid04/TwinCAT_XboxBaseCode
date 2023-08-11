@@ -2722,7 +2722,7 @@
 					</Default>
 					<PTCID>#x050300b8</PTCID>
 				</Parameter>
-				<Parameter Group="Maximum Dynamics">
+				<Parameter ShowSubItems="true" Group="Maximum Dynamics">
 					<Name>Maximum dynamic C</Name>
 					<Comment><![CDATA[Maximum dynamic of the movers C rotation.]]></Comment>
 					<BitSize>256</BitSize>
@@ -3210,34 +3210,41 @@
 	</ImageDatas>
 	<Project ProjectGUID="{893DED4F-94DE-405E-B342-BD5831DA37B9}" Target64Bit="true" AutoPrioManagement="true" ShowHideConfigurations="#x106">
 		<System>
-			<Settings MaxCpus="8" NonWinCpus="6">
-				<Cpu/>
-				<Cpu CpuId="2" BaseTime="2500"/>
-				<Cpu CpuId="3" BaseTime="2500"/>
-				<Cpu CpuId="4" BaseTime="2500"/>
-				<Cpu CpuId="5" BaseTime="2500"/>
+			<Settings MaxCpus="16" NonWinCpus="6">
 				<Cpu CpuId="6" BaseTime="2500"/>
-				<Cpu CpuId="7" BaseTime="2500"/>
-				<IoIdleTask Priority="12" Affinity="#x00000040"/>
+				<Cpu CpuId="9" BaseTime="2500"/>
+				<Cpu CpuId="10" BaseTime="2500"/>
+				<Cpu CpuId="11" BaseTime="2500"/>
+				<Cpu CpuId="12" BaseTime="2500"/>
+				<Cpu CpuId="13" BaseTime="2500"/>
+				<Cpu CpuId="14" BaseTime="2500"/>
+				<Cpu CpuId="15" BaseTime="2500"/>
+				<IoIdleTask Priority="16" Affinity="#x00000200"/>
 			</Settings>
 			<Tasks>
-				<Task Id="8" Priority="13" Affinity="#x00000020" AdtTasks="true" JobTask="true">
+				<Task Id="8" Priority="19" Affinity="#x00000200" AdtTasks="true" JobTask="true">
 					<Name>Job Task</Name>
 					<ImageId>327</ImageId>
 				</Task>
-				<Task Id="3" Priority="10" CycleTime="2500" AmsPort="350" Affinity="#x00000080" AdtTasks="true">
+				<Task Id="3" Priority="4" CycleTime="2500" AmsPort="350" Affinity="#x00008000" AdtTasks="true">
 					<Name>PlcTask</Name>
 				</Task>
-				<Task Id="4" Priority="4" CycleTime="2500" AmsPort="351" Affinity="#x00000008" AdtTasks="true">
-					<Name>XPlanar Task3</Name>
+				<Task Id="4" Priority="6" CycleTime="2500" AmsPort="351" Affinity="#x00000800" AdtTasks="true">
+					<Name>XPlanar Task11</Name>
 				</Task>
-				<Task Id="5" Priority="6" CycleTime="2500" AmsPort="352" Affinity="#x00000010" AdtTasks="true">
-					<Name>XPlanar Task4</Name>
+				<Task Id="5" Priority="8" CycleTime="2500" AmsPort="352" Affinity="#x00001000" AdtTasks="true">
+					<Name>XPlanar Task12</Name>
 				</Task>
-				<Task Id="6" Priority="8" CycleTime="2500" AmsPort="353" Affinity="#x00000004" AdtTasks="true">
+				<Task Id="6" Priority="10" CycleTime="2500" AmsPort="353" Affinity="#x00002000" AdtTasks="true">
+					<Name>XPlanar Task13</Name>
+				</Task>
+				<Task Id="7" Priority="12" CycleTime="2500" AmsPort="354" Affinity="#x00004000" AdtTasks="true">
+					<Name>XPlanar Task14</Name>
+				</Task>
+				<Task Id="9" Priority="14" CycleTime="20000" AmsPort="355" Affinity="#x00000400" AdtTasks="true">
 					<Name>MC-Task (MET)</Name>
 				</Task>
-				<Task Id="7" Priority="14" CycleTime="100000" AmsPort="354" Affinity="#x00000004" AdtTasks="true">
+				<Task Id="10" Priority="18" CycleTime="100000" AmsPort="356" Affinity="#x00000400" AdtTasks="true">
 					<Name>MC-Task (MPT)</Name>
 				</Task>
 			</Tasks>
@@ -3938,7 +3945,7 @@
 							</ParameterValues>
 						</TmcDesc>
 						<Module Id="#x01010030" KeepUnrestoredLinks="2">
-							<Name>Tile1</Name>
+							<Name>Tile9</Name>
 							<ImageId>1002</ImageId>
 							<TmcDesc GUID="{DF6BD2B5-4CCE-44EA-A2D9-134A2BF36860}">
 								<Name>APS4322</Name>
@@ -3948,7 +3955,7 @@
 									<Context>
 										<Id>1</Id>
 										<ManualConfig>
-											<OTCID>#x02010050</OTCID>
+											<OTCID>#x02010040</OTCID>
 										</ManualConfig>
 										<Priority>6</Priority>
 										<CycleTime>250000</CycleTime>
@@ -4212,11 +4219,11 @@
 								<ParameterValues>
 									<Value>
 										<Name>TaskOID</Name>
-										<Value>33620048</Value>
+										<Value>33620032</Value>
 									</Value>
 									<Value>
 										<Name>BTN</Name>
-										<String>0000ae5b</String>
+										<String>00000000</String>
 									</Value>
 									<Value>
 										<Name>TilePositionOnPart.x</Name>
@@ -4224,11 +4231,11 @@
 									</Value>
 									<Value>
 										<Name>TilePositionOnPart.y</Name>
-										<Value>0</Value>
+										<Value>480</Value>
 									</Value>
 									<Value>
 										<Name>DriveOID</Name>
-										<Value>50462737</Value>
+										<Value>0</Value>
 									</Value>
 									<Value>
 										<Name>FeedbackOID</Name>
@@ -4278,7 +4285,7 @@
 										<ManualConfig>
 											<OTCID>#x02010050</OTCID>
 										</ManualConfig>
-										<Priority>6</Priority>
+										<Priority>8</Priority>
 										<CycleTime>250000</CycleTime>
 									</Context>
 								</Contexts>
@@ -4544,7 +4551,7 @@
 									</Value>
 									<Value>
 										<Name>BTN</Name>
-										<String>0000advt</String>
+										<String>00000000</String>
 									</Value>
 									<Value>
 										<Name>TilePositionOnPart.x</Name>
@@ -4556,7 +4563,7 @@
 									</Value>
 									<Value>
 										<Name>DriveOID</Name>
-										<Value>50462741</Value>
+										<Value>0</Value>
 									</Value>
 									<Value>
 										<Name>FeedbackOID</Name>
@@ -4594,7 +4601,7 @@
 							</TmcDesc>
 						</Module>
 						<Module Id="#x01010050" KeepUnrestoredLinks="2">
-							<Name>Tile9</Name>
+							<Name>Tile6</Name>
 							<ImageId>1002</ImageId>
 							<TmcDesc GUID="{DF6BD2B5-4CCE-44EA-A2D9-134A2BF36860}">
 								<Name>APS4322</Name>
@@ -4606,7 +4613,7 @@
 										<ManualConfig>
 											<OTCID>#x02010050</OTCID>
 										</ManualConfig>
-										<Priority>6</Priority>
+										<Priority>8</Priority>
 										<CycleTime>250000</CycleTime>
 									</Context>
 								</Contexts>
@@ -4872,19 +4879,19 @@
 									</Value>
 									<Value>
 										<Name>BTN</Name>
-										<String>0000ae5a</String>
+										<String>00000000</String>
 									</Value>
 									<Value>
 										<Name>TilePositionOnPart.x</Name>
-										<Value>0</Value>
+										<Value>240</Value>
 									</Value>
 									<Value>
 										<Name>TilePositionOnPart.y</Name>
-										<Value>480</Value>
+										<Value>240</Value>
 									</Value>
 									<Value>
 										<Name>DriveOID</Name>
-										<Value>50462745</Value>
+										<Value>0</Value>
 									</Value>
 									<Value>
 										<Name>FeedbackOID</Name>
@@ -4922,7 +4929,7 @@
 							</TmcDesc>
 						</Module>
 						<Module Id="#x01010060" KeepUnrestoredLinks="2">
-							<Name>Tile10</Name>
+							<Name>Tile1</Name>
 							<ImageId>1002</ImageId>
 							<TmcDesc GUID="{DF6BD2B5-4CCE-44EA-A2D9-134A2BF36860}">
 								<Name>APS4322</Name>
@@ -4932,9 +4939,9 @@
 									<Context>
 										<Id>1</Id>
 										<ManualConfig>
-											<OTCID>#x02010050</OTCID>
+											<OTCID>#x02010060</OTCID>
 										</ManualConfig>
-										<Priority>6</Priority>
+										<Priority>10</Priority>
 										<CycleTime>250000</CycleTime>
 									</Context>
 								</Contexts>
@@ -5196,23 +5203,23 @@
 								<ParameterValues>
 									<Value>
 										<Name>TaskOID</Name>
-										<Value>33620048</Value>
+										<Value>33620064</Value>
 									</Value>
 									<Value>
 										<Name>BTN</Name>
-										<String>0000ae5d</String>
+										<String>00000000</String>
 									</Value>
 									<Value>
 										<Name>TilePositionOnPart.x</Name>
-										<Value>240</Value>
+										<Value>0</Value>
 									</Value>
 									<Value>
 										<Name>TilePositionOnPart.y</Name>
-										<Value>480</Value>
+										<Value>0</Value>
 									</Value>
 									<Value>
 										<Name>DriveOID</Name>
-										<Value>50462747</Value>
+										<Value>0</Value>
 									</Value>
 									<Value>
 										<Name>FeedbackOID</Name>
@@ -5250,7 +5257,7 @@
 							</TmcDesc>
 						</Module>
 						<Module Id="#x01010070" KeepUnrestoredLinks="2">
-							<Name>Tile6</Name>
+							<Name>Tile2</Name>
 							<ImageId>1002</ImageId>
 							<TmcDesc GUID="{DF6BD2B5-4CCE-44EA-A2D9-134A2BF36860}">
 								<Name>APS4322</Name>
@@ -5260,9 +5267,9 @@
 									<Context>
 										<Id>1</Id>
 										<ManualConfig>
-											<OTCID>#x02010050</OTCID>
+											<OTCID>#x02010070</OTCID>
 										</ManualConfig>
-										<Priority>6</Priority>
+										<Priority>12</Priority>
 										<CycleTime>250000</CycleTime>
 									</Context>
 								</Contexts>
@@ -5524,11 +5531,11 @@
 								<ParameterValues>
 									<Value>
 										<Name>TaskOID</Name>
-										<Value>33620048</Value>
+										<Value>33620080</Value>
 									</Value>
 									<Value>
 										<Name>BTN</Name>
-										<String>0000advr</String>
+										<String>00000000</String>
 									</Value>
 									<Value>
 										<Name>TilePositionOnPart.x</Name>
@@ -5536,11 +5543,11 @@
 									</Value>
 									<Value>
 										<Name>TilePositionOnPart.y</Name>
-										<Value>240</Value>
+										<Value>0</Value>
 									</Value>
 									<Value>
 										<Name>DriveOID</Name>
-										<Value>50462743</Value>
+										<Value>0</Value>
 									</Value>
 									<Value>
 										<Name>FeedbackOID</Name>
@@ -5590,7 +5597,7 @@
 										<ManualConfig>
 											<OTCID>#x02010040</OTCID>
 										</ManualConfig>
-										<Priority>4</Priority>
+										<Priority>6</Priority>
 										<CycleTime>250000</CycleTime>
 									</Context>
 								</Contexts>
@@ -5856,7 +5863,7 @@
 									</Value>
 									<Value>
 										<Name>BTN</Name>
-										<String>0000advq</String>
+										<String>00000000</String>
 									</Value>
 									<Value>
 										<Name>TilePositionOnPart.x</Name>
@@ -5868,7 +5875,7 @@
 									</Value>
 									<Value>
 										<Name>DriveOID</Name>
-										<Value>50462725</Value>
+										<Value>0</Value>
 									</Value>
 									<Value>
 										<Name>FeedbackOID</Name>
@@ -5906,7 +5913,7 @@
 							</TmcDesc>
 						</Module>
 						<Module Id="#x01010090" KeepUnrestoredLinks="2">
-							<Name>Tile2</Name>
+							<Name>Tile7</Name>
 							<ImageId>1002</ImageId>
 							<TmcDesc GUID="{DF6BD2B5-4CCE-44EA-A2D9-134A2BF36860}">
 								<Name>APS4322</Name>
@@ -5918,7 +5925,7 @@
 										<ManualConfig>
 											<OTCID>#x02010050</OTCID>
 										</ManualConfig>
-										<Priority>6</Priority>
+										<Priority>8</Priority>
 										<CycleTime>250000</CycleTime>
 									</Context>
 								</Contexts>
@@ -6184,19 +6191,19 @@
 									</Value>
 									<Value>
 										<Name>BTN</Name>
-										<String>0000ae5j</String>
+										<String>00000000</String>
 									</Value>
 									<Value>
 										<Name>TilePositionOnPart.x</Name>
-										<Value>240</Value>
+										<Value>480</Value>
 									</Value>
 									<Value>
 										<Name>TilePositionOnPart.y</Name>
-										<Value>0</Value>
+										<Value>240</Value>
 									</Value>
 									<Value>
 										<Name>DriveOID</Name>
-										<Value>50462739</Value>
+										<Value>0</Value>
 									</Value>
 									<Value>
 										<Name>FeedbackOID</Name>
@@ -6234,7 +6241,7 @@
 							</TmcDesc>
 						</Module>
 						<Module Id="#x010100a0" KeepUnrestoredLinks="2">
-							<Name>Tile7</Name>
+							<Name>Tile10</Name>
 							<ImageId>1002</ImageId>
 							<TmcDesc GUID="{DF6BD2B5-4CCE-44EA-A2D9-134A2BF36860}">
 								<Name>APS4322</Name>
@@ -6244,9 +6251,9 @@
 									<Context>
 										<Id>1</Id>
 										<ManualConfig>
-											<OTCID>#x02010040</OTCID>
+											<OTCID>#x02010060</OTCID>
 										</ManualConfig>
-										<Priority>4</Priority>
+										<Priority>10</Priority>
 										<CycleTime>250000</CycleTime>
 									</Context>
 								</Contexts>
@@ -6508,23 +6515,23 @@
 								<ParameterValues>
 									<Value>
 										<Name>TaskOID</Name>
-										<Value>33620032</Value>
+										<Value>33620064</Value>
 									</Value>
 									<Value>
 										<Name>BTN</Name>
-										<String>0000adw2</String>
+										<String>00000000</String>
 									</Value>
 									<Value>
 										<Name>TilePositionOnPart.x</Name>
-										<Value>480</Value>
-									</Value>
-									<Value>
-										<Name>TilePositionOnPart.y</Name>
 										<Value>240</Value>
 									</Value>
 									<Value>
+										<Name>TilePositionOnPart.y</Name>
+										<Value>480</Value>
+									</Value>
+									<Value>
 										<Name>DriveOID</Name>
-										<Value>50462729</Value>
+										<Value>0</Value>
 									</Value>
 									<Value>
 										<Name>FeedbackOID</Name>
@@ -6562,7 +6569,7 @@
 							</TmcDesc>
 						</Module>
 						<Module Id="#x010100b0" KeepUnrestoredLinks="2">
-							<Name>Tile11</Name>
+							<Name>Tile12</Name>
 							<ImageId>1002</ImageId>
 							<TmcDesc GUID="{DF6BD2B5-4CCE-44EA-A2D9-134A2BF36860}">
 								<Name>APS4322</Name>
@@ -6572,9 +6579,9 @@
 									<Context>
 										<Id>1</Id>
 										<ManualConfig>
-											<OTCID>#x02010040</OTCID>
+											<OTCID>#x02010060</OTCID>
 										</ManualConfig>
-										<Priority>4</Priority>
+										<Priority>10</Priority>
 										<CycleTime>250000</CycleTime>
 									</Context>
 								</Contexts>
@@ -6836,15 +6843,15 @@
 								<ParameterValues>
 									<Value>
 										<Name>TaskOID</Name>
-										<Value>33620032</Value>
+										<Value>33620064</Value>
 									</Value>
 									<Value>
 										<Name>BTN</Name>
-										<String>0000ae5c</String>
+										<String>00000000</String>
 									</Value>
 									<Value>
 										<Name>TilePositionOnPart.x</Name>
-										<Value>480</Value>
+										<Value>720</Value>
 									</Value>
 									<Value>
 										<Name>TilePositionOnPart.y</Name>
@@ -6852,7 +6859,7 @@
 									</Value>
 									<Value>
 										<Name>DriveOID</Name>
-										<Value>50462733</Value>
+										<Value>0</Value>
 									</Value>
 									<Value>
 										<Name>FeedbackOID</Name>
@@ -6890,7 +6897,7 @@
 							</TmcDesc>
 						</Module>
 						<Module Id="#x010100c0" KeepUnrestoredLinks="2">
-							<Name>Tile12</Name>
+							<Name>Tile8</Name>
 							<ImageId>1002</ImageId>
 							<TmcDesc GUID="{DF6BD2B5-4CCE-44EA-A2D9-134A2BF36860}">
 								<Name>APS4322</Name>
@@ -6900,9 +6907,9 @@
 									<Context>
 										<Id>1</Id>
 										<ManualConfig>
-											<OTCID>#x02010040</OTCID>
+											<OTCID>#x02010070</OTCID>
 										</ManualConfig>
-										<Priority>4</Priority>
+										<Priority>12</Priority>
 										<CycleTime>250000</CycleTime>
 									</Context>
 								</Contexts>
@@ -7164,11 +7171,11 @@
 								<ParameterValues>
 									<Value>
 										<Name>TaskOID</Name>
-										<Value>33620032</Value>
+										<Value>33620080</Value>
 									</Value>
 									<Value>
 										<Name>BTN</Name>
-										<String>0000ae5k</String>
+										<String>00000000</String>
 									</Value>
 									<Value>
 										<Name>TilePositionOnPart.x</Name>
@@ -7176,11 +7183,11 @@
 									</Value>
 									<Value>
 										<Name>TilePositionOnPart.y</Name>
-										<Value>480</Value>
+										<Value>240</Value>
 									</Value>
 									<Value>
 										<Name>DriveOID</Name>
-										<Value>50462735</Value>
+										<Value>0</Value>
 									</Value>
 									<Value>
 										<Name>FeedbackOID</Name>
@@ -7218,7 +7225,7 @@
 							</TmcDesc>
 						</Module>
 						<Module Id="#x010100d0" KeepUnrestoredLinks="2">
-							<Name>Tile8</Name>
+							<Name>Tile4</Name>
 							<ImageId>1002</ImageId>
 							<TmcDesc GUID="{DF6BD2B5-4CCE-44EA-A2D9-134A2BF36860}">
 								<Name>APS4322</Name>
@@ -7230,7 +7237,7 @@
 										<ManualConfig>
 											<OTCID>#x02010040</OTCID>
 										</ManualConfig>
-										<Priority>4</Priority>
+										<Priority>6</Priority>
 										<CycleTime>250000</CycleTime>
 									</Context>
 								</Contexts>
@@ -7496,7 +7503,7 @@
 									</Value>
 									<Value>
 										<Name>BTN</Name>
-										<String>0000adw3</String>
+										<String>00000000</String>
 									</Value>
 									<Value>
 										<Name>TilePositionOnPart.x</Name>
@@ -7504,11 +7511,11 @@
 									</Value>
 									<Value>
 										<Name>TilePositionOnPart.y</Name>
-										<Value>240</Value>
+										<Value>0</Value>
 									</Value>
 									<Value>
 										<Name>DriveOID</Name>
-										<Value>50462731</Value>
+										<Value>0</Value>
 									</Value>
 									<Value>
 										<Name>FeedbackOID</Name>
@@ -7546,7 +7553,7 @@
 							</TmcDesc>
 						</Module>
 						<Module Id="#x010100e0" KeepUnrestoredLinks="2">
-							<Name>Tile4</Name>
+							<Name>Tile11</Name>
 							<ImageId>1002</ImageId>
 							<TmcDesc GUID="{DF6BD2B5-4CCE-44EA-A2D9-134A2BF36860}">
 								<Name>APS4322</Name>
@@ -7556,9 +7563,9 @@
 									<Context>
 										<Id>1</Id>
 										<ManualConfig>
-											<OTCID>#x02010040</OTCID>
+											<OTCID>#x02010050</OTCID>
 										</ManualConfig>
-										<Priority>4</Priority>
+										<Priority>8</Priority>
 										<CycleTime>250000</CycleTime>
 									</Context>
 								</Contexts>
@@ -7820,23 +7827,23 @@
 								<ParameterValues>
 									<Value>
 										<Name>TaskOID</Name>
-										<Value>33620032</Value>
+										<Value>33620048</Value>
 									</Value>
 									<Value>
 										<Name>BTN</Name>
-										<String>0000advz</String>
+										<String>00000000</String>
 									</Value>
 									<Value>
 										<Name>TilePositionOnPart.x</Name>
-										<Value>720</Value>
+										<Value>480</Value>
 									</Value>
 									<Value>
 										<Name>TilePositionOnPart.y</Name>
-										<Value>0</Value>
+										<Value>480</Value>
 									</Value>
 									<Value>
 										<Name>DriveOID</Name>
-										<Value>50462727</Value>
+										<Value>0</Value>
 									</Value>
 									<Value>
 										<Name>FeedbackOID</Name>
@@ -8028,7 +8035,7 @@
 									<ManualConfig>
 										<OTCID>#x02010040</OTCID>
 									</ManualConfig>
-									<Priority>4</Priority>
+									<Priority>6</Priority>
 									<CycleTime>250000</CycleTime>
 								</Context>
 							</Contexts>
@@ -8637,15 +8644,15 @@
 								</Value>
 								<Value>
 									<Name>BTN</Name>
-									<String>0000hs3k</String>
+									<String>0000m001</String>
 								</Value>
 								<Value>
 									<Name>SimulationModeStartPosition.X</Name>
-									<Value>485.872528076172</Value>
+									<Value>490.031372070313</Value>
 								</Value>
 								<Value>
 									<Name>SimulationModeStartPosition.Y</Name>
-									<Value>357.161071777344</Value>
+									<Value>351.223205566406</Value>
 								</Value>
 								<Value>
 									<Name>SimulationModeStartPosition.MovementArea</Name>
@@ -9268,8 +9275,8 @@
 		<Motion>
 			<MC Id="#x051f0010">
 				<Name>XPlanar MC Project</Name>
-				<MET OTCID="#x02010060"/>
-				<MPT OTCID="#x02010070"/>
+				<MET OTCID="#x02010090"/>
+				<MPT OTCID="#x020100a0"/>
 				<MJT OTCID="#x02010080"/>
 				<Axis Id="#x05110010" ShareTmcDesc="true">
 					<Name>Mover4220_1</Name>
@@ -9282,19 +9289,19 @@
 								<Id>0</Id>
 								<Name>MET</Name>
 								<ManualConfig>
-									<OTCID>#x02010060</OTCID>
+									<OTCID>#x02010090</OTCID>
 								</ManualConfig>
-								<Priority>8</Priority>
-								<CycleTime>250000</CycleTime>
+								<Priority>14</Priority>
+								<CycleTime>2000000</CycleTime>
 								<DependOn>ParentObject</DependOn>
 							</Context>
 							<Context>
 								<Id>1</Id>
 								<Name>MPT</Name>
 								<ManualConfig>
-									<OTCID>#x02010070</OTCID>
+									<OTCID>#x020100a0</OTCID>
 								</ManualConfig>
-								<Priority>14</Priority>
+								<Priority>18</Priority>
 								<CycleTime>10000000</CycleTime>
 								<DependOn>ParentObject</DependOn>
 							</Context>
@@ -9311,11 +9318,11 @@
 							</Value>
 							<Value>
 								<Name>Initial position.x</Name>
-								<Value>485.872528076172</Value>
+								<Value>490.031372070313</Value>
 							</Value>
 							<Value>
 								<Name>Initial position.y</Name>
-								<Value>357.161071777344</Value>
+								<Value>351.223205566406</Value>
 							</Value>
 							<Value>
 								<Name>Minimal position.x</Name>
@@ -9431,19 +9438,19 @@
 							</Value>
 							<Value>
 								<Name>Maximum dynamic C.V</Name>
-								<Value>10</Value>
+								<Value>100</Value>
 							</Value>
 							<Value>
 								<Name>Maximum dynamic C.A</Name>
-								<Value>100</Value>
+								<Value>1000</Value>
 							</Value>
 							<Value>
 								<Name>Maximum dynamic C.D</Name>
-								<Value>100</Value>
+								<Value>1000</Value>
 							</Value>
 							<Value>
 								<Name>Maximum dynamic C.J</Name>
-								<Value>1000</Value>
+								<Value>10000</Value>
 							</Value>
 							<Value>
 								<Name>Maximum dynamic Z.V</Name>
@@ -9588,19 +9595,19 @@
 								<Id>0</Id>
 								<Name>MET</Name>
 								<ManualConfig>
-									<OTCID>#x02010060</OTCID>
+									<OTCID>#x02010090</OTCID>
 								</ManualConfig>
-								<Priority>8</Priority>
-								<CycleTime>250000</CycleTime>
+								<Priority>14</Priority>
+								<CycleTime>2000000</CycleTime>
 								<DependOn>ParentObject</DependOn>
 							</Context>
 							<Context>
 								<Id>1</Id>
 								<Name>MPT</Name>
 								<ManualConfig>
-									<OTCID>#x02010070</OTCID>
+									<OTCID>#x020100a0</OTCID>
 								</ManualConfig>
-								<Priority>14</Priority>
+								<Priority>18</Priority>
 								<CycleTime>10000000</CycleTime>
 								<DependOn>ParentObject</DependOn>
 							</Context>
@@ -9669,7 +9676,7 @@
 							</Value>
 							<Value>
 								<Name>Ctx_TaskOid</Name>
-								<Value>33620064</Value>
+								<Value>33620112</Value>
 							</Value>
 							<Value>
 								<Name>Group object count</Name>
@@ -9694,19 +9701,19 @@
 								<Id>0</Id>
 								<Name>MET</Name>
 								<ManualConfig>
-									<OTCID>#x02010060</OTCID>
+									<OTCID>#x02010090</OTCID>
 								</ManualConfig>
-								<Priority>8</Priority>
-								<CycleTime>250000</CycleTime>
+								<Priority>14</Priority>
+								<CycleTime>2000000</CycleTime>
 								<DependOn>ParentObject</DependOn>
 							</Context>
 							<Context>
 								<Id>1</Id>
 								<Name>MPT</Name>
 								<ManualConfig>
-									<OTCID>#x02010070</OTCID>
+									<OTCID>#x020100a0</OTCID>
 								</ManualConfig>
-								<Priority>14</Priority>
+								<Priority>18</Priority>
 								<CycleTime>10000000</CycleTime>
 								<DependOn>ParentObject</DependOn>
 							</Context>
@@ -9790,7 +9797,7 @@
 							</Value>
 							<Value>
 								<Name>Ctx_TaskOid</Name>
-								<Value>33620064</Value>
+								<Value>33620112</Value>
 							</Value>
 							<Value>
 								<Name>XPlanar processing unit OID</Name>
@@ -9815,7 +9822,7 @@
 		</Motion>
 		<Plc>
 			<Project GUID="{AB93C029-67A5-4685-8C9C-13D55F0D692C}" Name="Untitled1" PrjFilePath="Untitled1\Untitled1.plcproj" TmcFilePath="Untitled1\Untitled1.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Untitled1\Untitled1.tmc" TmcHash="{9BE0613E-47B9-4818-0EDF-D95691DBBB4B}">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Untitled1\Untitled1.tmc" TmcHash="{7867F4A4-0F6C-C787-EBC5-D6EF72613CF0}">
 					<Name>Untitled1 Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Vars VarGrpType="1">
@@ -9841,22 +9848,22 @@
 							<ManualConfig>
 								<OTCID>#x02010030</OTCID>
 							</ManualConfig>
-							<Priority>10</Priority>
+							<Priority>4</Priority>
 							<CycleTime>250000</CycleTime>
 						</Context>
 					</Contexts>
 					<TaskPouOids>
-						<TaskPouOid Prio="10" OTCID="#x08502003"/>
+						<TaskPouOid Prio="4" OTCID="#x08502002"/>
 					</TaskPouOids>
 				</Instance>
 			</Project>
-			<PlcAuxTask Affinity="#x00000080"/>
+			<PlcAuxTask Affinity="#x00008000"/>
 		</Plc>
 		<Io/>
 	</Project>
 	<Mappings>
-		<MappingInfo Identifier="{02010040-0060-0201-0001-010110001105}" Id="#x02030010" Watchdog="04000000040000000400000004000000"/>
-		<MappingInfo Identifier="{02010060-2003-0850-1000-100500205008}" Id="#x02030020" Watchdog="04000000040000000400000004000000"/>
+		<MappingInfo Identifier="{08502002-0090-0201-0020-500810001005}" Id="#x02030020" Watchdog="20000000040000000400000004000000"/>
+		<MappingInfo Identifier="{02010040-0090-0201-0001-010110001105}" Id="#x02030010" Watchdog="20000000040000000400000004000000"/>
 		<OwnerA Name="TINC^XPlanar MC Project^Axes^Mover4220_1">
 			<OwnerB Name="TIRC^TcCOM Objects^XPlanar^Mover4220_1">
 				<Link VarA="McToIo^STD" VarB="InputsFromNC3^NC3ToHW" Size="1408"/>

@@ -59,7 +59,9 @@ VAR
 			SumnedForce_Y 				: 		LREAL; // Calculation of applied force on Y
 			Mover_acceleration			: 		MoverVector; // Commanded Mover Acc
 			friction_force				: 		MoverVector; // Fricition against mover
-			SumnedVelocity				: 		MoverVector; // Commanded Velocity after intergation 
+			SumnedVelocity				: 		MoverVector; // Commanded Velocity after intergation
+			AdditionalFrictionX			:		LREAL; // Additonal friction to add to mover once it get close to boundary  
+			AdditionalFrictionY			:		LREAL; // Additonal friction to add to mover once it get close to boundary  
 			
 			
 			//Recover Vars
@@ -261,7 +263,7 @@ IF bStart AND NOT StartDemo THEN
 	Run := TRUE;
 END_IF
 
-IF (Run OR bRecover OR Reinit) AND NOT (init_counter = 3)   THEN
+IF (Run OR bRecover OR Reinit) AND NOT (init_counter = 3) THEN
 	CASE nCase OF
 	1: 
 	
@@ -377,7 +379,7 @@ END_VAR
 	
 		//Mapped as reset of mover
 		IF bBack = TRUE THEN
-			Xplanar_Mover.StopExternalSetpointGeneration(cmdfb[1]);
+			Xplanar_Mover.StopExternalSetpointGeneration(cmdfb[1]); 
 			nRecover := nRecover + 1; 
 		END_IF
 		
@@ -480,8 +482,8 @@ END_VAR
 			Closest90 := LREAL_TO_INT(MoverPos.c) + ( 90 - Modded_C); // find our closet 90
 		END_IF
 		
-		MaxNegRot := Closest90 - 10; // Our max neg rotation that can happen based off closet 90
-		MaxPosRot := Closest90 + 10; // Our max pos rotation that can happen based off closet 90
+		MaxNegRot := Closest90 - 9.8; // Our max neg rotation that can happen based off closet 90
+		MaxPosRot := Closest90 + 9.8; // Our max pos rotation that can happen based off closet 90
 
 
 		//Cant move out of rotation point unless within 10 degress 
@@ -595,21 +597,8 @@ END_VAR
 
 	XPPosition.z		:= Height; // Passing in height to Exterenal setpoint generator
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+	//Tilt	
 	Button_B_OSR(CLK := bButton_B, Q => ); // OSR for b button
 	
 	CASE nButton OF 
@@ -647,13 +636,13 @@ END_VAR
 		XPPosition.b   	:= MotionParameters.tiltscailing * rStick_X; // Normal b tilt function
 	ELSE
 		IF SumnedVelocity.y > (0.0001) OR SumnedVelocity.y < (-0.0001) THEN // set to 0 if beyond epsilon check 
-			XpPosition.a	:=  SumnedVelocity.y * 0.00159681; // a tilt proptional to velocity on y axis
+			XpPosition.a	:=  SumnedVelocity.y * 0.004; // a tilt proptional to velocity on y axis
 		ELSE
 			XpPosition.a	:=  0.0; 
 		END_IF
 		
 		IF SumnedVelocity.x > (0.0001) OR SumnedVelocity.x < (-0.0001) THEN // set to 0 if beyond epsilon check
-			XPPosition.b  	:= SumnedVelocity.x * 0.00159681; // b tilt proptional to velocity on x axis
+			XPPosition.b  	:= SumnedVelocity.x * 0.004; // b tilt proptional to velocity on x axis
 		ELSE
 			XpPosition.b 	:=  0.0;
 		END_IF
@@ -700,6 +689,9 @@ VAR_INPUT
 
 END_VAR
 VAR
+	
+			MaxBoundaryFriction 		: 		LREAL := 100; // Maximum additional friction coefficient
+
 END_VAR
 VAR_IN_OUT
 END_VAR
@@ -742,10 +734,33 @@ END_VAR
 		isintent := FALSE;;
 	END_IF
 
+	
+	// Calculate additional friction based on position and boundaries along the X-axis
+	IF MoverPos.x < (minXTravel + 20) AND lStick_X < 0.1  THEN // Calculate Damping zone on min X
+		// Calculate Damping effect on X friction based on a percentange of how close the mover is to the min boundary
+		AdditionalFrictionX := MaxBoundaryFriction * (1.0 + (minXTravel - MoverPos.x) / minXTravel);
+	ELSIF MoverPos.x > (maxXTravel - 20) AND lStick_X > -0.1 THEN // Calculate Damping zone on max X
+		// Calculate Damping effect on X friction based on a percentange of how close the mover is to the max boundary
+		AdditionalFrictionX := MaxBoundaryFriction * (1.0 - (maxXTravel - MoverPos.x) / maxXTravel);
+	ELSE 
+		AdditionalFrictionX := 0.0;
+	END_IF;
+	
+	// Calculate additional friction based on position and boundaries along the Y-axis
+	IF MoverPos.y < (minYTravel + 20) AND lStick_Y < 0.1 THEN // Calculate Damping zone on min Y
+		// Calculate Damping effect on Y friction based on a percentange of how close the mover is to the min boundary
+		AdditionalFrictionY := MaxBoundaryFriction * (1.0 + (minYTravel - MoverPos.y) / minYTravel);
+	ELSIF MoverPos.y > (maxYTravel - 20) AND lStick_Y > -0.1 THEN // Calculate Damping zone on max Y
+		// Calculate Damping effect on Y friction based on a percentange of how close the mover is to the max boundary
+		AdditionalFrictionY := MaxBoundaryFriction * (1.0 - (maxYTravel - MoverPos.y) / maxYTravel);
+	ELSE 
+		AdditionalFrictionY := 0.0;
+	END_IF;
 
-    // If there is no acceleration command, apply friction to reduce velocity
-	friction_force.x := -1 * EnvironmentParameters.Friction_coefficient * SumnedVelocity.x;
-	friction_force.y := -1 * EnvironmentParameters.Friction_coefficient * SumnedVelocity.y;
+    // Apply friction to reduce velocity
+	// Apply additional friction to the existing friction forces for X and Y directions
+	friction_force.x := (-1 * (EnvironmentParameters.Friction_coefficient + AdditionalFrictionX)) * SumnedVelocity.x;
+	friction_force.y := (-1 * (EnvironmentParameters.Friction_coefficient + AdditionalFrictionY)) * SumnedVelocity.y;
 
 	
 	// Reduce acceleration based on the friction force
@@ -754,7 +769,6 @@ END_VAR
 
 	// Update the object's velocity based on the acceleration (INTEGRATING)
 	IF NOT bButton_Y THEN // Dont allow for X movement 
-		IF 
 		SumnedVelocity.x := LIMIT(MotionParameters.minVelocity, SumnedVelocity.x, MotionParameters.maxVelocity) + (SumnedForce_X * EnvironmentParameters.deltaT);
 	ELSE
 		SumnedVelocity.x := 0;
@@ -773,7 +787,7 @@ END_VAR
 		XpPosition.X := XpPosition.X + ( 40 * EnvironmentParameters.deltaT );
 	ELSIF bButton_A AND MoverPos.X > DestinationX THEN
 		XpPosition.X := XpPosition.X -( 40 * EnvironmentParameters.deltaT );
-	END_IF;
+	END_IF
 	
 	// Go to nearst Y point 
 	IF bButton_A AND MoverPos.Y < DestinationY THEN
@@ -938,7 +952,7 @@ END_IF
       <LineId Id="21" Count="3" />
       <LineId Id="80" Count="0" />
       <LineId Id="25" Count="1" />
-      <LineId Id="82" Count="0" />
+      <LineId Id="88" Count="0" />
       <LineId Id="33" Count="2" />
       <LineId Id="43" Count="1" />
       <LineId Id="62" Count="0" />
@@ -991,7 +1005,8 @@ END_IF
       <LineId Id="81" Count="0" />
       <LineId Id="25" Count="0" />
       <LineId Id="87" Count="0" />
-      <LineId Id="134" Count="18" />
+      <LineId Id="134" Count="0" />
+      <LineId Id="148" Count="4" />
       <LineId Id="191" Count="0" />
       <LineId Id="155" Count="1" />
       <LineId Id="173" Count="0" />
@@ -1053,9 +1068,25 @@ END_IF
       <LineId Id="462" Count="0" />
       <LineId Id="466" Count="3" />
       <LineId Id="463" Count="0" />
-      <LineId Id="70" Count="0" />
       <LineId Id="77" Count="0" />
-      <LineId Id="424" Count="1" />
+      <LineId Id="609" Count="1" />
+      <LineId Id="612" Count="0" />
+      <LineId Id="665" Count="0" />
+      <LineId Id="613" Count="1" />
+      <LineId Id="664" Count="0" />
+      <LineId Id="615" Count="0" />
+      <LineId Id="660" Count="1" />
+      <LineId Id="616" Count="2" />
+      <LineId Id="620" Count="0" />
+      <LineId Id="662" Count="0" />
+      <LineId Id="621" Count="1" />
+      <LineId Id="663" Count="0" />
+      <LineId Id="623" Count="0" />
+      <LineId Id="658" Count="1" />
+      <LineId Id="624" Count="0" />
+      <LineId Id="591" Count="0" />
+      <LineId Id="424" Count="0" />
+      <LineId Id="633" Count="1" />
       <LineId Id="418" Count="1" />
       <LineId Id="397" Count="0" />
       <LineId Id="101" Count="0" />
@@ -1064,7 +1095,6 @@ END_IF
       <LineId Id="190" Count="0" />
       <LineId Id="192" Count="0" />
       <LineId Id="492" Count="0" />
-      <LineId Id="587" Count="0" />
       <LineId Id="193" Count="0" />
       <LineId Id="493" Count="3" />
       <LineId Id="498" Count="3" />
