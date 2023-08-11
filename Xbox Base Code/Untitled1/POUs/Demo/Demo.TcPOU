@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="Demo" Id="{02e2345e-d9a2-4cec-9620-e2a4beef5936}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK Demo 
+VAR_INPUT
+	
+			DemoTable					: 		STRING(3); // Demo table type 
+			bDpad_R						: 		BOOL;	// Dpad Right for starting the demo 
+			bDpad_L						: 		BOOL; // Dpad Left to end demo 
+			ReadyForDemo				: 		BOOL; // Handhske varible telling to start demo
+			DemoStarting				:		BOOL; // Handshake to stop End Demo function
+			StopEndFunction				:		BOOL; // Stop End function
+			Running						:		BOOL; 
+			Done						:		BOOL; 
+
+END_VAR
+VAR_OUTPUT
+	
+			RequestDemo					:		BOOL; // Handhske varible asking to start demo
+			StartUserControl 			:		BOOL; // Varible to give user control of mover again
+			StartTwoByOne				:		BOOL; 
+			StopTwoByOne				:		BOOL;
+			StartFourByThree			:		BOOL; 
+			StopFourByThree				:		BOOL;
+			nRecover					:		SINT := 1; // Case of Recover
+
+END_VAR
+VAR
+
+	
+			DemoStart					:			BOOL; // start the demo
+			StopDemo					:			BOOL;
+			End							:			BOOL;// Simuylate demo end 
+		
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+IF bDpad_R THEN //Link to Controller
+	DemoStart := TRUE;
+	StopDemo := FALSE;
+ELSIF bDpad_L THEN
+	DemoStart := FALSE;
+	StopDemo := TRUE; 
+END_IF
+
+IF DemoStart THEN 
+	RequestDemo := TRUE;
+	IF ReadyForDemo THEN
+		IF DemoTable = '2x1' THEN
+			StartTwoByOne := TRUE; 
+		ELSIF DemoTable = '4x3' THEN
+			StartFourByThree := TRUE;
+		ELSIF DemoTable = 'NaN' THEN
+			//Do Nothing 
+		END_IF
+	END_IF
+ELSE 
+	RequestDemo := FALSE;
+END_IF
+
+
+
+IF StopDemo THEN 
+	IF Running OR Running THEN
+		IF DemoTable = '2x1' THEN
+			StopTwoByOne := TRUE; 
+		ELSIF DemoTable = '4x3' THEN
+			StopFourByThree := TRUE;
+		ELSIF DemoTable = 'NaN' THEN
+			//Do Nothing 
+		END_IF
+	END_IF
+END_IF
+
+IF Done THEN
+	StopDemo := FALSE;
+	RequestDemo := FALSE;
+	StartUserControl := TRUE;
+	IF StopEndFunction THEN
+		StartUserControl := FALSE;
+	END_IF
+END_IF
+]]></ST>
+    </Implementation>
+    <LineIds Name="Demo">
+      <LineId Id="30" Count="0" />
+      <LineId Id="74" Count="3" />
+      <LineId Id="150" Count="0" />
+      <LineId Id="156" Count="0" />
+      <LineId Id="152" Count="0" />
+      <LineId Id="78" Count="11" />
+      <LineId Id="157" Count="1" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="96" Count="16" />
+      <LineId Id="117" Count="0" />
+      <LineId Id="113" Count="3" />
+      <LineId Id="90" Count="0" />
+      <LineId Id="154" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
